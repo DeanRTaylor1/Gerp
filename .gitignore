@@ -18,3 +18,7 @@
 go.work
 
 node_modules
+
+.env*.local
+
+logs
