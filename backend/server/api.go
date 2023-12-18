@@ -6,16 +6,66 @@ package server
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/oapi-codegen/runtime"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 )
+
+// Defines values for UserRole.
+const (
+	UserRoleAdmin   UserRole = "admin"
+	UserRoleManager UserRole = "manager"
+	UserRoleUser    UserRole = "user"
+)
+
+// Defines values for UserStatus.
+const (
+	Active   UserStatus = "active"
+	Inactive UserStatus = "inactive"
+)
+
+// User defines model for User.
+type User struct {
+	CreatedAt *time.Time          `json:"createdAt,omitempty"`
+	Email     openapi_types.Email `json:"email"`
+	FirstName *string             `json:"firstName,omitempty"`
+	Id        *int64              `json:"id,omitempty"`
+	LastName  *string             `json:"lastName,omitempty"`
+	Password  string              `json:"password"`
+	Role      *UserRole           `json:"role,omitempty"`
+	Status    UserStatus          `json:"status"`
+	UpdatedAt *time.Time          `json:"updatedAt,omitempty"`
+	Username  string              `json:"username"`
+}
+
+// UserRole defines model for User.Role.
+type UserRole string
+
+// UserStatus defines model for User.Status.
+type UserStatus string
+
+// GetUsersParams defines parameters for GetUsers.
+type GetUsersParams struct {
+	// Offset Page number of the users list
+	Offset *int `form:"offset,omitempty" json:"offset,omitempty"`
+
+	// Limit Number of users per page
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// PostUsersJSONRequestBody defines body for PostUsers for application/json ContentType.
+type PostUsersJSONRequestBody = User
+
+// PutUsersUserIdJSONRequestBody defines body for PutUsersUserId for application/json ContentType.
+type PutUsersUserIdJSONRequestBody = User
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 	// Get a list of users
 	// (GET /users)
-	GetUsers(c *gin.Context)
+	GetUsers(c *gin.Context, params GetUsersParams)
 	// Create a new user
 	// (POST /users)
 	PostUsers(c *gin.Context)
@@ -42,6 +92,27 @@ type MiddlewareFunc func(c *gin.Context)
 // GetUsers operation middleware
 func (siw *ServerInterfaceWrapper) GetUsers(c *gin.Context) {
 
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetUsersParams
+
+	// ------------- Optional query parameter "offset" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "offset", c.Request.URL.Query(), &params.Offset)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter offset: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "limit", c.Request.URL.Query(), &params.Limit)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter limit: %w", err), http.StatusBadRequest)
+		return
+	}
+
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
 		if c.IsAborted() {
@@ -49,7 +120,7 @@ func (siw *ServerInterfaceWrapper) GetUsers(c *gin.Context) {
 		}
 	}
 
-	siw.Handler.GetUsers(c)
+	siw.Handler.GetUsers(c, params)
 }
 
 // PostUsers operation middleware
@@ -75,7 +146,7 @@ func (siw *ServerInterfaceWrapper) DeleteUsersUserId(c *gin.Context) {
 
 	err = runtime.BindStyledParameter("simple", false, "userId", c.Param("userId"), &userId)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("invalid format for parameter userId: %w", err), http.StatusBadRequest)
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter userId: %w", err), http.StatusBadRequest)
 		return
 	}
 
@@ -99,7 +170,7 @@ func (siw *ServerInterfaceWrapper) GetUsersUserId(c *gin.Context) {
 
 	err = runtime.BindStyledParameter("simple", false, "userId", c.Param("userId"), &userId)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("invalid format for parameter userId: %w", err), http.StatusBadRequest)
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter userId: %w", err), http.StatusBadRequest)
 		return
 	}
 
@@ -123,7 +194,7 @@ func (siw *ServerInterfaceWrapper) PutUsersUserId(c *gin.Context) {
 
 	err = runtime.BindStyledParameter("simple", false, "userId", c.Param("userId"), &userId)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("invalid format for parameter userId: %w", err), http.StatusBadRequest)
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter userId: %w", err), http.StatusBadRequest)
 		return
 	}
 

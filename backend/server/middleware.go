@@ -16,10 +16,9 @@ func (s *Server) getErrorHandlerMiddleware() func(c *gin.Context) {
 		}
 
 		if len(c.Errors) > 0 {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "An error occurred"})
+			Respond(c, http.StatusBadRequest, nil, "An Error occurred.")
 			return
 		}
 
-		c.JSON(-1, gin.H{"error": "An error occurred"})
 	}
 }

@@ -18,7 +18,9 @@ func ErrorHandler(c *gin.Context, err error, statusCode int) {
 
 	if statusCode >= 500 {
 		c.JSON(statusCode, gin.H{"error": "Internal Server Error"})
+		return
 	} else {
 		c.JSON(statusCode, gin.H{"error": err.Error()})
+		return
 	}
 }

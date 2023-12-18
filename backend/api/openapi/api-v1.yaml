@@ -13,10 +13,10 @@ paths:
       summary: Get a list of users
       parameters:
         - in: query
-          name: page
+          name: offset
           schema:
             type: integer
-            default: 1
+            default: 0
           description: Page number of the users list
         - in: query
           name: limit

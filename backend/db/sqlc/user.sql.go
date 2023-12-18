@@ -118,6 +118,48 @@ func (q *Queries) GetUserForUpdate(ctx context.Context, id int32) (User, error) 
 	return i, err
 }
 
+const getUsers = `-- name: GetUsers :many
+SELECT id, username, first_name, last_name, email, password, status, role, created_at, updated_at FROM users
+LIMIT $2
+OFFSET $1
+`
+
+type GetUsersParams struct {
+	Offset int32 `json:"offset"`
+	Limit  int32 `json:"limit"`
+}
+
+func (q *Queries) GetUsers(ctx context.Context, arg GetUsersParams) ([]User, error) {
+	rows, err := q.db.Query(ctx, getUsers, arg.Offset, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []User{}
+	for rows.Next() {
+		var i User
+		if err := rows.Scan(
+			&i.ID,
+			&i.Username,
+			&i.FirstName,
+			&i.LastName,
+			&i.Email,
+			&i.Password,
+			&i.Status,
+			&i.Role,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateUser = `-- name: UpdateUser :exec
 UPDATE users
 SET
