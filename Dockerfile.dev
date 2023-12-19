@@ -1,0 +1,43 @@
+# Base image for Node
+FROM node:latest as node-base
+
+WORKDIR /app/frontend
+COPY frontend/open-source-erp/package.json frontend/open-source-erp/yarn.lock ./
+RUN yarn install
+COPY frontend/open-source-erp/ ./
+
+# Base image for Go
+FROM golang:1.21.4-alpine3.18
+
+# Install air for live reloading
+RUN go install github.com/cosmtrek/air@latest
+
+# Install Node.js and Yarn in the Go image
+RUN apk add --update nodejs npm yarn
+
+# Set up work directory
+WORKDIR /app
+
+# Copy go.mod and go.sum files and download dependencies
+COPY backend/go.mod backend/go.sum ./backend/
+WORKDIR /app/backend
+RUN go mod download
+RUN go mod vendor
+
+# Return to the app directory
+WORKDIR /app
+
+# Copy the backend code
+COPY backend/ ./backend/
+
+# Copy the frontend code (with node_modules) from the node-base stage
+COPY --from=node-base /app/frontend ./frontend/open-source-erp
+
+# Copy other necessary files from the root (like Makefile)
+COPY . .
+
+# Install make
+RUN apk add --no-cache make && make --version
+
+# Command to run on container start
+CMD ["make", "dev"]

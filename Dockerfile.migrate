@@ -1,0 +1,9 @@
+FROM migrate/migrate:v4.15.0
+
+WORKDIR /migrations
+
+COPY ./backend/db/migration .
+
+COPY ./migration.sh .
+
+ENTRYPOINT ["sh", "/migrations/migration.sh"]

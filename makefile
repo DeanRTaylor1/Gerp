@@ -43,4 +43,7 @@ axios:
 api-spec:
 	oapi-codegen -package server -generate types,gin backend/api/openapi/api-v1.yaml > api.gen.go
 
+prepare:
+	cp .env.example .env.development.example
+
 .PHONY: all frontend backend dev sqlc postgres createdb dropdb migrateup migrateup1 axios api-spec

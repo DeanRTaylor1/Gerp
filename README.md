@@ -4,6 +4,20 @@
 
 Welcome to our Open Source ERP Project! This project aims to create an ERP system with a minimal footprint, easy deployment, and low cost for end-users. Designed for non-technical users, it features a user-friendly interface and secure authentication, making it an ideal choice for small to medium-sized businesses.
 
+## Setup and contribution
+
+To set up your dev environment you simply need to copy .env.example to .env.development.example or run make prepare if you're on a UNIX based system.
+Next, you just need to run docker-compose up.
+This should build the frontend and backend in dev/watch mode. The application should rebuild on changes to either section of the project although the frontend will need to be refreshed.
+The database will also have migrations applied and will be listening on port 5432.
+Make sure that you have disconnected postgres in advance.
+
+You can access swagger at http://localhost:8080/api/v1/swagger/index.html
+
+## Contributing guidelines
+
+We are currently at the very early stages of the project, if you're reading this then contact @DeanRTaylor1 for updates on what to work on.
+
 ## Key Features
 
 ### User Authentication and Authorization
@@ -19,11 +33,11 @@ Welcome to our Open Source ERP Project! This project aims to create an ERP syste
 
 ### Features TBD
 
-<!-- - **Customer Relationship Management (CRM):** Manages contacts, sales pipeline, and customer interactions. -->
+- **Customer Relationship Management (CRM):** Manages contacts, sales pipeline, and customer interactions.
 
 ### Technology Stack
 
-- **Backend:** Written in Go.
+- **Backend:** Written in Go based upon openapi spec.
 - **Frontend:** A Single Page Application (SPA) that can be built and served from the server, framework TBD (React, Vue, Svelte or Angular).
 - **Containerization:** Should use Docker for consistent deployment and scaling.
 
