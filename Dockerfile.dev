@@ -1,31 +1,30 @@
-FROM node:latest as node-base
-
-WORKDIR /app/frontend
-COPY frontend/open-source-erp/package.json frontend/open-source-erp/yarn.lock ./
-RUN yarn install
-COPY frontend/open-source-erp/ ./
-
 FROM golang:1.21.4-alpine3.18
+
+RUN apk add --update --no-cache nodejs-current yarn
+RUN yarn global add typescript
 
 RUN go install github.com/cosmtrek/air@latest
 
-RUN apk add --update nodejs npm yarn
+RUN apk add --no-cache make
 
-WORKDIR /app
-
-COPY backend/go.mod backend/go.sum ./backend/
 WORKDIR /app/backend
+
+COPY backend/go.mod backend/go.sum ./
 RUN go mod download
 RUN go mod vendor
 
+COPY backend/ ./
+
+WORKDIR /app/frontend/open-source-erp
+
+COPY frontend/open-source-erp/package.json ./
+
+RUN yarn install
+
+COPY frontend/open-source-erp/ ./
+
 WORKDIR /app
 
-COPY backend/ ./backend/
-
-COPY --from=node-base /app/frontend ./frontend/open-source-erp
-
-COPY . .
-
-RUN apk add --no-cache make && make --version
+COPY makefile .
 
 CMD ["make", "dev"]

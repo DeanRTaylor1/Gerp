@@ -10,7 +10,9 @@ import (
 	db "github.com/deanrtaylor1/go-erp-template/db/sqlc"
 	"github.com/deanrtaylor1/go-erp-template/internal"
 	"github.com/gin-gonic/gin"
+
 	"github.com/jackc/pgx/v5/pgxpool"
+
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -43,6 +45,8 @@ var reactApp embed.FS
 func (s *Server) Start() {
 	s.registerStaticRoutes()
 	s.initializeSwagger()
+	zipper := NewZipper()
+	s.R.Use(GzipMiddleware(zipper))
 
 	mw := s.GetMiddleware()
 	opts := s.GetOptions(mw)
@@ -52,7 +56,10 @@ func (s *Server) Start() {
 }
 
 func (s *Server) GetMiddleware() []MiddlewareFunc {
-	return []MiddlewareFunc{s.getErrorHandlerMiddleware()}
+	mw := []MiddlewareFunc{}
+	mw = append(mw, s.getErrorHandlerMiddleware())
+
+	return mw
 }
 
 func (s *Server) initializeSwagger() {

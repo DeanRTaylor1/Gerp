@@ -22,7 +22,7 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - ./:/app
-      - /app/node_modules
+      - /app/frontend/open-source-erp/node_modules
       - /app/backend/vendor
     ports:
       - "8080:8080"

@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	db "github.com/deanrtaylor1/go-erp-template/db/sqlc"
+	"github.com/deanrtaylor1/go-erp-template/internal"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgtype"
 )
@@ -18,27 +19,28 @@ func (s *Server) GetUsers(c *gin.Context, params GetUsersParams) {
 		c.AbortWithError(http.StatusBadRequest, err)
 	}
 
-	Respond(c, http.StatusOK, users, "Success")
+	Respond(c, http.StatusOK, users, "Success", internal.ContentTypeJSON)
 }
 
 func (s *Server) PostUsers(c *gin.Context) {
 	fmt.Println("Received")
-	fmt.Println(c.Request.Body)
 	var user User
 	if err := c.ShouldBindJSON(&user); err != nil {
-		Respond(c, http.StatusBadRequest, err, "Invalid")
+		Respond(c, http.StatusBadRequest, err, "Invalid", internal.ContentTypeJSON)
 		return
 	}
 
 	dbUser, err := s.DB.CreateUser(c, user.ToCreateUserParams())
 
 	if err != nil {
-		Respond(c, http.StatusInternalServerError, err, "fail")
+		Respond(c, http.StatusInternalServerError, err, "fail", internal.ContentTypeJSON)
+		return
 	}
 
-	Respond(c, http.StatusCreated, dbUser, "success")
-
+	fmt.Println("Sending response")
+	Respond(c, http.StatusCreated, dbUser, "success", internal.ContentTypeJSON)
 }
+
 func (s *Server) DeleteUsersUserId(c *gin.Context, userId int) {
 	fmt.Println("TODO")
 }

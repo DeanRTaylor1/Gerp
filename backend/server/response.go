@@ -1,6 +1,10 @@
 package server
 
-import "github.com/gin-gonic/gin"
+import (
+	"fmt"
+
+	"github.com/gin-gonic/gin"
+)
 
 type ApiResponse struct {
 	Status  int         `json:"status"`
@@ -8,12 +12,13 @@ type ApiResponse struct {
 	Data    interface{} `json:"data,omitempty"`
 }
 
-func Respond(c *gin.Context, status int, data interface{}, message string) {
-	c.Header("Content-Type", "application/json")
+func Respond(c *gin.Context, status int, data interface{}, message string, cType string) {
+	fmt.Println(cType)
+	c.Header("Content-Type", cType)
 
 	c.JSON(status, ApiResponse{
 		Status:  status,
-		Message: message,
 		Data:    data,
+		Message: message,
 	})
 }
