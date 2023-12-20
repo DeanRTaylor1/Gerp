@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/deanrtaylor1/go-erp-template/api"
 	db "github.com/deanrtaylor1/go-erp-template/db/sqlc"
 	"github.com/deanrtaylor1/go-erp-template/internal"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-func (s *Server) GetUsers(c *gin.Context, params GetUsersParams) {
-	fmt.Printf("%d %d", *params.Limit, *params.Offset)
+func (s *Server) GetUsers(c *gin.Context, params api.GetUsersParams) {
 
 	users, err := s.DB.GetUsers(c, db.GetUsersParams{Offset: int32(*params.Offset), Limit: int32(*params.Limit)})
 
@@ -23,8 +23,7 @@ func (s *Server) GetUsers(c *gin.Context, params GetUsersParams) {
 }
 
 func (s *Server) PostUsers(c *gin.Context) {
-	fmt.Println("Received")
-	var user User
+	var user api.User
 	if err := c.ShouldBindJSON(&user); err != nil {
 		Respond(c, http.StatusBadRequest, err, "Invalid", internal.ContentTypeJSON)
 		return
@@ -37,8 +36,9 @@ func (s *Server) PostUsers(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("Sending response")
-	Respond(c, http.StatusCreated, dbUser, "success", internal.ContentTypeJSON)
+	response := toUserResponse(dbUser)
+
+	Respond(c, http.StatusCreated, response, "success", internal.ContentTypeJSON)
 }
 
 func (s *Server) DeleteUsersUserId(c *gin.Context, userId int) {
@@ -51,14 +51,19 @@ func (s *Server) PutUsersUserId(c *gin.Context, userId int) {
 	fmt.Println("TODO")
 }
 
-func (u *User) ToCreateUserParams() db.CreateUserParams {
-	return db.CreateUserParams{
-		Email:     string(u.Email),
-		Username:  u.Username,
-		FirstName: pgtype.Text{String: *u.FirstName},
-		LastName:  pgtype.Text{String: *u.LastName},
-		Password:  u.Password,
-		Role:      pgtype.Text{String: "user"},
-		Status:    "active",
-	}
+type userResponse struct {
+	ID        int32
+	Username  string
+	FirstName string
+	LastName  string
+	Email     string
+	Status    string
+	Role      string
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt pgtype.Timestamptz `json:"updated_at"`
+}
+
+func toUserResponse(user db.User) *userResponse {
+	return &userResponse{ID: user.ID, Username: user.Username, FirstName: user.FirstName.String, LastName: user.LastName.String, Email: user.Email, Role: string(user.Role), Status: string(user.Status)}
+
 }
