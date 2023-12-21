@@ -10,8 +10,8 @@ import (
 func (s *Server) GetOptions(mw []api.MiddlewareFunc) *api.GinServerOptions {
 	return &api.GinServerOptions{
 		BaseURL:      fmt.Sprintf("api/%s", s.Env.Api_Version),
-		Middlewares:  mw,
-		ErrorHandler: ErrorHandler,
+		Middlewares:  nil,
+		ErrorHandler: customErrorHandler,
 	}
 }
 

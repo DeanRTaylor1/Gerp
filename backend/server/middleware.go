@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"sync"
 
@@ -13,20 +14,36 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (s *Server) getErrorHandlerMiddleware() func(c *gin.Context) {
-	return func(c *gin.Context) {
-		c.Next()
+func customErrorHandler(c *gin.Context, err error, statusCode int) {
+	formattedError := "An error occurred"
 
-		for _, err := range c.Errors {
-			s.Logger.Error(fmt.Sprintf("Error: %s", err.Error()))
-		}
+	c.JSON(statusCode, gin.H{"error": formattedError})
+}
 
-		if len(c.Errors) > 0 {
-			Respond(c, http.StatusBadRequest, nil, "An Error occurred.", internal.ContentTypeJSON)
-			return
-		}
+func validationErrorHandler(c *gin.Context, message string, statusCode int) {
+	formattedError := "An error occurred"
 
+	isValidationError := strings.Contains(message, "openapi3filter.RequestError")
+	if isValidationError {
+		formattedError = formatOpenAPIError(message)
 	}
+	fmt.Println(isValidationError)
+
+	Respond(c, http.StatusBadRequest, nil, formattedError, internal.ContentTypeJSON)
+}
+
+func formatOpenAPIError(msg string) string {
+	re := regexp.MustCompile(`Error at "/?(.*?)": (.*)`)
+	matches := re.FindStringSubmatch(msg)
+
+	if len(matches) < 3 {
+		return "Invalid input"
+	}
+
+	// Remove leading "/" from the field name
+	field := strings.TrimPrefix(matches[1], "/")
+	message := matches[2]
+	return fmt.Sprintf("Invalid input for %s: %s", field, message)
 }
 
 type ZipperOptions struct {
