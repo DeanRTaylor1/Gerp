@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/deanrtaylor1/go-erp-template/api"
+	"github.com/deanrtaylor1/go-erp-template/auth"
 	db "github.com/deanrtaylor1/go-erp-template/db/sqlc"
 	"github.com/deanrtaylor1/go-erp-template/internal"
 	"github.com/gin-gonic/gin"
@@ -29,16 +30,21 @@ func (s *Server) PostUsers(c *gin.Context) {
 		return
 	}
 
-	dbUser, err := s.DB.CreateUser(c, user.ToCreateUserParams())
-
+	hashedPassword, err := auth.HashPassword(user.Password)
 	if err != nil {
-		Respond(c, http.StatusInternalServerError, err, "fail", internal.ContentTypeJSON)
+		Respond(c, http.StatusInternalServerError, err, "Something went wrong", internal.ContentTypeJSON)
+		return
+	}
+
+	dbUser, err := s.DB.CreateUser(c, user.ToCreateUserParams(hashedPassword))
+	if err != nil {
+		Respond(c, http.StatusInternalServerError, err, "Something went wrong", internal.ContentTypeJSON)
 		return
 	}
 
 	response := toUserResponse(dbUser)
 
-	Respond(c, http.StatusCreated, response, "success", internal.ContentTypeJSON)
+	Respond(c, http.StatusCreated, response, "Success", internal.ContentTypeJSON)
 }
 
 func (s *Server) DeleteUsersUserId(c *gin.Context, userId int) {
