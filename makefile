@@ -41,7 +41,7 @@ axios:
 	npx openapi-generator-cli generate -i ./backend/api/openapi/api-v1.yaml -g typescript-axios -o ./frontend/open-source-erp/src/axios
 
 api-spec:
-	oapi-codegen -package server -generate types,gin backend/api/openapi/api-v1.yaml > api.gen.go
+	oapi-codegen -package server -generate types,gin backend/api/openapi/api-v1.yaml > backend/api/api.gen.go
 
 prepare:
 	cp .env.example .env.development.example

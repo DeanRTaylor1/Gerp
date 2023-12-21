@@ -21,6 +21,7 @@ type EnvConfig struct {
 	Collection_Email   string
 	Collection_Contact string
 	Db_URL             string
+	Jwt_Secret         string
 }
 
 var Env EnvConfig
@@ -59,6 +60,7 @@ func LoadEnv() {
 		Collection_Email:   getEnv("COLLECTION_EMAIL", ""),
 		Collection_Contact: getEnv("COLLECTION_CONTACT", ""),
 		Db_URL:             getEnv("DB_URL", "postgres://root:secret@localhost:5432/erp_go?sslmode=disable"),
+		Jwt_Secret:         getEnvMandatory("JWT_SECRET"),
 	}
 }
 
@@ -66,6 +68,14 @@ func getEnv(key, fallback string) string {
 	value, exists := os.LookupEnv(key)
 	if !exists {
 		value = fallback
+	}
+	return value
+}
+
+func getEnvMandatory(key string) string {
+	value, exists := os.LookupEnv(key)
+	if !exists {
+		log.Fatalf("%s is required to run the server. Have you set env variables", key)
 	}
 	return value
 }

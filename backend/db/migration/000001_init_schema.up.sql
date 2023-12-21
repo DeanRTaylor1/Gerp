@@ -1,3 +1,7 @@
+CREATE TYPE user_status AS ENUM ('active', 'inactive');
+
+CREATE TYPE user_role AS ENUM('admin', 'user', 'manager');
+
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(255) NOT NULL,
@@ -5,8 +9,8 @@ CREATE TABLE users (
     last_name VARCHAR(255),
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    status VARCHAR(50) NOT NULL CHECK (status IN ('active', 'inactive')),
-    role VARCHAR(50) CHECK (role IN ('admin', 'user', 'manager')),
+    status user_status NOT NULL DEFAULT 'active',
+    role user_role NOT NULL DEFAULT 'user', 
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

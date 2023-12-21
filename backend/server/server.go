@@ -2,10 +2,12 @@ package server
 
 import (
 	"embed"
-	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
+	"github.com/deanrtaylor1/go-erp-template/api"
+	"github.com/deanrtaylor1/go-erp-template/auth"
 	"github.com/deanrtaylor1/go-erp-template/config"
 	db "github.com/deanrtaylor1/go-erp-template/db/sqlc"
 	"github.com/deanrtaylor1/go-erp-template/internal"
@@ -18,10 +20,11 @@ import (
 )
 
 type Server struct {
-	R      *gin.Engine
-	Env    config.EnvConfig
-	Logger *internal.Logger
-	DB     *db.Queries
+	R             *gin.Engine
+	Env           config.EnvConfig
+	Logger        *internal.Logger
+	DB            *db.Queries
+	Authenticator auth.Authenticator
 }
 
 func NewServer(r *gin.Engine, dbConn *pgxpool.Pool) *Server {
@@ -31,11 +34,16 @@ func NewServer(r *gin.Engine, dbConn *pgxpool.Pool) *Server {
 	if err != nil {
 		panic(err)
 	}
+	authenticator, err := auth.NewJWTAuthenticator(config.Env.Jwt_Secret)
+	if err != nil {
+		log.Fatal(err)
+	}
 	return &Server{
-		R:      gin.Default(),
-		Env:    config.Env,
-		Logger: Logger,
-		DB:     queries,
+		R:             gin.Default(),
+		Env:           config.Env,
+		Logger:        Logger,
+		DB:            queries,
+		Authenticator: authenticator,
 	}
 }
 
@@ -50,13 +58,13 @@ func (s *Server) Start() {
 
 	mw := s.GetMiddleware()
 	opts := s.GetOptions(mw)
-	RegisterHandlersWithOptions(s.R, s, *opts)
+	api.RegisterHandlersWithOptions(s.R, s, *opts)
 
 	s.R.Run()
 }
 
-func (s *Server) GetMiddleware() []MiddlewareFunc {
-	mw := []MiddlewareFunc{}
+func (s *Server) GetMiddleware() []api.MiddlewareFunc {
+	mw := []api.MiddlewareFunc{}
 	mw = append(mw, s.getErrorHandlerMiddleware())
 
 	return mw
@@ -102,8 +110,6 @@ var assetFiles embed.FS
 func ServeAssets(c *gin.Context) {
 	filepath := c.Param("filepath")
 	fullImagePath := "static/assets" + filepath
-
-	fmt.Println(fullImagePath)
 
 	file, err := assetFiles.ReadFile(fullImagePath)
 	if err != nil {

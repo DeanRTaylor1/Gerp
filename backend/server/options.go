@@ -3,11 +3,12 @@ package server
 import (
 	"fmt"
 
+	"github.com/deanrtaylor1/go-erp-template/api"
 	"github.com/gin-gonic/gin"
 )
 
-func (s *Server) GetOptions(mw []MiddlewareFunc) *GinServerOptions {
-	return &GinServerOptions{
+func (s *Server) GetOptions(mw []api.MiddlewareFunc) *api.GinServerOptions {
+	return &api.GinServerOptions{
 		BaseURL:      fmt.Sprintf("api/%s", s.Env.Api_Version),
 		Middlewares:  mw,
 		ErrorHandler: ErrorHandler,

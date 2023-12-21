@@ -31,8 +31,8 @@ type CreateUserParams struct {
 	LastName  pgtype.Text `json:"last_name"`
 	Email     string      `json:"email"`
 	Password  string      `json:"password"`
-	Status    string      `json:"status"`
-	Role      pgtype.Text `json:"role"`
+	Status    UserStatus  `json:"status"`
+	Role      UserRole    `json:"role"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -181,8 +181,8 @@ type UpdateUserParams struct {
 	LastName  pgtype.Text `json:"last_name"`
 	Email     string      `json:"email"`
 	Password  string      `json:"password"`
-	Status    string      `json:"status"`
-	Role      pgtype.Text `json:"role"`
+	Status    UserStatus  `json:"status"`
+	Role      UserRole    `json:"role"`
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
