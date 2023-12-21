@@ -105,18 +105,35 @@ components:
           format: int64
         username:
           type: string
+          example: "johnsmith1"
+          x-oapi-codegen-extra-tags:
+            validate: string
         firstName:
           type: string
+          example: "john"
+          x-oapi-codegen-extra-tags:
+            validate: string
         lastName:
           type: string
+          example: "smith"
+          x-oapi-codegen-extra-tags:
+            validate: string
         email:
           type: string
           format: email
+          example: "johnsmith@email.com"
+          x-oapi-codegen-extra-tags:
+            validate: email
         password:
           type: string
+          example: "johnsmith@email.com"
+          x-oapi-codegen-extra-tags:
+            validate: string
         status:
           type: string
           enum: [active, inactive]
+          x-oapi-codegen-extra-tags:
+            validate: oneOf=active,inactive
         role:
           type: string
           enum: [admin, user, manager]

@@ -2,8 +2,10 @@ package server
 
 import (
 	"embed"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/deanrtaylor1/go-erp-template/api"
@@ -15,6 +17,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	middleware "github.com/oapi-codegen/gin-middleware"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -53,10 +56,24 @@ var reactApp embed.FS
 func (s *Server) Start() {
 	s.registerStaticRoutes()
 	s.initializeSwagger()
+
 	zipper := NewZipper()
+
 	s.R.Use(GzipMiddleware(zipper))
 
 	mw := s.GetMiddleware()
+
+	swagger, err := api.GetSwagger()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error loading swagger spec\n: %s", err)
+		os.Exit(1)
+	}
+	validationOpts := &middleware.Options{
+		ErrorHandler: validationErrorHandler,
+	}
+
+	s.R.Use(middleware.OapiRequestValidatorWithOptions(swagger, validationOpts))
+
 	opts := s.GetOptions(mw)
 	api.RegisterHandlersWithOptions(s.R, s, *opts)
 
@@ -65,7 +82,7 @@ func (s *Server) Start() {
 
 func (s *Server) GetMiddleware() []api.MiddlewareFunc {
 	mw := []api.MiddlewareFunc{}
-	mw = append(mw, s.getErrorHandlerMiddleware())
+	// mw = append(mw, s.getErrorHandlerMiddleware())
 
 	return mw
 }
