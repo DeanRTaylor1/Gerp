@@ -26,84 +26,279 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 /**
  * 
  * @export
- * @interface User
+ * @interface ApiResponse
  */
-export interface User {
+export interface ApiResponse {
     /**
      * 
      * @type {number}
-     * @memberof User
+     * @memberof ApiResponse
      */
-    'id'?: number;
+    'status'?: number;
     /**
      * 
      * @type {string}
-     * @memberof User
+     * @memberof ApiResponse
      */
-    'username': string;
+    'message'?: string;
+    /**
+     * 
+     * @type {ApiResponseData}
+     * @memberof ApiResponse
+     */
+    'data'?: ApiResponseData | null;
+}
+/**
+ * @type ApiResponseData
+ * @export
+ */
+export type ApiResponseData = Array<object> | object;
+
+/**
+ * 
+ * @export
+ * @interface ErrorResponse
+ */
+export interface ErrorResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof ErrorResponse
+     */
+    'code'?: number;
     /**
      * 
      * @type {string}
-     * @memberof User
+     * @memberof ErrorResponse
      */
-    'firstName'?: string;
+    'message'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface LoginUserRequest
+ */
+export interface LoginUserRequest {
     /**
      * 
      * @type {string}
-     * @memberof User
-     */
-    'lastName'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
+     * @memberof LoginUserRequest
      */
     'email': string;
     /**
      * 
      * @type {string}
-     * @memberof User
+     * @memberof LoginUserRequest
+     */
+    'password': string;
+}
+/**
+ * 
+ * @export
+ * @interface MultiUsersResponse
+ */
+export interface MultiUsersResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof MultiUsersResponse
+     */
+    'status'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof MultiUsersResponse
+     */
+    'message'?: string;
+    /**
+     * 
+     * @type {Array<UserResponse>}
+     * @memberof MultiUsersResponse
+     */
+    'data'?: Array<UserResponse>;
+}
+/**
+ * 
+ * @export
+ * @interface SingleUserResponse
+ */
+export interface SingleUserResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof SingleUserResponse
+     */
+    'status'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof SingleUserResponse
+     */
+    'message'?: string;
+    /**
+     * 
+     * @type {UserResponse}
+     * @memberof SingleUserResponse
+     */
+    'data'?: UserResponse;
+}
+/**
+ * 
+ * @export
+ * @interface UserRequest
+ */
+export interface UserRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof UserRequest
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserRequest
+     */
+    'username': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserRequest
+     */
+    'firstName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserRequest
+     */
+    'lastName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserRequest
+     */
+    'email': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserRequest
      */
     'password': string;
     /**
      * 
      * @type {string}
-     * @memberof User
+     * @memberof UserRequest
      */
-    'status': UserStatusEnum;
+    'status': UserRequestStatusEnum;
     /**
      * 
      * @type {string}
-     * @memberof User
+     * @memberof UserRequest
      */
-    'role'?: UserRoleEnum;
+    'role'?: UserRequestRoleEnum;
     /**
      * 
      * @type {string}
-     * @memberof User
+     * @memberof UserRequest
      */
     'createdAt'?: string;
     /**
      * 
      * @type {string}
-     * @memberof User
+     * @memberof UserRequest
      */
     'updatedAt'?: string;
 }
 
-export const UserStatusEnum = {
+export const UserRequestStatusEnum = {
     Active: 'active',
     Inactive: 'inactive'
 } as const;
 
-export type UserStatusEnum = typeof UserStatusEnum[keyof typeof UserStatusEnum];
-export const UserRoleEnum = {
+export type UserRequestStatusEnum = typeof UserRequestStatusEnum[keyof typeof UserRequestStatusEnum];
+export const UserRequestRoleEnum = {
     Admin: 'admin',
     User: 'user',
     Manager: 'manager'
 } as const;
 
-export type UserRoleEnum = typeof UserRoleEnum[keyof typeof UserRoleEnum];
+export type UserRequestRoleEnum = typeof UserRequestRoleEnum[keyof typeof UserRequestRoleEnum];
+
+/**
+ * 
+ * @export
+ * @interface UserResponse
+ */
+export interface UserResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof UserResponse
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'username'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'firstName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'lastName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'email'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'status'?: UserResponseStatusEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'role'?: UserResponseRoleEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'createdAt'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'updatedAt'?: string;
+}
+
+export const UserResponseStatusEnum = {
+    Active: 'active',
+    Inactive: 'inactive'
+} as const;
+
+export type UserResponseStatusEnum = typeof UserResponseStatusEnum[keyof typeof UserResponseStatusEnum];
+export const UserResponseRoleEnum = {
+    Admin: 'admin',
+    User: 'user',
+    Manager: 'manager'
+} as const;
+
+export type UserResponseRoleEnum = typeof UserResponseRoleEnum[keyof typeof UserResponseRoleEnum];
 
 
 /**
@@ -114,13 +309,49 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     return {
         /**
          * 
+         * @summary Get auth token
+         * @param {LoginUserRequest} loginUserRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authPost: async (loginUserRequest: LoginUserRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'loginUserRequest' is not null or undefined
+            assertParamExists('authPost', 'loginUserRequest', loginUserRequest)
+            const localVarPath = `/auth`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(loginUserRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Get a list of users
-         * @param {number} [page] Page number of the users list
+         * @param {number} [offset] Page number of the users list
          * @param {number} [limit] Number of users per page
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        usersGet: async (page?: number, limit?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        usersGet: async (offset?: number, limit?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/users`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -133,8 +364,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            if (page !== undefined) {
-                localVarQueryParameter['page'] = page;
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
             }
 
             if (limit !== undefined) {
@@ -155,13 +386,13 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 
          * @summary Create a new user
-         * @param {User} user 
+         * @param {UserRequest} userRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        usersPost: async (user: User, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'user' is not null or undefined
-            assertParamExists('usersPost', 'user', user)
+        usersPost: async (userRequest: UserRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userRequest' is not null or undefined
+            assertParamExists('usersPost', 'userRequest', userRequest)
             const localVarPath = `/users`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -181,7 +412,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(user, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(userRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -260,15 +491,15 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * 
          * @summary Update a user
          * @param {number} userId 
-         * @param {User} user 
+         * @param {UserRequest} userRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        usersUserIdPut: async (userId: number, user: User, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        usersUserIdPut: async (userId: number, userRequest: UserRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userId' is not null or undefined
             assertParamExists('usersUserIdPut', 'userId', userId)
-            // verify required parameter 'user' is not null or undefined
-            assertParamExists('usersUserIdPut', 'user', user)
+            // verify required parameter 'userRequest' is not null or undefined
+            assertParamExists('usersUserIdPut', 'userRequest', userRequest)
             const localVarPath = `/users/{userId}`
                 .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -289,7 +520,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(user, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(userRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -308,14 +539,27 @@ export const DefaultApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary Get auth token
+         * @param {LoginUserRequest} loginUserRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authPost(loginUserRequest: LoginUserRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authPost(loginUserRequest, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['DefaultApi.authPost']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Get a list of users
-         * @param {number} [page] Page number of the users list
+         * @param {number} [offset] Page number of the users list
          * @param {number} [limit] Number of users per page
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async usersGet(page?: number, limit?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<User>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.usersGet(page, limit, options);
+        async usersGet(offset?: number, limit?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MultiUsersResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.usersGet(offset, limit, options);
             const index = configuration?.serverIndex ?? 0;
             const operationBasePath = operationServerMap['DefaultApi.usersGet']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
@@ -323,12 +567,12 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Create a new user
-         * @param {User} user 
+         * @param {UserRequest} userRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async usersPost(user: User, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.usersPost(user, options);
+        async usersPost(userRequest: UserRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SingleUserResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.usersPost(userRequest, options);
             const index = configuration?.serverIndex ?? 0;
             const operationBasePath = operationServerMap['DefaultApi.usersPost']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
@@ -340,7 +584,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async usersUserIdDelete(userId: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async usersUserIdDelete(userId: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.usersUserIdDelete(userId, options);
             const index = configuration?.serverIndex ?? 0;
             const operationBasePath = operationServerMap['DefaultApi.usersUserIdDelete']?.[index]?.url;
@@ -353,7 +597,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async usersUserIdGet(userId: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>> {
+        async usersUserIdGet(userId: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SingleUserResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.usersUserIdGet(userId, options);
             const index = configuration?.serverIndex ?? 0;
             const operationBasePath = operationServerMap['DefaultApi.usersUserIdGet']?.[index]?.url;
@@ -363,12 +607,12 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * 
          * @summary Update a user
          * @param {number} userId 
-         * @param {User} user 
+         * @param {UserRequest} userRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async usersUserIdPut(userId: number, user: User, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.usersUserIdPut(userId, user, options);
+        async usersUserIdPut(userId: number, userRequest: UserRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.usersUserIdPut(userId, userRequest, options);
             const index = configuration?.serverIndex ?? 0;
             const operationBasePath = operationServerMap['DefaultApi.usersUserIdPut']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
@@ -385,24 +629,34 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
     return {
         /**
          * 
+         * @summary Get auth token
+         * @param {LoginUserRequest} loginUserRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authPost(loginUserRequest: LoginUserRequest, options?: any): AxiosPromise<void> {
+            return localVarFp.authPost(loginUserRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Get a list of users
-         * @param {number} [page] Page number of the users list
+         * @param {number} [offset] Page number of the users list
          * @param {number} [limit] Number of users per page
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        usersGet(page?: number, limit?: number, options?: any): AxiosPromise<Array<User>> {
-            return localVarFp.usersGet(page, limit, options).then((request) => request(axios, basePath));
+        usersGet(offset?: number, limit?: number, options?: any): AxiosPromise<MultiUsersResponse> {
+            return localVarFp.usersGet(offset, limit, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Create a new user
-         * @param {User} user 
+         * @param {UserRequest} userRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        usersPost(user: User, options?: any): AxiosPromise<void> {
-            return localVarFp.usersPost(user, options).then((request) => request(axios, basePath));
+        usersPost(userRequest: UserRequest, options?: any): AxiosPromise<SingleUserResponse> {
+            return localVarFp.usersPost(userRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -411,7 +665,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        usersUserIdDelete(userId: number, options?: any): AxiosPromise<void> {
+        usersUserIdDelete(userId: number, options?: any): AxiosPromise<ApiResponse> {
             return localVarFp.usersUserIdDelete(userId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -421,19 +675,19 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        usersUserIdGet(userId: number, options?: any): AxiosPromise<User> {
+        usersUserIdGet(userId: number, options?: any): AxiosPromise<SingleUserResponse> {
             return localVarFp.usersUserIdGet(userId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Update a user
          * @param {number} userId 
-         * @param {User} user 
+         * @param {UserRequest} userRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        usersUserIdPut(userId: number, user: User, options?: any): AxiosPromise<void> {
-            return localVarFp.usersUserIdPut(userId, user, options).then((request) => request(axios, basePath));
+        usersUserIdPut(userId: number, userRequest: UserRequest, options?: any): AxiosPromise<ApiResponse> {
+            return localVarFp.usersUserIdPut(userId, userRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -447,27 +701,39 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
 export class DefaultApi extends BaseAPI {
     /**
      * 
+     * @summary Get auth token
+     * @param {LoginUserRequest} loginUserRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public authPost(loginUserRequest: LoginUserRequest, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).authPost(loginUserRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary Get a list of users
-     * @param {number} [page] Page number of the users list
+     * @param {number} [offset] Page number of the users list
      * @param {number} [limit] Number of users per page
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public usersGet(page?: number, limit?: number, options?: AxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).usersGet(page, limit, options).then((request) => request(this.axios, this.basePath));
+    public usersGet(offset?: number, limit?: number, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).usersGet(offset, limit, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @summary Create a new user
-     * @param {User} user 
+     * @param {UserRequest} userRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public usersPost(user: User, options?: AxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).usersPost(user, options).then((request) => request(this.axios, this.basePath));
+    public usersPost(userRequest: UserRequest, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).usersPost(userRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -498,13 +764,13 @@ export class DefaultApi extends BaseAPI {
      * 
      * @summary Update a user
      * @param {number} userId 
-     * @param {User} user 
+     * @param {UserRequest} userRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public usersUserIdPut(userId: number, user: User, options?: AxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).usersUserIdPut(userId, user, options).then((request) => request(this.axios, this.basePath));
+    public usersUserIdPut(userId: number, userRequest: UserRequest, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).usersUserIdPut(userId, userRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

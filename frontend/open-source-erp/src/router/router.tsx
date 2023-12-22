@@ -1,4 +1,3 @@
-// src/router/Router.js
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { pages } from './pages';
 

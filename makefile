@@ -41,9 +41,24 @@ axios:
 	npx openapi-generator-cli generate -i ./backend/api/openapi/api-v1.yaml -g typescript-axios -o ./frontend/open-source-erp/src/axios
 
 api-spec:
-	oapi-codegen -package server -generate types,gin backend/api/openapi/api-v1.yaml > backend/api/api.gen.go
+	oapi-codegen -package api -generate types,gin,spec backend/api/openapi/api-v1.yaml > backend/api/api.gen.go
 
 prepare:
-	cp .env.example .env.development.example
+	make env
 
-.PHONY: all frontend backend dev sqlc postgres createdb dropdb migrateup migrateup1 axios api-spec
+gen-tools:
+	make oapi-codegen; make install-openapigen-npm;
+
+env:
+	cp backend/.env.example backend/.env.development.local && cp backend/.env.example backend/.env.test.local
+
+oapi-codegen:
+	go install github.com/deepmap/oapi-codegen/v2/cmd/oapi-codegen@latest
+
+install-openapigen-npm:
+	npm install @openapitools/openapi-generator-cli -g
+
+run-dev:
+	docker-compose up --build
+
+.PHONY: all frontend backend dev sqlc postgres createdb dropdb migrateup migrateup1 axios api-spec install-openapigen-npm rn-dev env oapi-codegen prepare gen-tools

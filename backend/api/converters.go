@@ -5,7 +5,7 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-func (u *User) ToCreateUserParams(hashedPassword string) db.CreateUserParams {
+func (u *UserRequest) ToCreateUserParams(hashedPassword string) db.CreateUserParams {
 	return db.CreateUserParams{
 		Email:     string(u.Email),
 		Username:  u.Username,

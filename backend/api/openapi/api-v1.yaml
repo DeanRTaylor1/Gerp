@@ -8,6 +8,18 @@ servers:
   - url: http://localhost:8080/api/v1
     description: dev url
 paths:
+  /auth:
+    post:
+      summary: Get auth token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginUserRequest"
+      responses:
+        "201":
+          description: Token Created
   /users:
     get:
       summary: Get a list of users
@@ -30,9 +42,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/User"
+                $ref: "#/components/schemas/MultiUsersResponse"
     post:
       summary: Create a new user
       requestBody:
@@ -40,11 +50,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              $ref: "#/components/schemas/UserRequest"
       responses:
         "201":
           description: New user created
-
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SingleUserResponse"
+        "400":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /users/{userId}:
     get:
       summary: Get a user by ID
@@ -60,7 +79,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: "#/components/schemas/SingleUserResponse"
     put:
       summary: Update a user
       parameters:
@@ -74,10 +93,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              $ref: "#/components/schemas/UserRequest"
       responses:
         "200":
           description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+
     delete:
       summary: Delete a user
       parameters:
@@ -89,10 +113,30 @@ paths:
       responses:
         "204":
           description: User deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
 
 components:
   schemas:
-    User:
+    LoginUserRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          example: "john.smith@email.com"
+          x-oapi-codegen-extra-tags:
+            validate: email
+        password:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: "min=8,matches=^[a-zA-Z0-9]*$"
+
+    UserRequest:
       type: object
       required:
         - username
@@ -143,3 +187,77 @@ components:
         updatedAt:
           type: string
           format: date-time
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+          example: "johnsmith1"
+        firstName:
+          type: string
+          example: "john"
+        lastName:
+          type: string
+          example: "smith"
+        email:
+          type: string
+          format: email
+          example: "johnsmith@email.com"
+        status:
+          type: string
+          enum: [active, inactive]
+        role:
+          type: string
+          enum: [admin, user, manager]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    ApiResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          format: int32
+        message:
+          type: string
+        data:
+          oneOf:
+            - type: object
+            - type: array
+              items:
+                type: object
+          nullable: true
+    SingleUserResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+        message:
+          type: string
+        data:
+          $ref: "#/components/schemas/UserResponse"
+    MultiUsersResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserResponse"
