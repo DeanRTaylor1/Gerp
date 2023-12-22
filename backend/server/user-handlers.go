@@ -3,13 +3,14 @@ package server
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/deanrtaylor1/go-erp-template/api"
 	"github.com/deanrtaylor1/go-erp-template/auth"
 	db "github.com/deanrtaylor1/go-erp-template/db/sqlc"
 	"github.com/deanrtaylor1/go-erp-template/internal"
 	"github.com/gin-gonic/gin"
-	"github.com/jackc/pgx/v5/pgtype"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
 func (s *Server) GetUsers(c *gin.Context, params api.GetUsersParams) {
@@ -57,19 +58,38 @@ func (s *Server) PutUsersUserId(c *gin.Context, userId int) {
 	fmt.Println("TODO")
 }
 
-type userResponse struct {
-	ID        int32
-	Username  string
-	FirstName string
-	LastName  string
-	Email     string
-	Status    string
-	Role      string
-	CreatedAt pgtype.Timestamptz `json:"created_at"`
-	UpdatedAt pgtype.Timestamptz `json:"updated_at"`
-}
+func toUserResponse(user db.User) *api.UserResponse {
+	var createdAt, updatedAt *time.Time
+	var firstName, lastName *string
+	var email openapi_types.Email
+	userId := int64(user.ID)
 
-func toUserResponse(user db.User) *userResponse {
-	return &userResponse{ID: user.ID, Username: user.Username, FirstName: user.FirstName.String, LastName: user.LastName.String, Email: user.Email, Role: string(user.Role), Status: string(user.Status)}
+	username := user.Username
+	if user.CreatedAt.Valid {
+		createdAt = &user.CreatedAt.Time
+	}
+	if user.UpdatedAt.Valid {
+		updatedAt = &user.UpdatedAt.Time
+	}
 
+	if user.FirstName.Valid {
+		firstName = &user.FirstName.String
+	}
+	if user.LastName.Valid {
+		lastName = &user.LastName.String
+	}
+
+	email = openapi_types.Email(user.Email)
+
+	return &api.UserResponse{
+		Id:        &userId,
+		Username:  &username,
+		FirstName: firstName,
+		LastName:  lastName,
+		Email:     &email,
+		Role:      (*api.UserResponseRole)(&user.Role),
+		Status:    (*api.UserResponseStatus)(&user.Status),
+		CreatedAt: createdAt,
+		UpdatedAt: updatedAt,
+	}
 }

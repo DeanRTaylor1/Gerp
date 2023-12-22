@@ -21,8 +21,8 @@ func NewJWTAuthenticator(secretKey string) (Authenticator, error) {
 	return &JWTAuthenticator{secretKey: secretKey}, nil
 }
 
-func (a *JWTAuthenticator) CreateToken(username string, duration time.Duration) (string, error) {
-	payload, err := NewPayload(username, duration)
+func (a *JWTAuthenticator) CreateToken(email string, duration time.Duration) (string, error) {
+	payload, err := NewPayload(email, duration)
 	if err != nil {
 		return "", err
 	}

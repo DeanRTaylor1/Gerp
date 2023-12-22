@@ -20,6 +20,10 @@ paths:
       responses:
         "201":
           description: Token Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginUserResponse"
   /users:
     get:
       summary: Get a list of users
@@ -261,3 +265,21 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/UserResponse"
+    AccessTokenResponse:
+      type: object
+      required:
+        - access_token
+      properties:
+        access_token:
+          type: string
+    LoginUserResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+        message:
+          type: string
+        data:
+          type: object
+          items:
+            $ref: "#/components/schemas/AccessTokenResponse"

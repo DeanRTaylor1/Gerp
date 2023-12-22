@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	"github.com/joho/godotenv"
 )
@@ -22,6 +23,7 @@ type EnvConfig struct {
 	Collection_Contact string
 	Db_URL             string
 	Jwt_Secret         string
+	Jwt_Duration       int
 }
 
 var Env EnvConfig
@@ -61,6 +63,7 @@ func LoadEnv() {
 		Collection_Contact: getEnv("COLLECTION_CONTACT", ""),
 		Db_URL:             getEnv("DB_URL", "postgres://root:secret@localhost:5432/erp_go?sslmode=disable"),
 		Jwt_Secret:         getEnvMandatory("JWT_SECRET"),
+		Jwt_Duration:       getEnvAsInt("JWT_DURATION", 24),
 	}
 }
 
@@ -72,6 +75,19 @@ func getEnv(key, fallback string) string {
 	return value
 }
 
+func getEnvAsInt(key string, fallback int) int {
+	valueStr, exists := os.LookupEnv(key)
+	if !exists {
+		return fallback
+	}
+
+	value, err := strconv.Atoi(valueStr)
+	if err != nil {
+		log.Panicf("Environment variable %s must be an integer, got: %s", key, valueStr)
+	}
+
+	return value
+}
 func getEnvMandatory(key string) string {
 	value, exists := os.LookupEnv(key)
 	if !exists {

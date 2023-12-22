@@ -26,6 +26,19 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 /**
  * 
  * @export
+ * @interface AccessTokenResponse
+ */
+export interface AccessTokenResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof AccessTokenResponse
+     */
+    'access_token': string;
+}
+/**
+ * 
+ * @export
  * @interface ApiResponse
  */
 export interface ApiResponse {
@@ -91,6 +104,31 @@ export interface LoginUserRequest {
      * @memberof LoginUserRequest
      */
     'password': string;
+}
+/**
+ * 
+ * @export
+ * @interface LoginUserResponse
+ */
+export interface LoginUserResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof LoginUserResponse
+     */
+    'status'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof LoginUserResponse
+     */
+    'message'?: string;
+    /**
+     * 
+     * @type {Array<AccessTokenResponse>}
+     * @memberof LoginUserResponse
+     */
+    'data'?: Array<AccessTokenResponse>;
 }
 /**
  * 
