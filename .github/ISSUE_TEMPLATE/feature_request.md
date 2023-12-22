@@ -1,3 +1,12 @@
+---
+name: Feature request
+about: Suggest an idea for this project
+title: "[feature]"
+labels: ''
+assignees: ''
+
+---
+
 ### User Story
 As a [type of user], I want [an action] so that [benefit/value].
 
