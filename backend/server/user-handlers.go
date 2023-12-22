@@ -55,7 +55,23 @@ func (s *Server) GetUsersUserId(c *gin.Context, userId int) {
 	fmt.Println("TODO")
 }
 func (s *Server) PutUsersUserId(c *gin.Context, userId int) {
-	fmt.Println("TODO")
+	// user, exists := c.Get("user")
+	// fmt.Printf("%v", user)
+	// if !exists {
+	// 	fmt.Println("User not found in context")
+	// 	return
+	// }
+
+	// fmt.Printf("Retrieved from context: Type=%T, Value=%+v\n", user, user)
+
+	// userData, ok := user.(db.User)
+	// if !ok {
+	// 	fmt.Println("User data found in context, but type assertion failed")
+	// 	return
+	// }
+
+	// fmt.Printf("Successfully retrieved user: %+v\n", userData)
+	Respond(c, 200, nil, "success", internal.ContentTypeJSON)
 }
 
 func toUserResponse(user db.User) *api.UserResponse {

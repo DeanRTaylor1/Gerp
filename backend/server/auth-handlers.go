@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -18,7 +17,6 @@ func (s *Server) PostAuth(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(loginProps.Email)
 	dbUser, err := s.DB.GetUserByEmail(c, loginProps.Email)
 	if err != nil {
 		Respond(c, http.StatusUnauthorized, nil, "Unauthorized", internal.ContentTypeJSON)
