@@ -24,7 +24,7 @@ func (s *Server) GetUsers(c *gin.Context, params api.GetUsersParams) {
 }
 
 func (s *Server) PostUsers(c *gin.Context) {
-	var user api.User
+	var user api.UserRequest
 	if err := c.ShouldBindJSON(&user); err != nil {
 		Respond(c, http.StatusBadRequest, err, "Invalid", internal.ContentTypeJSON)
 		return
