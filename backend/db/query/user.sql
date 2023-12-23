@@ -5,10 +5,12 @@ INSERT INTO users (
   last_name,
   email,
   password,
+  avatar,
+  last_login,
   status,
   role
 ) VALUES (
-  $1, $2, $3, $4, $5, $6, $7
+  $1, $2, $3, $4, $5, $6, $7, $8, $9
 ) RETURNING *;
 
 -- name: GetUser :one
@@ -39,9 +41,15 @@ SET
   password = $6,
   status = $7,
   role = $8,
+  avatar = $9,
   updated_at = NOW()
 WHERE id = $1;
 
+-- name: UpdateLastLogin :exec
+UPDATE users
+SET
+  last_login = NOW()
+WHERE id = $1;
 
 
 -- name: DeleteUser :exec

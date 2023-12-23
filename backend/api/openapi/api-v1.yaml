@@ -4,6 +4,7 @@ info:
   description: Api schema for ERP backend.
   version: 0.0.1
 tags:
+  - name: Backend
   - name: Authentication
     description: Operations related to user authentication
   - name: User Management
