@@ -27,8 +27,13 @@ func validationErrorHandler(c *gin.Context, message string, statusCode int) {
 	if isValidationError {
 		formattedError = formatOpenAPIError(message)
 	}
-	fmt.Println(isValidationError)
 
+	if isAuthError := strings.Contains(message, "authorization header is required"); isAuthError == true {
+		formattedError = "Unauthorized"
+		Respond(c, http.StatusUnauthorized, nil, formattedError, internal.ContentTypeJSON)
+		return
+	}
+	fmt.Printf("%v", message)
 	Respond(c, http.StatusBadRequest, nil, formattedError, internal.ContentTypeJSON)
 }
 

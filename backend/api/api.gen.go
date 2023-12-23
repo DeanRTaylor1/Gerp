@@ -21,6 +21,10 @@ import (
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
+const (
+	BearerAuthScopes = "bearerAuth.Scopes"
+)
+
 // Defines values for UserRequestRole.
 const (
 	UserRequestRoleAdmin   UserRequestRole = "admin"
@@ -46,6 +50,11 @@ const (
 	UserResponseStatusActive   UserResponseStatus = "active"
 	UserResponseStatusInactive UserResponseStatus = "inactive"
 )
+
+// AccessTokenResponse defines model for AccessTokenResponse.
+type AccessTokenResponse struct {
+	AccessToken string `json:"access_token"`
+}
 
 // ApiResponse defines model for ApiResponse.
 type ApiResponse struct {
@@ -77,6 +86,13 @@ type LoginUserRequest struct {
 	Password string `json:"password" validate:"min=8,matches=^[a-zA-Z0-9]*$"`
 }
 
+// LoginUserResponse defines model for LoginUserResponse.
+type LoginUserResponse struct {
+	Data    *map[string]interface{} `json:"data,omitempty"`
+	Message *string                 `json:"message,omitempty"`
+	Status  *int                    `json:"status,omitempty"`
+}
+
 // MultiUsersResponse defines model for MultiUsersResponse.
 type MultiUsersResponse struct {
 	Data    *[]UserResponse `json:"data,omitempty"`
@@ -93,15 +109,12 @@ type SingleUserResponse struct {
 
 // UserRequest defines model for UserRequest.
 type UserRequest struct {
-	CreatedAt *time.Time          `json:"createdAt,omitempty"`
 	Email     openapi_types.Email `json:"email" validate:"email"`
 	FirstName *string             `json:"firstName,omitempty" validate:"string"`
-	Id        *int64              `json:"id,omitempty"`
 	LastName  *string             `json:"lastName,omitempty" validate:"string"`
 	Password  string              `json:"password" validate:"string"`
 	Role      *UserRequestRole    `json:"role,omitempty"`
 	Status    UserRequestStatus   `json:"status" validate:"oneOf=active,inactive"`
-	UpdatedAt *time.Time          `json:"updatedAt,omitempty"`
 	Username  string              `json:"username" validate:"string"`
 }
 
@@ -259,6 +272,8 @@ func (siw *ServerInterfaceWrapper) GetUsers(c *gin.Context) {
 
 	var err error
 
+	c.Set(BearerAuthScopes, []string{})
+
 	// Parameter object where we will unmarshal all parameters from the context
 	var params GetUsersParams
 
@@ -411,24 +426,26 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
+	"H4sIAAAAAAAC/8xYbW/bNhD+K8StnwbZVtpgyAQEmLd2RYYtDZJmAxZ4Ay2dbaYSqZAnN17g/z7w6FdJ",
+	"SZzWTfslliXqXp57nrtz7iA1RWk0anKQ3IFLJ1hIvuynKTr33nxAfY6uNNqhv11aU6IlhXxI8qF/yZ/y",
+	"32lWIiTgyCo9hvk8Aos3lbKYQXK1fXoQLU+b4TWmBPMI+qW631cmSfpPXeW5HOYICdkKIzAa340gubpr",
+	"2LsDRVi4jcDWrhY3pLVyBvPBPIICnZNjbEkjAkeSKjY0MraQBAkoTa9ewsqQ0oRjtJxzw9kba429P7PU",
+	"ZLiT7YeCbPP7uxkrfenQnuNNhY6arrGQKueLW1mUHlS4NhPddYWiyU/8tJuaYh3Lwl0Etx0jS9XxsY9R",
+	"d/CWrOyQHLPZqcxVJsm/EDz48Erp3Edjs2bwu1srlD4+igpJ6QTd8T9XsvNfv/N33Plx8P0LmNcJF3xv",
+	"eB48DNJj1FvR6YXFESTwXW8tn95CO7024bQVZze+7UKvP6qclM/A7SmFLTQaYtln6BdKj3PcDf2nRLy/",
+	"CD9FPk31rKS9pOTny2mkrKNTWWDT/2fY32gnuWyzz7ntx8FmQ3gMwD24syYPueiq4HGUFcpDVTm0EEEh",
+	"tfQsGEQPUWb1ckpqihCB0ovLwacHySPsONiJVgZ9zD423VpjhuhgH8jUmubKZdTsnyskBvcq5d4hZ1ES",
+	"Zn3amnQ+lg4p9tZAfV/qeqJY5hGorD6PfzhsncdP0chXoKBnUJk9Ffcnk66lcfqIMa2sotmF79GBBEOU",
+	"Fm2/osn626/LmH77670nGJ+GZPF07WtCVAa2Kj0yPBjQpVaVpIyGxC+PIowDMTJWvDk/E0OZfkCddb0R",
+	"RZzFuxK1uDCVTZGP9M9OIIIpWhesxN24e+BBMCVqWSpI4FU37sasAppwFj25SKA0YSh4nksfxkkGCZwZ",
+	"R5xi0BU6+tlks7DoaULNr8iyzFXKL/WundHr7fuxUddY6moK9lsx3whK5Ihfxgdfwv9y3voAtovB64/4",
+	"JWg+sKEqCmlnkMBbJOERFOGHgH/Y85TjSMfYguhbJF5vuAhWFkh8+qpOgTM5RqGrYohWmJGgCQo2LHLl",
+	"iIUCCdxUaGcQQWA4mNHIIS2JJwOvRrLKCZK4bb2vOz1d+Qu+SrSi9LtHu79cFeoedwdt/gaNUsZ7K2XL",
+	"4thSyz7Dt0pwS9tchE1VXw18xLVi1w1EDyhnWegvIZ2vqJqWRbcF6lP8yBiJdKmcCA73WPDtH6ItAfwZ",
+	"9gNltOCzNekGQQsp9CLQDfX27vzHSTYPnM6RsFnh13yfa3zJp5uSZtH4XrvWTLU8ul2vTRHtoJvDvcG4",
+	"+X+KFhB9ZiIgUO99IX8hF+BFD/e7Z4cofma+94Xjc2su1TsHq2E4EyevuW1UbV2jej60voGeFD8rjRfr",
+	"Y602l3x3ReMwEey0fSpnOBWV9Wu5/xsWuaTXy00q84lxlBzFR3FPlqo3PYD5YP5/AAAA//8iF3oElRQA",
+	"AA==",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

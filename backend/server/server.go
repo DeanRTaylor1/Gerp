@@ -13,6 +13,7 @@ import (
 	"github.com/deanrtaylor1/go-erp-template/config"
 	db "github.com/deanrtaylor1/go-erp-template/db/sqlc"
 	"github.com/deanrtaylor1/go-erp-template/internal"
+	"github.com/getkin/kin-openapi/openapi3filter"
 	"github.com/gin-gonic/gin"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -68,8 +69,13 @@ func (s *Server) Start() {
 		fmt.Fprintf(os.Stderr, "Error loading swagger spec\n: %s", err)
 		os.Exit(1)
 	}
+	openAPIAuthFunc := auth.OpenAPIAuthFunc(s.Authenticator, s.DB)
+
 	validationOpts := &middleware.Options{
 		ErrorHandler: validationErrorHandler,
+		Options: openapi3filter.Options{
+			AuthenticationFunc: openAPIAuthFunc,
+		},
 	}
 
 	s.R.Use(middleware.OapiRequestValidatorWithOptions(swagger, validationOpts))

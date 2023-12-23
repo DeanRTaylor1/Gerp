@@ -1,9 +1,10 @@
 package auth
 
-import "time"
+import (
+	"time"
+)
 
 type Authenticator interface {
-	CreateToken(username string, duration time.Duration) (string, error)
-
+	CreateToken(email string, duration time.Duration) (string, error)
 	VerifyToken(token string) (*Payload, error)
 }
