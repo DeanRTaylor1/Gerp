@@ -3,6 +3,11 @@ info:
   title: Open Source ERP API
   description: Api schema for ERP backend.
   version: 0.0.1
+tags:
+  - name: Authentication
+    description: Operations related to user authentication
+  - name: User Management
+    description: Endpoints for managing user accounts
 
 servers:
   - url: http://localhost:8080/api/v1
@@ -10,6 +15,8 @@ servers:
 paths:
   /auth:
     post:
+      tags:
+        - Authentication
       summary: Get auth token
       requestBody:
         required: true
@@ -24,11 +31,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/LoginUserResponse"
+        "401":
+          description: Invalid password.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthorizationErrorResponse"
+        "400":
+          description: Invalid password.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestErrorResponse"
   /users:
     get:
+      tags:
+        - User Management
       summary: Get a list of users
       security:
-        - bearerAuth: []
+        - bearerAuth: ["admin"]
       parameters:
         - in: query
           name: offset
@@ -49,7 +70,21 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MultiUsersResponse"
+        "401":
+          description: Invalid token/user not authenticated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthorizationErrorResponse"
+        "400":
+          description: Bad Request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestErrorResponse"
     post:
+      tags:
+        - User Management
       summary: Create a new user
       requestBody:
         required: true
@@ -69,9 +104,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/BadRequestErrorResponse"
   /users/{userId}:
     get:
+      tags:
+        - User Management
       summary: Get a user by ID
       parameters:
         - name: userId
@@ -87,6 +124,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/SingleUserResponse"
     put:
+      tags:
+        - User Management
       summary: Update a user
       parameters:
         - name: userId
@@ -109,6 +148,8 @@ paths:
                 $ref: "#/components/schemas/ApiResponse"
 
     delete:
+      tags:
+        - User Management
       summary: Delete a user
       parameters:
         - name: userId
@@ -144,6 +185,7 @@ components:
             validate: email
         password:
           type: string
+          example: "john.smith@email.com"
           x-oapi-codegen-extra-tags:
             validate: "min=8,matches=^[a-zA-Z0-9]*$"
 
@@ -173,12 +215,12 @@ components:
         email:
           type: string
           format: email
-          example: "johnsmith@email.com"
+          example: "john.smith@email.com"
           x-oapi-codegen-extra-tags:
             validate: email
         password:
           type: string
-          example: "johnsmith@email.com"
+          example: "john.smith@email.com"
           x-oapi-codegen-extra-tags:
             validate: string
         status:
@@ -220,14 +262,46 @@ components:
         updatedAt:
           type: string
           format: date-time
+    BadRequestErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 400
+          format: int32
+        message:
+          type: string
+          example: "bad request"
+    ServerSideErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 500
+          format: int32
+        message:
+          type: string
+          example: "something went wrong"
+    AuthorizationErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 401
+          format: int32
+        message:
+          type: string
+          example: "Unauthorized"
     ErrorResponse:
       type: object
       properties:
         code:
           type: integer
+          example: 400
           format: int32
         message:
           type: string
+          example: "bad request."
     ApiResponse:
       type: object
       properties:
@@ -248,8 +322,10 @@ components:
       properties:
         status:
           type: integer
+          example: 200
         message:
           type: string
+          example: success
         data:
           $ref: "#/components/schemas/UserResponse"
     MultiUsersResponse:
@@ -257,8 +333,10 @@ components:
       properties:
         status:
           type: integer
+          example: 200
         message:
           type: string
+          example: success
         data:
           type: array
           items:
@@ -270,13 +348,16 @@ components:
       properties:
         access_token:
           type: string
+          example: jwttoken
     LoginUserResponse:
       type: object
       properties:
         status:
           type: integer
+          example: 200
         message:
           type: string
+          example: success
         data:
           type: object
           items:

@@ -31,7 +31,7 @@ func (s *Server) PostAuth(c *gin.Context) {
 
 	duration := time.Duration(s.Env.Jwt_Duration) * time.Hour
 
-	accesToken, err := s.Authenticator.CreateToken(dbUser.Email, duration)
+	accesToken, err := s.Authenticator.CreateToken(dbUser.Email, dbUser.Role, duration)
 	if err != nil {
 		Respond(c, http.StatusInternalServerError, nil, "Something went wrong.", internal.ContentTypeJSON)
 		return
