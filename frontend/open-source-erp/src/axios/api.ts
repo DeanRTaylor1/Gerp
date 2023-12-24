@@ -70,6 +70,44 @@ export type ApiResponseData = Array<object> | object;
 /**
  * 
  * @export
+ * @interface AuthorizationErrorResponse
+ */
+export interface AuthorizationErrorResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof AuthorizationErrorResponse
+     */
+    'code'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof AuthorizationErrorResponse
+     */
+    'message'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface BadRequestErrorResponse
+ */
+export interface BadRequestErrorResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof BadRequestErrorResponse
+     */
+    'code'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof BadRequestErrorResponse
+     */
+    'message'?: string;
+}
+/**
+ * 
+ * @export
  * @interface ErrorResponse
  */
 export interface ErrorResponse {
@@ -158,6 +196,25 @@ export interface MultiUsersResponse {
 /**
  * 
  * @export
+ * @interface ServerSideErrorResponse
+ */
+export interface ServerSideErrorResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof ServerSideErrorResponse
+     */
+    'code'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ServerSideErrorResponse
+     */
+    'message'?: string;
+}
+/**
+ * 
+ * @export
  * @interface SingleUserResponse
  */
 export interface SingleUserResponse {
@@ -186,12 +243,6 @@ export interface SingleUserResponse {
  * @interface UserRequest
  */
 export interface UserRequest {
-    /**
-     * 
-     * @type {number}
-     * @memberof UserRequest
-     */
-    'id'?: number;
     /**
      * 
      * @type {string}
@@ -234,18 +285,6 @@ export interface UserRequest {
      * @memberof UserRequest
      */
     'role'?: UserRequestRoleEnum;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserRequest
-     */
-    'createdAt'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserRequest
-     */
-    'updatedAt'?: string;
 }
 
 export const UserRequestStatusEnum = {
@@ -340,10 +379,10 @@ export type UserResponseRoleEnum = typeof UserResponseRoleEnum[keyof typeof User
 
 
 /**
- * DefaultApi - axios parameter creator
+ * AuthenticationApi - axios parameter creator
  * @export
  */
-export const DefaultApiAxiosParamCreator = function (configuration?: Configuration) {
+export const AuthenticationApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
          * 
@@ -381,6 +420,80 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
                 options: localVarRequestOptions,
             };
         },
+    }
+};
+
+/**
+ * AuthenticationApi - functional programming interface
+ * @export
+ */
+export const AuthenticationApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = AuthenticationApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Get auth token
+         * @param {LoginUserRequest} loginUserRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authPost(loginUserRequest: LoginUserRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LoginUserResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authPost(loginUserRequest, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['AuthenticationApi.authPost']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * AuthenticationApi - factory interface
+ * @export
+ */
+export const AuthenticationApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = AuthenticationApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Get auth token
+         * @param {LoginUserRequest} loginUserRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authPost(loginUserRequest: LoginUserRequest, options?: any): AxiosPromise<LoginUserResponse> {
+            return localVarFp.authPost(loginUserRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * AuthenticationApi - object-oriented interface
+ * @export
+ * @class AuthenticationApi
+ * @extends {BaseAPI}
+ */
+export class AuthenticationApi extends BaseAPI {
+    /**
+     * 
+     * @summary Get auth token
+     * @param {LoginUserRequest} loginUserRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthenticationApi
+     */
+    public authPost(loginUserRequest: LoginUserRequest, options?: AxiosRequestConfig) {
+        return AuthenticationApiFp(this.configuration).authPost(loginUserRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * UserManagementApi - axios parameter creator
+ * @export
+ */
+export const UserManagementApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
         /**
          * 
          * @summary Get a list of users
@@ -401,6 +514,10 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
             if (offset !== undefined) {
                 localVarQueryParameter['offset'] = offset;
@@ -569,25 +686,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
 };
 
 /**
- * DefaultApi - functional programming interface
+ * UserManagementApi - functional programming interface
  * @export
  */
-export const DefaultApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = DefaultApiAxiosParamCreator(configuration)
+export const UserManagementApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = UserManagementApiAxiosParamCreator(configuration)
     return {
-        /**
-         * 
-         * @summary Get auth token
-         * @param {LoginUserRequest} loginUserRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async authPost(loginUserRequest: LoginUserRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.authPost(loginUserRequest, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['DefaultApi.authPost']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
         /**
          * 
          * @summary Get a list of users
@@ -599,7 +703,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         async usersGet(offset?: number, limit?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MultiUsersResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.usersGet(offset, limit, options);
             const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['DefaultApi.usersGet']?.[index]?.url;
+            const operationBasePath = operationServerMap['UserManagementApi.usersGet']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
         /**
@@ -612,7 +716,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         async usersPost(userRequest: UserRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SingleUserResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.usersPost(userRequest, options);
             const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['DefaultApi.usersPost']?.[index]?.url;
+            const operationBasePath = operationServerMap['UserManagementApi.usersPost']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
         /**
@@ -625,7 +729,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         async usersUserIdDelete(userId: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.usersUserIdDelete(userId, options);
             const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['DefaultApi.usersUserIdDelete']?.[index]?.url;
+            const operationBasePath = operationServerMap['UserManagementApi.usersUserIdDelete']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
         /**
@@ -638,7 +742,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         async usersUserIdGet(userId: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SingleUserResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.usersUserIdGet(userId, options);
             const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['DefaultApi.usersUserIdGet']?.[index]?.url;
+            const operationBasePath = operationServerMap['UserManagementApi.usersUserIdGet']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
         /**
@@ -652,29 +756,19 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         async usersUserIdPut(userId: number, userRequest: UserRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.usersUserIdPut(userId, userRequest, options);
             const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['DefaultApi.usersUserIdPut']?.[index]?.url;
+            const operationBasePath = operationServerMap['UserManagementApi.usersUserIdPut']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
     }
 };
 
 /**
- * DefaultApi - factory interface
+ * UserManagementApi - factory interface
  * @export
  */
-export const DefaultApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = DefaultApiFp(configuration)
+export const UserManagementApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = UserManagementApiFp(configuration)
     return {
-        /**
-         * 
-         * @summary Get auth token
-         * @param {LoginUserRequest} loginUserRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        authPost(loginUserRequest: LoginUserRequest, options?: any): AxiosPromise<void> {
-            return localVarFp.authPost(loginUserRequest, options).then((request) => request(axios, basePath));
-        },
         /**
          * 
          * @summary Get a list of users
@@ -731,24 +825,12 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
 };
 
 /**
- * DefaultApi - object-oriented interface
+ * UserManagementApi - object-oriented interface
  * @export
- * @class DefaultApi
+ * @class UserManagementApi
  * @extends {BaseAPI}
  */
-export class DefaultApi extends BaseAPI {
-    /**
-     * 
-     * @summary Get auth token
-     * @param {LoginUserRequest} loginUserRequest 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    public authPost(loginUserRequest: LoginUserRequest, options?: AxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).authPost(loginUserRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-
+export class UserManagementApi extends BaseAPI {
     /**
      * 
      * @summary Get a list of users
@@ -756,10 +838,10 @@ export class DefaultApi extends BaseAPI {
      * @param {number} [limit] Number of users per page
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof DefaultApi
+     * @memberof UserManagementApi
      */
     public usersGet(offset?: number, limit?: number, options?: AxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).usersGet(offset, limit, options).then((request) => request(this.axios, this.basePath));
+        return UserManagementApiFp(this.configuration).usersGet(offset, limit, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -768,10 +850,10 @@ export class DefaultApi extends BaseAPI {
      * @param {UserRequest} userRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof DefaultApi
+     * @memberof UserManagementApi
      */
     public usersPost(userRequest: UserRequest, options?: AxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).usersPost(userRequest, options).then((request) => request(this.axios, this.basePath));
+        return UserManagementApiFp(this.configuration).usersPost(userRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -780,10 +862,10 @@ export class DefaultApi extends BaseAPI {
      * @param {number} userId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof DefaultApi
+     * @memberof UserManagementApi
      */
     public usersUserIdDelete(userId: number, options?: AxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).usersUserIdDelete(userId, options).then((request) => request(this.axios, this.basePath));
+        return UserManagementApiFp(this.configuration).usersUserIdDelete(userId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -792,10 +874,10 @@ export class DefaultApi extends BaseAPI {
      * @param {number} userId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof DefaultApi
+     * @memberof UserManagementApi
      */
     public usersUserIdGet(userId: number, options?: AxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).usersUserIdGet(userId, options).then((request) => request(this.axios, this.basePath));
+        return UserManagementApiFp(this.configuration).usersUserIdGet(userId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -805,10 +887,10 @@ export class DefaultApi extends BaseAPI {
      * @param {UserRequest} userRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof DefaultApi
+     * @memberof UserManagementApi
      */
     public usersUserIdPut(userId: number, userRequest: UserRequest, options?: AxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).usersUserIdPut(userId, userRequest, options).then((request) => request(this.axios, this.basePath));
+        return UserManagementApiFp(this.configuration).usersUserIdPut(userId, userRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

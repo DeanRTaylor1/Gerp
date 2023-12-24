@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	db "github.com/deanrtaylor1/go-erp-template/db/sqlc"
 	"github.com/golang-jwt/jwt"
 )
 
@@ -21,8 +22,8 @@ func NewJWTAuthenticator(secretKey string) (Authenticator, error) {
 	return &JWTAuthenticator{secretKey: secretKey}, nil
 }
 
-func (a *JWTAuthenticator) CreateToken(email string, duration time.Duration) (string, error) {
-	payload, err := NewPayload(email, duration)
+func (a *JWTAuthenticator) CreateToken(email string, role db.UserRole, duration time.Duration) (string, error) {
+	payload, err := NewPayload(email, role, duration)
 	if err != nil {
 		return "", err
 	}

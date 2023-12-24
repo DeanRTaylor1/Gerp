@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	db "github.com/deanrtaylor1/go-erp-template/db/sqlc"
 	"github.com/google/uuid"
 )
 
@@ -13,23 +14,27 @@ var (
 )
 
 type Payload struct {
-	ID        uuid.UUID `json:"id"`
-	Email     string    `json:"email"`
-	IssuedAt  time.Time `json:"issued_at"`
-	ExpiredAt time.Time `json:"expired_at"`
+	ID        uuid.UUID   `json:"id"`
+	Email     string      `json:"email"`
+	Role      db.UserRole `json:"roles"`
+	IssuedAt  time.Time   `json:"issued_at"`
+	ExpiredAt time.Time   `json:"expired_at"`
 }
 
-func NewPayload(email string, duration time.Duration) (*Payload, error) {
+func NewPayload(email string, role db.UserRole, duration time.Duration) (*Payload, error) {
 	tokenID, err := uuid.NewRandom()
 	if err != nil {
 		return nil, err
 	}
+
 	payload := &Payload{
 		ID:        tokenID,
 		Email:     email,
+		Role:      role,
 		IssuedAt:  time.Now(),
 		ExpiredAt: time.Now().Add(duration),
 	}
+
 	return payload, nil
 }
 

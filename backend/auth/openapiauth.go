@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"slices"
 	"strings"
 
 	db "github.com/deanrtaylor1/go-erp-template/db/sqlc"
@@ -38,6 +39,14 @@ func OpenAPIAuthFunc(authenticator Authenticator, q db.Querier) openapi3filter.A
 				return fmt.Errorf("user not found")
 			}
 			return fmt.Errorf("database error: %w", err)
+		}
+
+		scopes := input.Scopes
+		fmt.Printf("%v", scopes)
+		if len(scopes) > 0 && user.Role != db.UserRoleAdmin {
+			if !slices.Contains(scopes, string(user.Role)) {
+				return fmt.Errorf("invalid scopes %w", err)
+			}
 		}
 		ginCtx.Set("user", user)
 
