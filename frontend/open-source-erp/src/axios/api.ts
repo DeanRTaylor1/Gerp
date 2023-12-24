@@ -163,10 +163,10 @@ export interface LoginUserResponse {
     'message'?: string;
     /**
      * 
-     * @type {Array<AccessTokenResponse>}
+     * @type {AccessTokenResponse}
      * @memberof LoginUserResponse
      */
-    'data'?: Array<AccessTokenResponse>;
+    'data'?: AccessTokenResponse;
 }
 /**
  * 
@@ -278,29 +278,8 @@ export interface UserRequest {
      * @type {string}
      * @memberof UserRequest
      */
-    'status': UserRequestStatusEnum;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserRequest
-     */
-    'role'?: UserRequestRoleEnum;
+    'avatar'?: string;
 }
-
-export const UserRequestStatusEnum = {
-    Active: 'active',
-    Inactive: 'inactive'
-} as const;
-
-export type UserRequestStatusEnum = typeof UserRequestStatusEnum[keyof typeof UserRequestStatusEnum];
-export const UserRequestRoleEnum = {
-    Admin: 'admin',
-    User: 'user',
-    Manager: 'manager'
-} as const;
-
-export type UserRequestRoleEnum = typeof UserRequestRoleEnum[keyof typeof UserRequestRoleEnum];
-
 /**
  * 
  * @export
@@ -342,13 +321,19 @@ export interface UserResponse {
      * @type {string}
      * @memberof UserResponse
      */
-    'status'?: UserResponseStatusEnum;
+    'avatar'?: string;
     /**
      * 
      * @type {string}
      * @memberof UserResponse
      */
-    'role'?: UserResponseRoleEnum;
+    'status'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'role'?: string;
     /**
      * 
      * @type {string}
@@ -362,21 +347,6 @@ export interface UserResponse {
      */
     'updatedAt'?: string;
 }
-
-export const UserResponseStatusEnum = {
-    Active: 'active',
-    Inactive: 'inactive'
-} as const;
-
-export type UserResponseStatusEnum = typeof UserResponseStatusEnum[keyof typeof UserResponseStatusEnum];
-export const UserResponseRoleEnum = {
-    Admin: 'admin',
-    User: 'user',
-    Manager: 'manager'
-} as const;
-
-export type UserResponseRoleEnum = typeof UserResponseRoleEnum[keyof typeof UserResponseRoleEnum];
-
 
 /**
  * AuthenticationApi - axios parameter creator

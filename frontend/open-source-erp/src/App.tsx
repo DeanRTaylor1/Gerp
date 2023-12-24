@@ -1,5 +1,5 @@
 import './App.css'
-import Layout from './Components/layout/Layout'
+import { AuthProvider } from './context/authProvider'
 import { ThemeProvider } from './context/useTheme'
 import Router from './router/router'
 
@@ -7,10 +7,10 @@ function App() {
 
   return (
     <ThemeProvider>
-      <Layout>
+      <AuthProvider>
         <Router />
-      </Layout>
-    </ThemeProvider>
+      </AuthProvider>
+    </ThemeProvider >
   )
 }
 
