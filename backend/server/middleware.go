@@ -11,13 +11,34 @@ import (
 	"sync"
 
 	"github.com/deanrtaylor1/go-erp-template/internal"
+	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/gin-gonic/gin"
+	middleware "github.com/oapi-codegen/gin-middleware"
 )
 
 func customErrorHandler(c *gin.Context, err error, statusCode int) {
 	formattedError := "An error occurred"
 
 	c.JSON(statusCode, gin.H{"error": formattedError})
+}
+
+func CustomOpenAPIValidationMiddleware(swagger *openapi3.T, opts middleware.Options) gin.HandlerFunc {
+	validatorMiddleware := middleware.OapiRequestValidatorWithOptions(swagger, &opts)
+
+	return func(c *gin.Context) {
+		// Paths to bypass validation
+		bypassPaths := []string{"/", "/about", "/assets", "/favicon.ico"}
+
+		// Check if the request path should bypass validation
+		for _, path := range bypassPaths {
+			if strings.HasPrefix(c.Request.URL.Path, path) {
+				c.Next()
+				return
+			}
+		}
+
+		validatorMiddleware(c)
+	}
 }
 
 func validationErrorHandler(c *gin.Context, message string, statusCode int) {

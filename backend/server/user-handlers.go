@@ -37,13 +37,27 @@ func (s *Server) PostUsers(c *gin.Context) {
 		return
 	}
 
+	dbRole, err := s.DB.GetUserRoleByName(c, "Employee")
+	if err != nil {
+		s.Logger.Error(fmt.Sprintf("Error getting user role %s", err))
+		Respond(c, http.StatusInternalServerError, err, "Something went wrong", internal.ContentTypeJSON)
+		return
+	}
+
+	dbStatus, err := s.DB.GetUserUserStatusByName(c, "Active")
+	if err != nil {
+		s.Logger.Error(fmt.Sprintf("Error getting user status %s", err))
+		Respond(c, http.StatusInternalServerError, err, "Something went wrong", internal.ContentTypeJSON)
+		return
+	}
+
 	dbUser, err := s.DB.CreateUser(c, user.ToCreateUserParams(hashedPassword))
 	if err != nil {
 		Respond(c, http.StatusInternalServerError, err, "Something went wrong", internal.ContentTypeJSON)
 		return
 	}
 
-	response := toUserResponse(dbUser)
+	response := toUserResponse(dbUser, dbRole.RoleName, dbStatus.StatusName)
 
 	Respond(c, http.StatusCreated, response, "Success", internal.ContentTypeJSON)
 }
@@ -74,7 +88,7 @@ func (s *Server) PutUsersUserId(c *gin.Context, userId int) {
 	Respond(c, 200, nil, "success", internal.ContentTypeJSON)
 }
 
-func toUserResponse(user db.User) *api.UserResponse {
+func toUserResponse(user db.User, userStatus string, userRole string) *api.UserResponse {
 	var createdAt, updatedAt *time.Time
 	var firstName, lastName *string
 	var email openapi_types.Email
@@ -88,23 +102,17 @@ func toUserResponse(user db.User) *api.UserResponse {
 		updatedAt = &user.UpdatedAt.Time
 	}
 
-	if user.FirstName.Valid {
-		firstName = &user.FirstName.String
-	}
-	if user.LastName.Valid {
-		lastName = &user.LastName.String
-	}
-
 	email = openapi_types.Email(user.Email)
 
 	return &api.UserResponse{
 		Id:        &userId,
 		Username:  &username,
 		FirstName: firstName,
+		Avatar:    &user.Avatar.String,
 		LastName:  lastName,
 		Email:     &email,
-		Role:      (*api.UserResponseRole)(&user.Role),
-		Status:    (*api.UserResponseStatus)(&user.Status),
+		Role:      &userRole,
+		Status:    &userStatus,
 		CreatedAt: createdAt,
 		UpdatedAt: updatedAt,
 	}

@@ -5,106 +5,132 @@
 package db
 
 import (
-	"database/sql/driver"
-	"fmt"
-
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-type UserRole string
-
-const (
-	UserRoleAdmin   UserRole = "admin"
-	UserRoleUser    UserRole = "user"
-	UserRoleManager UserRole = "manager"
-)
-
-func (e *UserRole) Scan(src interface{}) error {
-	switch s := src.(type) {
-	case []byte:
-		*e = UserRole(s)
-	case string:
-		*e = UserRole(s)
-	default:
-		return fmt.Errorf("unsupported scan type for UserRole: %T", src)
-	}
-	return nil
+type Address struct {
+	ID           int32            `json:"id"`
+	ProfileID    pgtype.Int4      `json:"profile_id"`
+	AddressLine1 string           `json:"address_line1"`
+	AddressLine2 pgtype.Text      `json:"address_line2"`
+	City         string           `json:"city"`
+	State        pgtype.Text      `json:"state"`
+	PostalCode   pgtype.Text      `json:"postal_code"`
+	Country      string           `json:"country"`
+	AddressType  pgtype.Text      `json:"address_type"`
+	CreatedAt    pgtype.Timestamp `json:"created_at"`
+	UpdatedAt    pgtype.Timestamp `json:"updated_at"`
 }
 
-type NullUserRole struct {
-	UserRole UserRole `json:"user_role"`
-	Valid    bool     `json:"valid"` // Valid is true if UserRole is not NULL
+type Contract struct {
+	ID            int32            `json:"id"`
+	PayScaleID    pgtype.Int4      `json:"pay_scale_id"`
+	ProfileID     pgtype.Int4      `json:"profile_id"`
+	ContractStart pgtype.Timestamp `json:"contract_start"`
+	ContractEnd   pgtype.Timestamp `json:"contract_end"`
+	ActualSalary  int32            `json:"Actual Salary"`
+	CreatedAt     pgtype.Timestamp `json:"created_at"`
+	UpdatedAt     pgtype.Timestamp `json:"updated_at"`
 }
 
-// Scan implements the Scanner interface.
-func (ns *NullUserRole) Scan(value interface{}) error {
-	if value == nil {
-		ns.UserRole, ns.Valid = "", false
-		return nil
-	}
-	ns.Valid = true
-	return ns.UserRole.Scan(value)
+type Department struct {
+	ID             int32  `json:"id"`
+	DepartmentName string `json:"department_name"`
 }
 
-// Value implements the driver Valuer interface.
-func (ns NullUserRole) Value() (driver.Value, error) {
-	if !ns.Valid {
-		return nil, nil
-	}
-	return string(ns.UserRole), nil
+type EmergencyContact struct {
+	ID             int32            `json:"id"`
+	Name           string           `json:"name"`
+	ContactNumber  string           `json:"contact_number"`
+	ContactAddress pgtype.Text      `json:"contact_address"`
+	CreatedAt      pgtype.Timestamp `json:"created_at"`
+	UpdatedAt      pgtype.Timestamp `json:"updated_at"`
 }
 
-type UserStatus string
-
-const (
-	UserStatusActive   UserStatus = "active"
-	UserStatusInactive UserStatus = "inactive"
-)
-
-func (e *UserStatus) Scan(src interface{}) error {
-	switch s := src.(type) {
-	case []byte:
-		*e = UserStatus(s)
-	case string:
-		*e = UserStatus(s)
-	default:
-		return fmt.Errorf("unsupported scan type for UserStatus: %T", src)
-	}
-	return nil
+type Gender struct {
+	ID         int32            `json:"id"`
+	GenderName string           `json:"gender_name"`
+	CreatedAt  pgtype.Timestamp `json:"created_at"`
+	UpdatedAt  pgtype.Timestamp `json:"updated_at"`
 }
 
-type NullUserStatus struct {
-	UserStatus UserStatus `json:"user_status"`
-	Valid      bool       `json:"valid"` // Valid is true if UserStatus is not NULL
+type LeaveRequest struct {
+	ID          int32            `json:"id"`
+	UserID      pgtype.Int4      `json:"user_id"`
+	LeaveTypeID pgtype.Int4      `json:"leave_type_id"`
+	StartDate   pgtype.Timestamp `json:"start_date"`
+	EndDate     pgtype.Timestamp `json:"end_date"`
+	Status      pgtype.Text      `json:"status"`
+	Reason      pgtype.Text      `json:"reason"`
+	CreatedAt   pgtype.Timestamp `json:"created_at"`
+	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
 }
 
-// Scan implements the Scanner interface.
-func (ns *NullUserStatus) Scan(value interface{}) error {
-	if value == nil {
-		ns.UserStatus, ns.Valid = "", false
-		return nil
-	}
-	ns.Valid = true
-	return ns.UserStatus.Scan(value)
+type LeaveType struct {
+	ID          int32            `json:"id"`
+	TypeName    string           `json:"type_name"`
+	Description pgtype.Text      `json:"description"`
+	CreatedAt   pgtype.Timestamp `json:"created_at"`
+	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
 }
 
-// Value implements the driver Valuer interface.
-func (ns NullUserStatus) Value() (driver.Value, error) {
-	if !ns.Valid {
-		return nil, nil
-	}
-	return string(ns.UserStatus), nil
+type MaritalStatus struct {
+	ID         int32            `json:"id"`
+	StatusName string           `json:"status_name"`
+	CreatedAt  pgtype.Timestamp `json:"created_at"`
+	UpdatedAt  pgtype.Timestamp `json:"updated_at"`
+}
+
+type PayScale struct {
+	ID                int32            `json:"id"`
+	ScaleName         string           `json:"scale_name"`
+	ScaleStart        int32            `json:"scale_start"`
+	ScaleEnd          int32            `json:"scale_end"`
+	HolidayAllocation int32            `json:"holiday_allocation"`
+	CreatedAt         pgtype.Timestamp `json:"created_at"`
+	UpdatedAt         pgtype.Timestamp `json:"updated_at"`
+}
+
+type Profile struct {
+	ID                 int32            `json:"id"`
+	UserID             pgtype.Int4      `json:"user_id"`
+	LatestContractID   pgtype.Int4      `json:"latest_contract_id"`
+	GenderID           pgtype.Int4      `json:"gender_id"`
+	DateOfBirth        pgtype.Timestamp `json:"date_of_birth"`
+	Nationality        string           `json:"nationality"`
+	MaritalStatusID    int32            `json:"marital_status_id"`
+	Dependents         pgtype.Int4      `json:"dependents"`
+	EmergencyContactID pgtype.Int4      `json:"emergency_contact_id"`
+	DepartmentID       pgtype.Int4      `json:"department_id"`
+	CreatedAt          pgtype.Timestamp `json:"created_at"`
+	UpdatedAt          pgtype.Timestamp `json:"updated_at"`
 }
 
 type User struct {
-	ID        int32              `json:"id"`
-	Username  string             `json:"username"`
-	FirstName pgtype.Text        `json:"first_name"`
-	LastName  pgtype.Text        `json:"last_name"`
-	Email     string             `json:"email"`
-	Password  string             `json:"password"`
-	Status    UserStatus         `json:"status"`
-	Role      UserRole           `json:"role"`
-	CreatedAt pgtype.Timestamptz `json:"created_at"`
-	UpdatedAt pgtype.Timestamptz `json:"updated_at"`
+	ID           int32            `json:"id"`
+	Username     string           `json:"username"`
+	FirstName    string           `json:"first_name"`
+	LastName     string           `json:"last_name"`
+	Email        string           `json:"email"`
+	Password     string           `json:"password"`
+	Avatar       pgtype.Text      `json:"avatar"`
+	LastLogin    pgtype.Timestamp `json:"last_login"`
+	UserStatusID int32            `json:"user_status_id"`
+	RoleID       int32            `json:"role_id"`
+	CreatedAt    pgtype.Timestamp `json:"created_at"`
+	UpdatedAt    pgtype.Timestamp `json:"updated_at"`
+}
+
+type UserRole struct {
+	ID        int32            `json:"id"`
+	RoleName  string           `json:"role_name"`
+	CreatedAt pgtype.Timestamp `json:"created_at"`
+	UpdatedAt pgtype.Timestamp `json:"updated_at"`
+}
+
+type UserStatus struct {
+	ID         int32            `json:"id"`
+	StatusName string           `json:"status_name"`
+	CreatedAt  pgtype.Timestamp `json:"created_at"`
+	UpdatedAt  pgtype.Timestamp `json:"updated_at"`
 }

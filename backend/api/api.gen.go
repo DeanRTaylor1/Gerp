@@ -25,32 +25,6 @@ const (
 	BearerAuthScopes = "bearerAuth.Scopes"
 )
 
-// Defines values for UserRequestRole.
-const (
-	UserRequestRoleAdmin   UserRequestRole = "admin"
-	UserRequestRoleManager UserRequestRole = "manager"
-	UserRequestRoleUser    UserRequestRole = "user"
-)
-
-// Defines values for UserRequestStatus.
-const (
-	UserRequestStatusActive   UserRequestStatus = "active"
-	UserRequestStatusInactive UserRequestStatus = "inactive"
-)
-
-// Defines values for UserResponseRole.
-const (
-	UserResponseRoleAdmin   UserResponseRole = "admin"
-	UserResponseRoleManager UserResponseRole = "manager"
-	UserResponseRoleUser    UserResponseRole = "user"
-)
-
-// Defines values for UserResponseStatus.
-const (
-	UserResponseStatusActive   UserResponseStatus = "active"
-	UserResponseStatusInactive UserResponseStatus = "inactive"
-)
-
 // AccessTokenResponse defines model for AccessTokenResponse.
 type AccessTokenResponse struct {
 	AccessToken string `json:"access_token"`
@@ -94,9 +68,9 @@ type LoginUserRequest struct {
 
 // LoginUserResponse defines model for LoginUserResponse.
 type LoginUserResponse struct {
-	Data    *map[string]interface{} `json:"data,omitempty"`
-	Message *string                 `json:"message,omitempty"`
-	Status  *int                    `json:"status,omitempty"`
+	Data    *AccessTokenResponse `json:"data,omitempty"`
+	Message *string              `json:"message,omitempty"`
+	Status  *int                 `json:"status,omitempty"`
 }
 
 // MultiUsersResponse defines model for MultiUsersResponse.
@@ -115,39 +89,27 @@ type SingleUserResponse struct {
 
 // UserRequest defines model for UserRequest.
 type UserRequest struct {
+	Avatar    *string             `json:"avatar,omitempty" validate:"string"`
 	Email     openapi_types.Email `json:"email" validate:"email"`
 	FirstName *string             `json:"firstName,omitempty" validate:"string"`
 	LastName  *string             `json:"lastName,omitempty" validate:"string"`
 	Password  string              `json:"password" validate:"string"`
-	Role      *UserRequestRole    `json:"role,omitempty"`
-	Status    UserRequestStatus   `json:"status" validate:"oneOf=active,inactive"`
 	Username  string              `json:"username" validate:"string"`
 }
 
-// UserRequestRole defines model for UserRequest.Role.
-type UserRequestRole string
-
-// UserRequestStatus defines model for UserRequest.Status.
-type UserRequestStatus string
-
 // UserResponse defines model for UserResponse.
 type UserResponse struct {
+	Avatar    *string              `json:"avatar,omitempty"`
 	CreatedAt *time.Time           `json:"createdAt,omitempty"`
 	Email     *openapi_types.Email `json:"email,omitempty"`
 	FirstName *string              `json:"firstName,omitempty"`
 	Id        *int64               `json:"id,omitempty"`
 	LastName  *string              `json:"lastName,omitempty"`
-	Role      *UserResponseRole    `json:"role,omitempty"`
-	Status    *UserResponseStatus  `json:"status,omitempty"`
+	Role      *string              `json:"role,omitempty"`
+	Status    *string              `json:"status,omitempty"`
 	UpdatedAt *time.Time           `json:"updatedAt,omitempty"`
 	Username  *string              `json:"username,omitempty"`
 }
-
-// UserResponseRole defines model for UserResponse.Role.
-type UserResponseRole string
-
-// UserResponseStatus defines model for UserResponse.Status.
-type UserResponseStatus string
 
 // GetUsersParams defines parameters for GetUsers.
 type GetUsersParams struct {
@@ -432,29 +394,29 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/8xYb2/TyBP+Kqv98eonJ3GhOnGWkC49ONTTARXQO+kq32ljT5IFe9fsjguhync/7azt",
-	"JLbTJpCmvKGJM9759zzPzHLDE50XWoFCy6MbbpM55II+jpMErH2vP4J6C7bQyoJ7XBhdgEEJZCTI6F90",
-	"Vu47fBF5kQGP+IfP6J8GHBeFe2LRSDXjy2XADXwqpYGUR1ebR8SNtZ58gAT5MuDjQm4PIBUo3F9VZpmY",
-	"OM9oSgi4VvBmyqOrm855N1wi5PRyx1X1QBgjFnwZLwOeg7ViBmvWdRoBtyiwpIOm2uQCecSlwiePVylL",
-	"hTADQzl38ypxro38KlBq9cIYbbanmegUNup7Gp4Ed7vdiH/Vm0slKt+Q9vanE+uZSN/CpxIs7h9o+O2B",
-	"TkTKjPe7W5x/6JlUlxZMFW03QMiFzFpQ1XM1tLnE+S/06zDRecddwL8MtCjkwGU4AzWAL2jEAMWMjr0W",
-	"mUwFuhe8BxdeIaz9rE16r+5yqZ49DXKByRzss3+uxODrePB3OPg5/v8jvmyzzQe3Flp8exXv4l3DpUcG",
-	"pjzi/xutBGVUqcmoT0r6uteLAVvS293+rxOwMX/s4LYL+16VGUqXoz1Qkhv16mjJcZN7J9Usg906uE9O",
-	"x8zhQCxupKdG/vfTeiqNxdcih24A33H+mqxlou98yu0wDo4iTOvzXmc+GVXmNPPTXLpalRYMD3gulHA4",
-	"iG+HUP1ygvIaeMClqj7G3x4k7QnP/DlBc6CL2cWmeptMJTo5RGVa4ty4DLo63VQi3sqVrTPZgEBIx7ix",
-	"qrhYBijJW6fqW/i1N732ZMsy4DJtL1Q/nfYuDPuQ5AEg6BBUpPvWfW/Q9UinixiS0khcvHM67kEwAWHA",
-	"uJ1z9e23Oqbf/3rvAEbWbu2iX1e+5oiFR6tUU03DA2xiZOE2Vx65DZ35kcGm2rAXby/YRCQfQaVDd4hE",
-	"yuJNAYq906VJgEzGF+c84NdgrD8lHIbDE1cEXYASheQRfzIMhyGxAOeUxUhUCRTajwWHc1qgz1Me8Qtt",
-	"kVL0vAKLZzpd+L1UISh6RRRFJhN6afTBarW699w1DjvbZYvB7upBDzwTKeLH4cl9+K9nsgtgsxm0ZrFf",
-	"PeddOU/D8GARbLsH9MRxrkjxWK1gQx/L4apxy/1pt3AcUco8F2bBI/4SkDlwsebWSrp9Rdc0UFjFyGP3",
-	"2sjxlNo7gx4YvgSkzZKQa0QOSNZXbd5ciBkwVeYTMExPGc6B0cEsk3Thkc7oUwlmwQPuZYHr6dQC1mwV",
-	"noxTUWbIo97Nqu30dePP+yrAsMItdf3+MpnLLe5O+vzFHfwfDn09O3tPp8dUvibBB6TAmUhZZfuDoJ/A",
-	"TehlSnvAV9iGmhHV6CC4rg+NemTGrsUt3rQqviKPaxZ7RbM1dynHbvncKt01ae5Dux9QtntuYz0teg2f",
-	"qXwseXDp/tOvqlIrRrYtqfSzhQmmqpBvbXgjl6Mb9+c8XXoRyQChC4Pn9JyAcEnWXQ0llXIbwUqkytp0",
-	"s6nrqrWDUJ0ejpxr/2XZU18qkq9A2qqtz5+Ju+sa3D57jl698Mh8GTNLdr5SPcPcs2myYOfP71Kksk+Q",
-	"yuMV8geQu/Co4K+uRq22XdLTXcDvJ5W57t+rUrhmpXG3Ufevv79Eo1GmE5HNtcXoafg0HIlCjq5PuOtA",
-	"5eimbuSZv73w7vb0psaIZQYylwND7ZEmNhfFBhWtBbJ75guVFloqtHR7opuoVLPq0CTRpUK7Oq5djGW8",
-	"/C8AAP//ltk/d8YZAAA=",
+	"H4sIAAAAAAAC/8xYbW/bNhD+KwTXT4NsK20wdAIKLFm7IsPaBm2zAQu84SydbaYSqZKntG7g/z7wKL9J",
+	"cpwsrtsvdU0feW/P8/CYG5maojQaNTmZ3EiXTrEA/u9JmqJz780H1G/RlUY79MulNSVaUshGwEb/krfy",
+	"3/EzFGWOMpFXnyisRpJmpV9xZJWeyPk8khY/VspiJpPLzSOGS2szusKU5DySJ6XaHkAGBP5TV3kOI++Z",
+	"bIWRNBrfjGVyedM670YqwoI3t1zVC2AtzOR8OI9kgc7BBNesF2lE0hFQxQeNjS2AZCKVpiePVykrTThB",
+	"yzm386poaqz6AqSMfmGtsdvTTE2GG/U9jo+i3W434l/15kJD7Ruzzv60Yj2F7C1+rNDR/QON/3+gI8iE",
+	"DX7vFucfZqL0hUNbR9sOEAtQeQOqZqr7rlA0/YV/7aemaLmL5OeegVL1fIYT1D38TBZ6BBM+9hpylQH5",
+	"DcGDD68E5z4Zm31Vd4XSz55GBVA6Rffsn0vofTnp/R33fh7++EjOm2wLwa2FNry9irt498jiWCbyh8FK",
+	"Rwa1iAy6FGRbp13Fxu0ur9Nsaf7Yg+ouHHtV5aR8Jm53KktZuC2njaq0FOOwyb1TepLjw/vUzOmQOdzK",
+	"VbgGAtuI40kfCvhitKfNoJgFm/5VOXkAh9Yk5e76sBS1BaceLhhjZR29hgLbAewnuxy6zufc9uPgIJK3",
+	"5q9yaHVnwdjd0T68NCR06TJqq+mSDMOtWN86Sj0M7PNIphaBMDuhjZHEZ9MjxfG2tmxB+73Bfk/sziOp",
+	"subg9NNx52BwH8j6Tpl817TW+qkqs/sW7t6461A/HxSmlVU0e+elOOBghGDR+uFw9e23RUy///XeY4yt",
+	"/XzEv658TYnKAFilx4b1H11qVelHTJn4UVoE1RdjY8WLt+diBOkH1FnfH6KIs3hTohbvTGVTZJOT8zMZ",
+	"yWu0LpwS9+P+kS+CKVFDqWQin/TjfsxEoClnMYA6gdIEZfdQ50n3LJOJPDeOOMVALXR0arJZGCA1oeYt",
+	"UJa5SnnT4MoZvXqg7LrRWmNgg8T+jcALgYwc8eP46Gv4X1yrPoDNZvBgJH4NpPXlPI7jvUWwbWDviONM",
+	"s+iJhYj1Qyz7q8YtD527heOJUhUF2JlM5Esk4cElls9Llu5Lfk+hpjpGOfTbBp6n3N4JdsDwJRIPh4xc",
+	"CwUSW182eXMOExS6KkZohRkLmqLgg0Wu+GWivNHHCu1MRjLIgjTjsUNasBUCGcdQ5SSTzuGo6fT10l/w",
+	"VaIVpZ/Luv3lqlBb3B11+Ru28L8/9HWM3R2dPuHyLRP8hhQ4hUzUtt8J+hncjF6hTQB8jW1cMKK+Ohiu",
+	"65fGpYSsUJ4AwxZvGhVfkcc3S7wCDRMsfMpDP8ttle4Fab6Gdn9D2e54UHW06DV+4vKJ9JtL959hWlVG",
+	"C7ZtSGW4WwQIXYd8a8OXcjm48R9n2TyISI6EbRg853UGwgVbtzWUVcpPBCuRqhamm01dV607CNXx/si5",
+	"9rfFjvpykUIFskZtQ/4Cdtc1uv3uOXj14gPz5UQ4tguV6rjMA5tGM3H2fJciVV2CVB2ukN+B3MUHBX/9",
+	"NGq07YJX7wL+cFPZ6+65KsNrUVn/nPT/hvdLMhjkJoV8ahwlT+On8QBKNbg+kr4DtaObRSNPw+tFtqen",
+	"NwuMOGEx9zkIMgFpsDkoLlHRGCDbZ77QWWmUJsevp8LnqfSkPjRNTaXJrY5rFmM+nP8XAAD//2HU5rBv",
+	"GQAA",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

@@ -7,8 +7,8 @@ INSERT INTO users (
   password,
   avatar,
   last_login,
-  status,
-  role
+  user_status_id,
+  role_id
 ) VALUES (
   $1, $2, $3, $4, $5, $6, $7, $8, $9
 ) RETURNING *;
@@ -18,8 +18,28 @@ SELECT * FROM users
 WHERE id = $1 LIMIT 1;
 
 -- name: GetUserByEmail :one
-SELECT * FROM users 
-WHERE email = $1 LIMIT 1;
+SELECT 
+    users.id,
+    users.username,
+    users.first_name,
+    users.last_name,
+    users.email,
+    users.password,
+    users.avatar,
+    users.last_login,
+    users.user_status_id,
+    users.role_id,
+    users.created_at,
+    users.updated_at,
+    user_roles.role_name AS role_name,
+    user_statuses.status_name AS status_name
+FROM users 
+JOIN user_roles ON users.role_id = user_roles.id
+JOIN user_statuses ON users.user_status_id = user_statuses.id
+WHERE users.email = $1 
+LIMIT 1;
+
+
 
 -- name: GetUsers :many
 SELECT * FROM users
@@ -39,8 +59,8 @@ SET
   last_name = $4,
   email = $5,
   password = $6,
-  status = $7,
-  role = $8,
+  user_status_id = $7,
+  role_id = $8,
   avatar = $9,
   updated_at = NOW()
 WHERE id = $1;

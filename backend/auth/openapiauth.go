@@ -43,8 +43,8 @@ func OpenAPIAuthFunc(authenticator Authenticator, q db.Querier) openapi3filter.A
 
 		scopes := input.Scopes
 		fmt.Printf("%v", scopes)
-		if len(scopes) > 0 && user.Role != db.UserRoleAdmin {
-			if !slices.Contains(scopes, string(user.Role)) {
+		if len(scopes) > 0 && user.RoleName != "admin" {
+			if !slices.Contains(scopes, user.RoleName) {
 				return fmt.Errorf("invalid scopes %w", err)
 			}
 		}
