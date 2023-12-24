@@ -224,14 +224,11 @@ components:
           example: "john.smith@email.com"
           x-oapi-codegen-extra-tags:
             validate: string
-        status:
+        avatar:
           type: string
-          enum: [active, inactive]
+          example: "s3.amazon.com/myavatar.jpg"
           x-oapi-codegen-extra-tags:
-            validate: oneOf=active,inactive
-        role:
-          type: string
-          enum: [admin, user, manager]
+            validate: string
     UserResponse:
       type: object
       properties:
@@ -251,12 +248,13 @@ components:
           type: string
           format: email
           example: "johnsmith@email.com"
+        avatar:
+          type: string
+          example: "s3.amazon.com/myavatar.jpg"
         status:
           type: string
-          enum: [active, inactive]
         role:
           type: string
-          enum: [admin, user, manager]
         createdAt:
           type: string
           format: date-time
@@ -360,6 +358,4 @@ components:
           type: string
           example: success
         data:
-          type: object
-          items:
-            $ref: "#/components/schemas/AccessTokenResponse"
+          $ref: "#/components/schemas/AccessTokenResponse"

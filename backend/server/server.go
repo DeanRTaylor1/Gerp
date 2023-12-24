@@ -55,8 +55,8 @@ func NewServer(r *gin.Engine, dbConn *pgxpool.Pool) *Server {
 var reactApp embed.FS
 
 func (s *Server) Start() {
-	s.registerStaticRoutes()
 	s.initializeSwagger()
+	s.registerStaticRoutes()
 
 	zipper := NewZipper()
 
@@ -78,7 +78,7 @@ func (s *Server) Start() {
 		},
 	}
 
-	s.R.Use(middleware.OapiRequestValidatorWithOptions(swagger, validationOpts))
+	s.R.Use(CustomOpenAPIValidationMiddleware(swagger, *validationOpts))
 
 	opts := s.GetOptions(mw)
 	api.RegisterHandlersWithOptions(s.R, s, *opts)
@@ -102,17 +102,8 @@ func (s *Server) initializeSwagger() {
 func (s *Server) registerStaticRoutes() {
 	s.R.GET("/assets/*filepath", ServeAssets)
 
-	s.R.GET("/", func(c *gin.Context) {
-		file, err := reactApp.ReadFile("static/index.html")
-		if err != nil {
-			c.Status(http.StatusInternalServerError)
-			// Log the error here
-			return
-		}
-		c.Data(http.StatusOK, "text/html; charset=utf-8", file)
-	})
-
 	s.R.NoRoute(func(c *gin.Context) {
+		fmt.Println(c.Request.URL.Path)
 		if !strings.HasPrefix(c.Request.URL.Path, "/api") {
 			file, err := reactApp.ReadFile("static/index.html")
 			if err != nil {
@@ -125,6 +116,18 @@ func (s *Server) registerStaticRoutes() {
 			c.Status(http.StatusNotFound)
 		}
 	})
+}
+
+func (s *Server) serveReact() func(c *gin.Context) {
+	return func(c *gin.Context) {
+		file, err := reactApp.ReadFile("static/index.html")
+		if err != nil {
+			c.Status(http.StatusInternalServerError)
+			// Log the error here
+			return
+		}
+		c.Data(http.StatusOK, "text/html; charset=utf-8", file)
+	}
 }
 
 //go:embed static/assets/*

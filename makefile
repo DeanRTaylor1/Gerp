@@ -35,7 +35,7 @@ migratedown1:
 	migrate -path db/migration -database "$(DB_URL)" -verbose down 1
 
 new_migration:
-	migrate create -ext sql -dir db/migration -seq $(name)
+	migrate create -ext sql -dir backend/db/migration -seq $(name)
 
 axios:
 	npx openapi-generator-cli generate -i ./backend/api/openapi/api-v1.yaml -g typescript-axios -o ./frontend/open-source-erp/src/axios
