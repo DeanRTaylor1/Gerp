@@ -53,7 +53,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <nav>{navLinks}</nav>
             </div>
             {/* Content Area */}
-            <div className={`content flex flex-wrap p-6 pt-14 gap-6 w-full ${secondary}`}>
+            <div className={`content flex flex-wrap items-start justify-start p-6 pt-14 gap-6 w-full ${secondary}`}>
                 {children}
             </div>
         </div>

@@ -6,17 +6,17 @@ import { AuthContextType } from "./useAuth";
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 const useAuthProvider = (): AuthContextType => {
-    const [authToken, setAuthToken] = useState<string | null>(localStorage.getItem('access_token'));
-
-    // const [user, setUser] = useState<SingleUserResponse>()
-    const [authenticated, setAuthenticated] = useState<boolean>(false)
+    const [authToken, setAuthToken] = useState<string | null>(null);
+    const [authenticated, setAuthenticated] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true); // Initial loading state
 
     useEffect(() => {
         const token = localStorage.getItem('access_token');
         if (token) {
             setAuthToken(token);
-            setAuthenticated(true)
+            setAuthenticated(true);
         }
+        setLoading(false);
     }, []);
 
     const login = (token: string): void => {
@@ -36,7 +36,8 @@ const useAuthProvider = (): AuthContextType => {
         authToken,
         login,
         logout,
-        authenticated
+        authenticated,
+        loading
     };
 };
 

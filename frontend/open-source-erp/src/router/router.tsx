@@ -18,7 +18,22 @@ interface RouteElementProps {
 
 function RouteElement({ page }: RouteElementProps) {
     const Element = page.element;
-    return page.navbar ? <Private><Layout><Element /></Layout></Private> : <Public> <Element /> </Public>
+
+    if (page.navbar) {
+        return (
+            <Private>
+                <Layout>
+                    <Element />
+                </Layout>
+            </Private>
+        );
+    } else {
+        return (
+            <Public>
+                <Element />
+            </Public>
+        );
+    }
 }
 
 

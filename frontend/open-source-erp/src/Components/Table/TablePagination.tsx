@@ -18,22 +18,42 @@ const TablePagination: React.FC<TablePaginationProps> = ({ page, count, rowsPerP
     };
 
     return (
-        <div>
-            <button onClick={handlePreviousPage} disabled={page === 0}>Previous</button>
-            <span>Page {page + 1} of {totalPages}</span>
-            <button onClick={handleNextPage} disabled={page >= totalPages - 1}>Next</button>
-            <div>
-                <label>
-                    Rows per page:
-                    <select value={rowsPerPage} onChange={(e) => onRowsPerPageChange(Number(e.target.value))}>
-                        <option value={5}>5</option>
-                        <option value={10}>10</option>
-                        <option value={25}>25</option>
-                    </select>
-                </label>
+        <div className="w-full flex gap-4 pt-2">
+
+            <div className="ml-auto flex gap-4 items-center">
+                <span>{`${page + 1}-${count <= (page + 1) * rowsPerPage ? count : (page + 1) * rowsPerPage} of ${count}`}</span>
+                <div>
+                    <label>
+                        Rows per page:
+                        <select
+                            value={rowsPerPage}
+                            onChange={(e) => onRowsPerPageChange(Number(e.target.value))}
+                            className="ml-1"
+                        >
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={25}>25</option>
+                        </select>
+                    </label>
+                </div>
+                <button
+                    onClick={handlePreviousPage}
+                    disabled={page === 0}
+                    className="p-1"
+                >
+                    &lt;
+                </button>
+                <button
+                    onClick={handleNextPage}
+                    disabled={page >= totalPages - 1}
+                    className="p-1"
+                >
+                    &gt;
+                </button>
             </div>
         </div>
     );
+
 };
 
 export default TablePagination;

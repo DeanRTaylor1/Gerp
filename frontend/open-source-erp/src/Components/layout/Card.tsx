@@ -10,7 +10,7 @@ const Card: React.FC<CardProps> = ({ children, className }) => {
     const { getColorClasses } = useTheme()
     const primary = getColorClasses('primary')
     return (
-        <div className={`min-w-fit max-w-full w-full p-4 shadow-md rounded-lg ${className} ${primary}`}>
+        <div className={`max-w-full w-full h-fit p-4 shadow-md rounded-lg ${className} ${primary}`}>
             {children}
         </div>
     );

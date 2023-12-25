@@ -10,9 +10,14 @@ type Props = {
 function Public(props: Props) {
     const { children } = props
 
-    const { authenticated } = useAuth()
+    const { authenticated, loading } = useAuth();
+
+    if (loading) {
+        return null
+    }
 
     if (authenticated) {
+        console.log("redirecting")
         return <Navigate to={pagesList.Home.path} />
     }
 
