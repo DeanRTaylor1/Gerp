@@ -6,9 +6,10 @@ import { themes } from './themes';
 interface ThemeContextType {
     theme: string;
     toggleTheme: () => void;
+    getColorClasses: (colorName: string) => string;
 }
 
-export const ThemeContext = createContext<ThemeContextType>({ theme: 'light', toggleTheme: () => { } });
+export const ThemeContext = createContext<ThemeContextType>({ theme: 'light', toggleTheme: () => { }, getColorClasses: () => "" });
 
 
 interface ThemeProviderProps {
@@ -16,6 +17,17 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
+    const colorSchemes: { [key: string]: string } = {
+        primary: 'bg-white text-primary-text-light dark:bg-dark-primary-inverse-text dark:text-primary-text-dark', //Navbar toolbar
+        secondary: `dark:bg-secondary-bg-dark bg-gray-100 dark:text-secondary-text-dark text-secondary-text-light`, // Content background area
+        inactiveButton: `dark:hover:text-primary-text-dark hover:text-button-hover-text-inactive  hover:font-bold hover:border-0 hover:border-r-4 hover:border-primary-inverse-border dark:hover:border-dark-primary-inverse-border]`,
+        primaryInverse: `bg-primary-inverse-bg text-primary-inverse-text border-0 border-r-4 border-primary-inverse-border dark:border-dark-primary-inverse-border font-bold dark:bg-primary-inverse-bg dark:text-dark-primary-inverse-text`
+    }
+
+    const getColorClasses = (colorName: string): string => {
+        return colorSchemes[colorName]
+    }
+
     const getSystemThemePreference = () => {
         return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
             ? themes.DARK
@@ -51,7 +63,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
 
     return (
-        <ThemeContext.Provider value={{ theme, toggleTheme }}>
+        <ThemeContext.Provider value={{ theme, toggleTheme, getColorClasses }}>
             {children}
         </ThemeContext.Provider>
     );
