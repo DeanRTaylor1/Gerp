@@ -3,7 +3,7 @@ import { useTheme } from "../../hooks/useTheme";
 interface SelectProps {
     title: string;
     value: string;
-    onChange: (item: string | number) => void
+    onChange: (item: string) => void
     additionalClasses?: string;
     options: string[]
 }
@@ -16,7 +16,7 @@ const Select: React.FC<SelectProps> = ({ title, value, onChange, additionalClass
                 {title}
                 <select
                     value={value}
-                    onChange={(e) => onChange(Number(e.target.value))}
+                    onChange={(e) => onChange(e.target.value)}
                     className={`ml-1 ${selectStyle} ${additionalClasses}`}
                 >
                     {options.map((option) => {
