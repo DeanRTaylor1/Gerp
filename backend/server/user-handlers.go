@@ -21,7 +21,27 @@ func (s *Server) GetUsers(c *gin.Context, params api.GetUsersParams) {
 		c.AbortWithError(http.StatusBadRequest, err)
 	}
 
-	Respond(c, http.StatusOK, users, "Success", internal.ContentTypeJSON)
+	data := make([]api.UserResponse, len(users))
+	for i, v := range users {
+		userID := int64(v.ID)
+		userEmail := openapi_types.Email(v.Email)
+
+		userResponse := api.UserResponse{
+			Id:        &userID,
+			Username:  &v.Username,
+			FirstName: &v.FirstName,
+			Avatar:    &v.Avatar.String,
+			LastName:  &v.LastName,
+			Email:     &userEmail,
+			Role:      &v.RoleName,
+			Status:    &v.StatusName,
+			CreatedAt: &v.CreatedAt.Time,
+			UpdatedAt: &v.UpdatedAt.Time,
+		}
+		data[i] = userResponse
+	}
+
+	Respond(c, http.StatusOK, data, "Success", internal.ContentTypeJSON)
 }
 
 func (s *Server) PostUsers(c *gin.Context) {

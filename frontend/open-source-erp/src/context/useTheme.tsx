@@ -17,18 +17,36 @@ interface ThemeProviderProps {
     children: ReactNode;
 }
 
-export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-    const colorSchemes: { [key: string]: string } = {
-        primary: 'bg-white text-primary-text-light dark:bg-dark-primary-inverse-text dark:text-primary-text-dark', //Navbar toolbar
-        secondary: `dark:bg-secondary-bg-dark bg-gray-100 dark:text-secondary-text-dark text-secondary-text-light`, // Content background area
-        inactiveButton: `dark:hover:text-primary-text-dark hover:text-button-hover-text-inactive  hover:font-bold hover:border-0 hover:border-r-4 hover:border-primary-inverse-border dark:hover:border-dark-primary-inverse-border]`,
-        primaryInverse: `bg-primary-inverse-bg text-primary-inverse-text border-0 border-r-4 border-primary-inverse-border dark:border-dark-primary-inverse-border font-bold dark:bg-primary-inverse-bg dark:text-dark-primary-inverse-text`
-    }
+const colorSchemes: { [key: string]: string } = {
+    primary: 'bg-white text-primary-text-light dark:bg-dark-primary-inverse-text dark:text-primary-text-dark', //Navbar toolbar
+    secondary: `dark:bg-secondary-bg-dark bg-gray-100 dark:text-secondary-text-dark text-secondary-text-light`, // Content background area
+    inactiveButton: `dark:hover:text-primary-text-dark hover:text-button-hover-text-inactive  hover:font-bold hover:border-0 hover:border-r-4 hover:border-primary-inverse-border dark:hover:border-dark-primary-inverse-border]`,
+    primaryInverse: `bg-primary-inverse-bg text-primary-inverse-text border-0 border-r-4 border-primary-inverse-border dark:border-dark-primary-inverse-border font-bold dark:bg-primary-inverse-bg dark:text-dark-primary-inverse-text`
+}
 
-    const styles: { [key: string]: string } = {
-        pageTitle: 'text-2xl font-semibold',
-        tableRowHover: `hover:bg-gray-50 dark:hover:bg-[#6D6D6D]`
-    }
+const styles: { [key: string]: string } = {
+    pageTitle: 'text-2xl font-semibold',
+    tableRowHover: `hover:bg-gray-50 dark:hover:bg-[#6D6D6D]`,
+    selectDropdown: `
+    form-select block w-fit px-3 py-1.5 text-base font-normal
+    bg-white text-gray-700 border border-gray-300
+    dark:bg-dark-primary-inverse-text dark:text-primary-text-dark dark:border-dark-primary-inverse-border
+    rounded transition ease-in-out m-0
+    focus:text-gray-700 focus:bg-white focus:border-blue-600 dark:focus:bg-dark-primary-inverse-text dark:focus:border-dark-primary-inverse-border focus:dark:text-primary-text-dark
+    focus:outline-none cursor-pointer
+`,
+    navButton: `
+p-2 text-lg font-semibold text-gray-600
+dark:text-primary-text-dark
+hover:bg-gray-200 dark:hover:bg-dark-primary-inverse-text
+focus:outline-none focus:ring focus:border-blue-300
+disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer
+`,
+
+}
+
+export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
+
 
     const getStyles = (styleName: string): string => {
         return styles[styleName]
@@ -49,7 +67,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     const toggleTheme = () => {
         const newTheme = theme === themes.LIGHT ? themes.DARK : themes.LIGHT;
         setTheme(newTheme);
-        console.log({ newTheme })
         try {
             window.localStorage.setItem('color-scheme', newTheme);
         } catch (error) {

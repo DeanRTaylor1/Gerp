@@ -3,14 +3,34 @@ import en from "../locales/en";
 import it from "../locales/it";
 import languages from "../constants/languages";
 
+const getInitialLocale = () => {
+  const storedLocale = localStorage.getItem("userLocale");
+  if (storedLocale) {
+    return storedLocale;
+  }
+  const browserLocale = navigator.language;
+
+  return mapBrowserLocaleToYourLocale(browserLocale) || languages.eng.value;
+};
+
+function mapBrowserLocaleToYourLocale(browserLocale: string): string | null {
+  switch (browserLocale) {
+    case "it" || "it-IT":
+      return languages.ita.value;
+    case "en" || "en-US" || "en-UK":
+      return languages.eng.value;
+    default:
+      return null;
+  }
+}
 
 const Locale = atom<string>({
-    key: 'locale',
-    default: languages.eng.value,
+  key: "locale",
+  default: getInitialLocale(),
 });
-  
+
 const Language = selector({
-  key: 'language',
+  key: "language",
   get: ({ get }) => {
     const locale = get(Locale);
 
@@ -23,7 +43,4 @@ const Language = selector({
   },
 });
 
-export {
-  Locale,
-  Language
-};
+export { Locale, Language };

@@ -193,7 +193,22 @@ func (q *Queries) GetUserForUpdate(ctx context.Context, id int32) (User, error) 
 }
 
 const getUsers = `-- name: GetUsers :many
-SELECT id, username, first_name, last_name, email, password, avatar, last_login, user_status_id, role_id, created_at, updated_at FROM users
+SELECT 
+    users.id,
+    users.username,
+    users.first_name,
+    users.last_name,
+    users.email,
+    users.password,
+    users.avatar,
+    users.last_login,
+    users.created_at,
+    users.updated_at,
+    user_roles.role_name AS role_name,
+    user_statuses.status_name AS status_name
+FROM users 
+JOIN user_roles ON users.role_id = user_roles.id
+JOIN user_statuses ON users.user_status_id = user_statuses.id
 LIMIT $2
 OFFSET $1
 `
@@ -203,15 +218,30 @@ type GetUsersParams struct {
 	Limit  int32 `json:"limit"`
 }
 
-func (q *Queries) GetUsers(ctx context.Context, arg GetUsersParams) ([]User, error) {
+type GetUsersRow struct {
+	ID         int32            `json:"id"`
+	Username   string           `json:"username"`
+	FirstName  string           `json:"first_name"`
+	LastName   string           `json:"last_name"`
+	Email      string           `json:"email"`
+	Password   string           `json:"password"`
+	Avatar     pgtype.Text      `json:"avatar"`
+	LastLogin  pgtype.Timestamp `json:"last_login"`
+	CreatedAt  pgtype.Timestamp `json:"created_at"`
+	UpdatedAt  pgtype.Timestamp `json:"updated_at"`
+	RoleName   string           `json:"role_name"`
+	StatusName string           `json:"status_name"`
+}
+
+func (q *Queries) GetUsers(ctx context.Context, arg GetUsersParams) ([]GetUsersRow, error) {
 	rows, err := q.db.Query(ctx, getUsers, arg.Offset, arg.Limit)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []User{}
+	items := []GetUsersRow{}
 	for rows.Next() {
-		var i User
+		var i GetUsersRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.Username,
@@ -221,10 +251,10 @@ func (q *Queries) GetUsers(ctx context.Context, arg GetUsersParams) ([]User, err
 			&i.Password,
 			&i.Avatar,
 			&i.LastLogin,
-			&i.UserStatusID,
-			&i.RoleID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.RoleName,
+			&i.StatusName,
 		); err != nil {
 			return nil, err
 		}

@@ -44,7 +44,7 @@ const TableRow: React.FC<TableRowProps> = ({
             <td className="p-3 align-center">{lastName}</td>
             <td className="p-3 align-center">{email}</td>
             <td className="p-3 align-center">{role}</td>
-            <td className={`font-semibold ${status === 'active' ? 'text-green-500' : 'text-red-500'}`}>{status}</td>
+            <td className={`font-semibold ${status === 'Active' ? 'text-green-500' : 'text-red-500'}`}>{status}</td>
             <td className="p-3 align-center">{createdAt}</td>
             <td className="p-3 align-center">{updatedAt}</td>
         </tr >

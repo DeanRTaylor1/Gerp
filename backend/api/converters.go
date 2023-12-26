@@ -11,6 +11,8 @@ func (u *UserRequest) ToCreateUserParams(hashedPassword string) db.CreateUserPar
 	var avatar pgtype.Text
 	if u.Avatar != nil {
 		avatar = pgtype.Text{String: *u.Avatar, Valid: true}
+	} else {
+		avatar = pgtype.Text{String: "https://minimal-kit-react.vercel.app/assets/images/avatars/avatar_13.jpg", Valid: true}
 	}
 
 	return db.CreateUserParams{
