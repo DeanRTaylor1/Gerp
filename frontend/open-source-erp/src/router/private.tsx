@@ -10,7 +10,11 @@ type Props = {
 function Private(props: Props) {
     const { children } = props
 
-    const { authenticated } = useAuth()
+    const { authenticated, loading } = useAuth();
+
+    if (loading) {
+        return null
+    }
 
     if (!authenticated) {
         return <Navigate to={pagesList['Sign-in'].path} />

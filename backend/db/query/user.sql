@@ -42,9 +42,25 @@ LIMIT 1;
 
 
 -- name: GetUsers :many
-SELECT * FROM users
+SELECT 
+    users.id,
+    users.username,
+    users.first_name,
+    users.last_name,
+    users.email,
+    users.password,
+    users.avatar,
+    users.last_login,
+    users.created_at,
+    users.updated_at,
+    user_roles.role_name AS role_name,
+    user_statuses.status_name AS status_name
+FROM users 
+JOIN user_roles ON users.role_id = user_roles.id
+JOIN user_statuses ON users.user_status_id = user_statuses.id
 LIMIT $2
 OFFSET $1;
+
 
 -- name: GetUserForUpdate :one
 SELECT * FROM users

@@ -38,7 +38,7 @@ type Querier interface {
 	GetUserStatusForUpdate(ctx context.Context, id int32) (UserStatus, error)
 	GetUserStatuses(ctx context.Context, arg GetUserStatusesParams) ([]UserStatus, error)
 	GetUserUserStatusByName(ctx context.Context, statusName string) (GetUserUserStatusByNameRow, error)
-	GetUsers(ctx context.Context, arg GetUsersParams) ([]User, error)
+	GetUsers(ctx context.Context, arg GetUsersParams) ([]GetUsersRow, error)
 	UpdateGender(ctx context.Context, arg UpdateGenderParams) error
 	UpdateLastLogin(ctx context.Context, id int32) error
 	UpdateMaritalStatus(ctx context.Context, arg UpdateMaritalStatusParams) error
