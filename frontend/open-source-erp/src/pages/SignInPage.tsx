@@ -1,16 +1,38 @@
 import { Link } from "react-router-dom";
 import SignInForm from "../Components/forms/SignInForm";
+import useTranslator from "../hooks/useTranslator";
+import { useRecoilState } from "recoil";
+import { Locale } from "../recoil/globalState";
+import { SyntheticEvent } from "react";
+import languages from "../constants/languages";
 
 
 const SignInPage = () => {
+
+    const availableLangs = [ languages.eng, languages.ita ];
+
+    const translator = useTranslator();
+
+    const [locale, setLocale] = useRecoilState(Locale);
+
+    const changeLanguage = (event: SyntheticEvent) => {
+        const target = event.target as HTMLInputElement;
+        setLocale(target.value);
+    }
 
     return (
 
         <section>
             <div className="grid md:h-screen md:grid-cols-2">
                 <div className="flex flex-col items-center justify-center bg-white">
+                    <div>
+                        <h1>Select Language:</h1>
+                        <select value={locale} onChange={e => changeLanguage(e)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                          { availableLangs.map(lang => <option key={lang.value} value={lang.value}>{lang.label}</option>) }
+                        </select>
+                    </div>
                     <div className="max-w-lg px-5 py-16 text-center md:px-10 md:py-24 lg:py-32">
-                        <h2 className="mb-8 text-3xl font-bold md:mb-12 md:text-5xl">Welcome Back</h2>
+                        <h2 className="mb-8 text-3xl font-bold md:mb-12 md:text-5xl">{ translator.global.txt_welcome }</h2>
                         <SignInForm />
                         <p className="text-sm text-[#636262]">Don&apos;t have an account? <Link to='/signup' className="text-sm font-bold text-black">Sign up now</Link>
                         </p>
