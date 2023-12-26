@@ -68,7 +68,7 @@ const SignUpForm = () => {
                         iconSrc="https://assets.website-files.com/6357722e2a5f19121d37f84d/6357722e2a5f19601037f879_Lock-2.svg"
                         additionalClasses="mb-4" />
                     <SubmitButton
-                        label="Login"
+                        label="Submit"
                     />
                 </Form>
             )}

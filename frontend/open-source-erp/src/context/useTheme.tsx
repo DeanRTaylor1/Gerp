@@ -31,10 +31,10 @@ const styles: { [key: string]: string } = {
     selectDropdown: `
     form-select block w-fit px-3 py-1.5 text-base font-normal
     bg-white text-gray-700 border border-gray-300
-    dark:bg-dark-primary-inverse-text dark:text-primary-text-dark dark:border-dark-primary-inverse-border
+    dark:bg-dark-primary-inverse-text dark:text-primary-text-dark 
     dark:border-primary-text-dark
     rounded transition ease-in-out m-0
-    focus:text-gray-700 focus:bg-white focus:border-blue-600 dark:focus:bg-dark-primary-inverse-text dark:focus:border-dark-primary-inverse-border focus:dark:text-primary-text-dark
+    focus:text-gray-700 focus:bg-white focus:border-blue-600 dark:focus:bg-dark-primary-inverse-text dark:focus:border-primary-text-dark focus:dark:text-primary-text-dark
     focus:outline-none cursor-pointer
 `,
     navButton: `

@@ -21,7 +21,6 @@ const SignInPage = () => {
 
     const changeLanguage = (value: string) => {
         setLocale(value);
-        console.log("Locale changed to:", value); // Debugging
     };
 
     return (
@@ -33,7 +32,7 @@ const SignInPage = () => {
                     <div className="max-w-lg min-w-[350px] px-5 py-16 text-center md:px-10 md:py-24 lg:py-32">
                         <h2 className="mb-8  text-3xl font-bold md:mb-12 md:text-5xl">{translator.global.txt_welcome}</h2>
                         <SignInForm />
-                        <p className="text-sm text-[#636262]">Don&apos;t have an account? <Link to='/signup' className="text-sm font-bold text-black">Sign up now</Link>
+                        <p className="text-sm text-[#636262] dark:text-primary-text-dark">{translator.global.no_account}<Link to='/signup' className="text-sm font-bold text-black dark:text-white"> {translator.global.sign_up_now}</Link>
                         </p>
                     </div>
                 </div>
