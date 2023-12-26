@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { pages } from '../../router/pages';
-import { useTheme } from '../../hooks/useTheme';
+import { pages } from '../router/pages';
+import { useTheme } from '../hooks/useTheme';
 
 interface LayoutProps {
     children: React.ReactNode;

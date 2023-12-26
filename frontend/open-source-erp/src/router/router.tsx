@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { pages, IPage } from './pages';
-import Layout from '../Components/layout/Layout';
+import Layout from '../layout/Layout';
 import Public from './public';
 import Private from './private';
 

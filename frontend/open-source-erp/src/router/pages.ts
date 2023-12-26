@@ -1,6 +1,6 @@
 import About from "../pages/About";
 import Home from "../pages/Home";
-import SignInPage from "../pages/SignInPage";
+import SignInPage from "../pages/SignIn";
 import SignUp from "../pages/SignUp";
 import UsersAdmin from "../pages/UsersAdmin";
 

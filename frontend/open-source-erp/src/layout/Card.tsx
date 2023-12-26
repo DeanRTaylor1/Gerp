@@ -1,10 +1,12 @@
 import React from 'react';
-import { useTheme } from '../../hooks/useTheme';
+import { useTheme } from '../hooks/useTheme';
 
 interface CardProps {
     children: React.ReactNode;
     className?: string;
 }
+
+//Dashboard components should be put inside a card. 
 
 const Card: React.FC<CardProps> = ({ children, className }) => {
     const { getColorClasses } = useTheme()
