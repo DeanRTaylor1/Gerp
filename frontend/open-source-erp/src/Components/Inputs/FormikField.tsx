@@ -21,7 +21,7 @@ const FormikField: React.FC<FormikFieldProps> = ({
     const [field, meta] = useField(name); // Use Formik's useField hook
 
     return (
-        <div className={`relative ${additionalClasses}`}>
+        <div className={`relative w-[350px] ${additionalClasses}`}>
             <img alt="" src={iconSrc} className="absolute bottom-0 left-[5%] right-auto top-[26%] inline-block" />
             <Field
                 {...field}

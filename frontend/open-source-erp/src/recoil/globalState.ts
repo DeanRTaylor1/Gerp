@@ -15,9 +15,12 @@ const getInitialLocale = () => {
 
 function mapBrowserLocaleToYourLocale(browserLocale: string): string | null {
   switch (browserLocale) {
-    case "it" || "it-IT":
+    case "it":
+    case "it-IT":
       return languages.ita.value;
-    case "en" || "en-US" || "en-UK":
+    case "en":
+    case "en-US":
+    case "en-UK":
       return languages.eng.value;
     default:
       return null;

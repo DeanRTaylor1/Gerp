@@ -3,6 +3,7 @@ import { pages, IPage } from './pages';
 import Layout from '../layout/Layout';
 import Public from './public';
 import Private from './private';
+import LandingPage from '../layout/LandingPage';
 
 const router = createBrowserRouter(pages.map(page => ({
     path: page.path,
@@ -30,7 +31,9 @@ function RouteElement({ page }: RouteElementProps) {
     } else {
         return (
             <Public>
-                <Element />
+                <LandingPage>
+                    <Element />
+                </LandingPage>
             </Public>
         );
     }

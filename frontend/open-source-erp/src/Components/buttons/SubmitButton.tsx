@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTheme } from '../../hooks/useTheme';
 
 interface SubmitButtonProps {
     label: string;
@@ -13,10 +14,12 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
         </svg>
     ),
 }) => {
+    const { getColorClasses } = useTheme()
+    const submitButton = getColorClasses('submitButton')
     return (
         <button
             type="submit"
-            className="w-full flex items-center justify-center bg-[#276ef1] px-8 py-4 text-center font-semibold text-white transition [box-shadow:rgb(171,_196,_245)_-8px_8px] hover:[box-shadow:rgb(171,_196,_245)_0px_0px]"
+            className={submitButton}
         >
             <p className="mr-6 font-bold">{label}</p>
             {icon}
