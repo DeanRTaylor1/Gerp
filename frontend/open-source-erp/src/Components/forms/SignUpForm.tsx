@@ -5,6 +5,8 @@ import FormikField from '../Inputs/FormikField';
 import SubmitButton from '../buttons/SubmitButton';
 import { useUserApi } from '../../hooks/useUserApi';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '../../hooks/useToast';
+import useTranslator from '../../hooks/useTranslator';
 
 
 const UserRequestSchema = Yup.object().shape({
@@ -25,19 +27,21 @@ const SignUpForm = () => {
         lastName: '',
     };
 
+    const showToast = useToast()
     const navigate = useNavigate()
+    const translator = useTranslator();
 
     const handleSubmit = async (values: UserRequest, formikHelpers: FormikHelpers<UserRequest>) => {
-        console.log(values);
         try {
-            formikHelpers.setSubmitting(false);
+            formikHelpers.setSubmitting(true);
             await api.usersPost(values)
+            showToast(translator.global.success)
+            formikHelpers.setSubmitting(false);
             navigate('/signin')
         } catch (error) {
-            //TOAST HERE
-            console.error({ error })
+            showToast(translator.global.something_went_wrong)
+            console.log({ error })
         }
-
     };
 
     return (
@@ -48,15 +52,15 @@ const SignUpForm = () => {
         >
             {() => (
                 <Form className='mx-auto mb-4 max-w-sm pb-4'>
-                    <FormikField name="username" type="text" placeholder="Username"
+                    <FormikField name="username" type="text" placeholder={translator.global.username}
                         iconSrc="https://assets.website-files.com/6357722e2a5f19121d37f84d/6357722e2a5f190b7e37f878_EnvelopeSimple.svg"
                         maxLength={256}
                         additionalClasses="mb-4" />
-                    <FormikField name="email" type="email" placeholder="Email Address"
+                    <FormikField name="email" type="email" placeholder={translator.global.email_address}
                         iconSrc="https://assets.website-files.com/6357722e2a5f19121d37f84d/6357722e2a5f190b7e37f878_EnvelopeSimple.svg"
                         additionalClasses="mb-4" />
                     <FormikField name="password" type="password"
-                        placeholder="Password"
+                        placeholder={translator.global.password}
                         iconSrc="https://assets.website-files.com/6357722e2a5f19121d37f84d/6357722e2a5f19601037f879_Lock-2.svg"
                         additionalClasses="mb-4" />
                     <FormikField name="firstName" type="text"
@@ -68,7 +72,7 @@ const SignUpForm = () => {
                         iconSrc="https://assets.website-files.com/6357722e2a5f19121d37f84d/6357722e2a5f19601037f879_Lock-2.svg"
                         additionalClasses="mb-4" />
                     <SubmitButton
-                        label="Submit"
+                        label={translator.global.Submit}
                     />
                 </Form>
             )}
