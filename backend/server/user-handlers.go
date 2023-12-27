@@ -25,18 +25,26 @@ func (s *Server) GetUsers(c *gin.Context, params api.GetUsersParams) {
 	for i, v := range users {
 		userID := int64(v.ID)
 		userEmail := openapi_types.Email(v.Email)
+		username := v.Username
+		firstName := v.FirstName
+		avatar := v.Avatar.String
+		lastName := v.LastName
+		role := v.RoleName
+		status := v.StatusName
+		createdAt := v.CreatedAt.Time
+		updatedAt := v.UpdatedAt.Time
 
 		userResponse := api.UserResponse{
 			Id:        &userID,
-			Username:  &v.Username,
-			FirstName: &v.FirstName,
-			Avatar:    &v.Avatar.String,
-			LastName:  &v.LastName,
+			Username:  &username,
+			FirstName: &firstName,
+			Avatar:    &avatar,
+			LastName:  &lastName,
 			Email:     &userEmail,
-			Role:      &v.RoleName,
-			Status:    &v.StatusName,
-			CreatedAt: &v.CreatedAt.Time,
-			UpdatedAt: &v.UpdatedAt.Time,
+			Role:      &role,
+			Status:    &status,
+			CreatedAt: &createdAt,
+			UpdatedAt: &updatedAt,
 		}
 		data[i] = userResponse
 	}

@@ -13,7 +13,10 @@ const UsersAdmin = () => {
     return (
         <>
             <div className="w-full h-full flex flex-col gap-4 mt-8">
-                <div className={pageTitle + " " + secondary}>Users</div>
+                <div className="flex justify-between px-4">
+                    <div className={`${pageTitle} ${secondary}`}>Users</div>
+                    <div>Test</div>
+                </div>
                 <Card className="px-0">
                     <UsersTable />
                 </Card>

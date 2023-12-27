@@ -7,6 +7,7 @@ import { useUserApi } from '../../hooks/useUserApi';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '../../hooks/useToast';
 import useTranslator from '../../hooks/useTranslator';
+import { Icon } from "@iconify/react"
 
 
 const UserRequestSchema = Yup.object().shape({
@@ -35,7 +36,7 @@ const SignUpForm = () => {
         try {
             formikHelpers.setSubmitting(true);
             await api.usersPost(values)
-            showToast(translator.global.success)
+            showToast(translator.global.success, "success")
             formikHelpers.setSubmitting(false);
             navigate('/signin')
         } catch (error) {
@@ -52,24 +53,25 @@ const SignUpForm = () => {
         >
             {() => (
                 <Form className='mx-auto mb-4 max-w-sm pb-4'>
-                    <FormikField name="username" type="text" placeholder={translator.global.username}
-                        iconSrc="https://assets.website-files.com/6357722e2a5f19121d37f84d/6357722e2a5f190b7e37f878_EnvelopeSimple.svg"
+                    <FormikField icon={<Icon icon="solar:user-linear" />} name="username" type="text" placeholder={translator.global.username}
                         maxLength={256}
                         additionalClasses="mb-4" />
-                    <FormikField name="email" type="email" placeholder={translator.global.email_address}
-                        iconSrc="https://assets.website-files.com/6357722e2a5f19121d37f84d/6357722e2a5f190b7e37f878_EnvelopeSimple.svg"
+                    <FormikField icon={<Icon icon="teenyicons:envelope-outline" />} name="email" type="email" placeholder={translator.global.email_address}
                         additionalClasses="mb-4" />
-                    <FormikField name="password" type="password"
+                    <FormikField
+                        icon={<Icon icon="mdi:password-outline" />}
+                        name="password" type="password"
                         placeholder={translator.global.password}
-                        iconSrc="https://assets.website-files.com/6357722e2a5f19121d37f84d/6357722e2a5f19601037f879_Lock-2.svg"
                         additionalClasses="mb-4" />
-                    <FormikField name="firstName" type="text"
+                    <FormikField
+                        icon={<Icon icon="mdi:card-account-details-outline" />}
+                        name="firstName" type="text"
                         placeholder="John"
-                        iconSrc="https://assets.website-files.com/6357722e2a5f19121d37f84d/6357722e2a5f19601037f879_Lock-2.svg"
                         additionalClasses="mb-4" />
-                    <FormikField name="lastName" type="text"
+                    <FormikField
+                        icon={<Icon icon="mdi:card-account-details-outline" />}
+                        name="lastName" type="text"
                         placeholder="Smith"
-                        iconSrc="https://assets.website-files.com/6357722e2a5f19121d37f84d/6357722e2a5f19601037f879_Lock-2.svg"
                         additionalClasses="mb-4" />
                     <SubmitButton
                         label={translator.global.Submit}

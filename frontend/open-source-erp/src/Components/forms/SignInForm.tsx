@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthApi } from '../../hooks/useAuthenticationApi';
 import { useAuth } from '../../context/useAuth';
 import { useToast } from '../../hooks/useToast';
+import { Icon } from '@iconify/react'
 
 
 const LoginRequestSchema = Yup.object().shape({
@@ -52,11 +53,10 @@ const SignInForm = () => {
             {() => (
                 <Form className='mx-auto mb-4 max-w-sm pb-4'>
                     <FormikField name="email" type="email" placeholder="Email Address"
-                        iconSrc="https://assets.website-files.com/6357722e2a5f19121d37f84d/6357722e2a5f190b7e37f878_EnvelopeSimple.svg"
-                        additionalClasses="mb-4" />
+                        icon={<Icon icon="teenyicons:envelope-outline" />} additionalClasses="mb-4" />
                     <FormikField name="password" type="password"
                         placeholder="Password"
-                        iconSrc="https://assets.website-files.com/6357722e2a5f19121d37f84d/6357722e2a5f19601037f879_Lock-2.svg"
+                        icon={<Icon icon="mdi:password-outline" />}
                         additionalClasses="mb-4" />
 
                     <SubmitButton

@@ -5,7 +5,7 @@ interface FormikFieldProps {
     name: string;
     type: string;
     placeholder: string;
-    iconSrc: string;
+    icon: React.ReactElement;
     maxLength?: number;
     additionalClasses?: string;
 }
@@ -14,7 +14,7 @@ const FormikField: React.FC<FormikFieldProps> = ({
     name,
     type,
     placeholder,
-    iconSrc,
+    icon,
     maxLength,
     additionalClasses = ''
 }) => {
@@ -22,7 +22,9 @@ const FormikField: React.FC<FormikFieldProps> = ({
 
     return (
         <div className={`relative w-[350px] ${additionalClasses}`}>
-            <img alt="" src={iconSrc} className="absolute bottom-0 left-[5%] right-auto top-[26%] inline-block" />
+            <div className="text-[#333333] absolute bottom-0 left-[5%] right-auto top-[33%] inline-block">
+                {icon}
+            </div>
             <Field
                 {...field}
                 type={type}

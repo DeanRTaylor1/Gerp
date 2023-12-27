@@ -7,6 +7,10 @@ import TablePagination from "./TablePagination"
 import TableRow from "./TableRow"
 import { useUserApi } from "../../hooks/useUserApi"
 import useFetch from "../../hooks/useFetch"
+import SearchInputField from "../Inputs/SearchInputField"
+import { Icon } from "@iconify/react"
+import { useToast } from "../../hooks/useToast"
+import Loading from "../Loader/Loading"
 
 const headLabels = [
     {
@@ -14,24 +18,24 @@ const headLabels = [
         "label": "Avatar"
     },
     {
-        "id": "createdAt",
-        "label": "CreatedAt"
+        "id": "id",
+        "label": "Id"
     },
     {
-        "id": "email",
-        "label": "Email"
+        "id": "username",
+        "label": "Username"
     },
     {
         "id": "firstName",
         "label": "FirstName"
     },
     {
-        "id": "id",
-        "label": "Id"
-    },
-    {
         "id": "lastName",
         "label": "LastName"
+    },
+    {
+        "id": "email",
+        "label": "Email"
     },
     {
         "id": "role",
@@ -42,13 +46,14 @@ const headLabels = [
         "label": "Status"
     },
     {
+        "id": "createdAt",
+        "label": "CreatedAt"
+    },
+    {
         "id": "updatedAt",
         "label": "UpdatedAt"
     },
-    {
-        "id": "username",
-        "label": "Username"
-    }
+
 ]
 
 
@@ -59,18 +64,26 @@ const UsersTable: React.FC = () => {
     const [page, setPage] = useState(0);
     const rowsPerPage = 10;
     const usersApi = useUserApi();
+    const showToast = useToast()
     const fetchUsers = async () => {
         const response = await usersApi.usersGet(page * rowsPerPage, rowsPerPage);
+        console.log(JSON.stringify(response.data.data))
         return response.data.data || [];
     };
 
     const { data: users, isLoading, error } = useFetch(['users'], fetchUsers);
 
-    if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>Error loading users</div>;
+    if (isLoading) return (
+        <Loading />
+    )
+    if (error) {
+        showToast("Error loading users.")
+        return (null)
+    }
 
     return (
         <TableContainer style={{ overflow: 'unset' }}>
+            <SearchInputField type="input" name="Search:" placeholder="Search..." icon={<Icon icon="carbon:search" />} additionalClasses="pl-8 w-60" />
             <Table>
                 <TableHead headLabel={headLabels} />
                 <TableBody>
@@ -86,7 +99,7 @@ const UsersTable: React.FC = () => {
                 onPageChange={setPage}
                 onRowsPerPageChange={() => "test"}
             />
-        </TableContainer>
+        </TableContainer >
     );
 }
 
