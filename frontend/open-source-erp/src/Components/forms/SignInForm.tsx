@@ -6,6 +6,7 @@ import SubmitButton from '../buttons/SubmitButton';
 import { useNavigate } from 'react-router-dom';
 import { useAuthApi } from '../../hooks/useAuthenticationApi';
 import { useAuth } from '../../context/useAuth';
+import { useToast } from '../../hooks/useToast';
 
 
 const LoginRequestSchema = Yup.object().shape({
@@ -15,6 +16,7 @@ const LoginRequestSchema = Yup.object().shape({
 const SignInForm = () => {
     const authAPi = useAuthApi()
     const { login } = useAuth()
+    const showToast = useToast()
     const initialValues: LoginUserRequest = {
         email: '',
         password: '',
@@ -25,16 +27,17 @@ const SignInForm = () => {
     const handleSubmit = async (values: LoginUserRequest, formikHelpers: FormikHelpers<LoginUserRequest>) => {
         console.log(values);
         try {
-            formikHelpers.setSubmitting(false);
-            const data = await authAPi.authPost(values)
-            if (!data.data.data) {
+            formikHelpers.setSubmitting(true);
+            const response = await authAPi.authPost(values)
+            if (!response.data.data) {
                 throw new Error("Something went wrong")
             }
-            const access_token = data.data.data.access_token
+            const access_token = response.data.data.access_token
             login(access_token)
+            formikHelpers.setSubmitting(false);
             navigate('/')
         } catch (error) {
-            //TOAST HERE
+            showToast('Error logging in please try again.')
             console.error({ error })
         }
 

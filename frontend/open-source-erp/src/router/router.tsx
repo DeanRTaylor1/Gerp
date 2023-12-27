@@ -4,6 +4,7 @@ import Layout from '../layout/Layout';
 import Public from './public';
 import Private from './private';
 import LandingPage from '../layout/LandingPage';
+import Toast from '../Components/toast/Toast';
 
 const router = createBrowserRouter(pages.map(page => ({
     path: page.path,
@@ -25,6 +26,7 @@ function RouteElement({ page }: RouteElementProps) {
             <Private>
                 <Layout>
                     <Element />
+                    <Toast />
                 </Layout>
             </Private>
         );
@@ -33,6 +35,7 @@ function RouteElement({ page }: RouteElementProps) {
             <Public>
                 <LandingPage>
                     <Element />
+                    <Toast />
                 </LandingPage>
             </Public>
         );

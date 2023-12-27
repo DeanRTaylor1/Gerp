@@ -5,7 +5,6 @@ import { ThemeProvider } from "./context/useTheme";
 import Router from "./router/router";
 import { queryClient } from "./hooks/queryClient";
 import { QueryClientProvider } from '@tanstack/react-query';
-import Toast from "./Components/toast/Toast";
 
 function App() {
   return (
@@ -14,7 +13,6 @@ function App() {
         <ThemeProvider>
           <AuthProvider>
             <Router />
-            <Toast />
           </AuthProvider>
         </ThemeProvider>
       </QueryClientProvider>

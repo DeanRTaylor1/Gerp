@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, ReactNode } from "react";
 import { AuthContextType } from "./useAuth";
+import { jwtDecode } from "jwt-decode"
 
 
 
@@ -13,8 +14,13 @@ const useAuthProvider = (): AuthContextType => {
     useEffect(() => {
         const token = localStorage.getItem('access_token');
         if (token) {
-            setAuthToken(token);
-            setAuthenticated(true);
+            const decoded = jwtDecode(token);
+            if (decoded?.exp && decoded.exp * 1000 > Date.now()) {
+                setAuthToken(token);
+                setAuthenticated(true);
+            } else {
+                logout();
+            }
         }
         setLoading(false);
     }, []);

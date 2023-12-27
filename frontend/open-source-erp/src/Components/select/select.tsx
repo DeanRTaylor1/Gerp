@@ -11,13 +11,13 @@ const Select: React.FC<SelectProps> = ({ title, value, onChange, additionalClass
     const { getStyles } = useTheme();
     const selectStyle = getStyles('selectDropdown');
     return (
-        <div className="flex gap-2">
+        <div className={`flex gap-2 ${additionalClasses}`}>
             <label className="flex gap-2 items-center justify-center">
                 {title}
                 <select
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
-                    className={`ml-1 ${selectStyle} ${additionalClasses}`}
+                    className={`ml-1 ${selectStyle} `}
                 >
                     {options.map((option) => {
                         return (
