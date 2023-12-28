@@ -90,6 +90,7 @@ const UsersTable: React.FC = () => {
                     {users && users.length > 0 && users.map(user => (
                         <TableRow key={user.id} id={user.id!} updatedAt={user.updatedAt!} status={user.status!} username={user.username!} firstName={user.firstName!} lastName={user.lastName!} role={user.role!} email={user.email!} createdAt={user.createdAt!} handleClick={() => console.log("clicked")} selected={false} avatar={user.avatar!}> </TableRow>
                     ))}
+
                 </TableBody>
             </Table>
             <TablePagination
