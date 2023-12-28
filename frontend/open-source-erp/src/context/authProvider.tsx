@@ -1,18 +1,19 @@
 import { createContext, useState, useEffect, ReactNode } from 'react';
 import { AuthContextType } from './useAuth';
 import { jwtDecode } from 'jwt-decode';
+import { JwtPayload } from '../axios';
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 const useAuthProvider = (): AuthContextType => {
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [authenticated, setAuthenticated] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true); // Initial loading state
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
     if (token) {
-      const decoded = jwtDecode(token);
+      const decoded: JwtPayload = jwtDecode(token);
       if (decoded?.exp && decoded.exp * 1000 > Date.now()) {
         setAuthToken(token);
         setAuthenticated(true);

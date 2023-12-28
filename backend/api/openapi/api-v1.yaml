@@ -359,3 +359,19 @@ components:
           example: success
         data:
           $ref: "#/components/schemas/AccessTokenResponse"
+    JwtPayload:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          example: john.smith1@email.com
+        roles:
+          type: string
+          example: admin
+        iat:
+          type: int
+        exp:
+          type: int

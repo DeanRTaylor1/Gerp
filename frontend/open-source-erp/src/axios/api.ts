@@ -127,6 +127,43 @@ export interface ErrorResponse {
 /**
  * 
  * @export
+ * @interface JwtPayload
+ */
+export interface JwtPayload {
+    /**
+     * 
+     * @type {number}
+     * @memberof JwtPayload
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof JwtPayload
+     */
+    'email'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof JwtPayload
+     */
+    'roles'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof JwtPayload
+     */
+    'iat'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof JwtPayload
+     */
+    'exp'?: number;
+}
+/**
+ * 
+ * @export
  * @interface LoginUserRequest
  */
 export interface LoginUserRequest {

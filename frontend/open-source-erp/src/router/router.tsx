@@ -34,7 +34,7 @@ interface RouteElementProps {
 function RouteElement({ page }: RouteElementProps) {
   const Element = page.element!;
 
-  if (page.navbar) {
+  if (page.protected) {
     return (
       <Private>
         <Layout>

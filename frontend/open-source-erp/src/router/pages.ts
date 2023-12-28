@@ -3,6 +3,7 @@ import Home from '../pages/Home';
 import SignInPage from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
 import UsersAdmin from '../pages/UsersAdmin';
+import UserProfile from '../pages/users/UserProfile';
 
 type PageName =
   | 'home'
@@ -10,7 +11,9 @@ type PageName =
   | 'sign-in'
   | 'sign-up'
   | 'user management'
+  | 'profile'
   | 'create';
+
 type PageCategory = 'users' | 'payslips';
 
 export interface IPageTreeItem {
@@ -19,6 +22,7 @@ export interface IPageTreeItem {
   icon: string;
   children?: IPageTreeItem[];
   path?: string;
+  protected: boolean;
   element?: () => JSX.Element;
 }
 
@@ -29,11 +33,13 @@ export const pageTree: Array<IPageTreeItem> = [
     navbar: true,
     icon: 'mdi:home',
     element: Home,
+    protected: true,
   },
   {
     name: 'Users',
     navbar: true,
     icon: 'mdi:account-multiple',
+    protected: true,
     children: [
       {
         name: 'User Management',
@@ -41,6 +47,7 @@ export const pageTree: Array<IPageTreeItem> = [
         navbar: true,
         icon: 'mdi:account-multiple',
         element: UsersAdmin,
+        protected: true,
       },
     ],
   },
@@ -48,6 +55,7 @@ export const pageTree: Array<IPageTreeItem> = [
     name: 'Payslips',
     navbar: true,
     icon: 'mdi:file-document-edit',
+    protected: true,
     children: [
       {
         name: 'Create',
@@ -55,8 +63,17 @@ export const pageTree: Array<IPageTreeItem> = [
         navbar: true,
         icon: 'mdi:pencil',
         element: About,
+        protected: true,
       },
     ],
+  },
+  {
+    name: 'Profile',
+    path: '/profile',
+    navbar: false,
+    icon: 'mdi:home',
+    element: UserProfile,
+    protected: true,
   },
 
   //Landing pages
@@ -66,6 +83,7 @@ export const pageTree: Array<IPageTreeItem> = [
     navbar: false,
     icon: '',
     element: SignInPage,
+    protected: false,
   },
   {
     name: 'Sign-up',
@@ -73,6 +91,7 @@ export const pageTree: Array<IPageTreeItem> = [
     navbar: false,
     icon: '',
     element: SignUp,
+    protected: false,
   },
 ];
 
