@@ -1,26 +1,26 @@
-import { Navigate } from 'react-router-dom'
-import { ReactNode } from 'react'
-import { useAuth } from '../context/useAuth'
-import { pagesList } from './pages'
+import { Navigate } from 'react-router-dom';
+import { ReactNode } from 'react';
+import { useAuth } from '../context/useAuth';
+import { finalPagesList } from './pages';
 
 type Props = {
-    children: ReactNode
-}
+  children: ReactNode;
+};
 
 function Private(props: Props) {
-    const { children } = props
+  const { children } = props;
 
-    const { authenticated, loading } = useAuth();
+  const { authenticated, loading } = useAuth();
 
-    if (loading) {
-        return null
-    }
+  if (loading) {
+    return null;
+  }
 
-    if (!authenticated) {
-        return <Navigate to={pagesList['Sign-in'].path} />
-    }
+  if (!authenticated) {
+    return <Navigate to={finalPagesList['Sign-in'].path!} />;
+  }
 
-    return <div>{children}</div>
+  return <div>{children}</div>;
 }
 
-export default Private
+export default Private;

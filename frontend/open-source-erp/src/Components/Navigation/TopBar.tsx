@@ -12,7 +12,7 @@ const TopBar: React.FC<TopBarProps> = ({ openNav, closeNavIfOpen }) => {
   const primary = getColorClasses('primary');
 
   return (
-    <div className="w-full mx-4">
+    <div className="w-full mx-4 ">
       <div className={`${primary} flex items-center justify-between space-x-2`}>
         <span className=" w-40 flex gap-2 items-center justify-left text-2xl font-extrabold">
           <span className="w-12">

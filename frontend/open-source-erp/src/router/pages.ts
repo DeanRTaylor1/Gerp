@@ -1,24 +1,28 @@
+import About from '../pages/About';
 import Home from '../pages/Home';
 import SignInPage from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
 import UsersAdmin from '../pages/UsersAdmin';
 
-type PageName = 'home' | 'about' | 'sign-in' | 'sign-up' | 'user management';
+type PageName =
+  | 'home'
+  | 'about'
+  | 'sign-in'
+  | 'sign-up'
+  | 'user management'
+  | 'create';
+type PageCategory = 'users' | 'payslips';
 
-export interface IPage {
-  name: CapitalizeWords<PageName>;
-  path: string;
+export interface IPageTreeItem {
+  name: CapitalizeWords<PageName | PageCategory>;
   navbar: boolean;
   icon: string;
-  element: () => JSX.Element;
+  children?: IPageTreeItem[];
+  path?: string;
+  element?: () => JSX.Element;
 }
 
-type CapitalizeWords<S extends string> =
-  S extends `${infer FirstWord} ${infer Rest}`
-    ? `${Capitalize<FirstWord>} ${CapitalizeWords<Rest>}`
-    : Capitalize<S>;
-
-export const pages: Array<IPage> = [
+export const pageTree: Array<IPageTreeItem> = [
   {
     name: 'Home',
     path: '/',
@@ -26,6 +30,36 @@ export const pages: Array<IPage> = [
     icon: 'mdi:home',
     element: Home,
   },
+  {
+    name: 'Users',
+    navbar: true,
+    icon: 'mdi:account-multiple',
+    children: [
+      {
+        name: 'User Management',
+        path: '/users',
+        navbar: true,
+        icon: 'mdi:account-multiple',
+        element: UsersAdmin,
+      },
+    ],
+  },
+  {
+    name: 'Payslips',
+    navbar: true,
+    icon: 'mdi:file-document-edit',
+    children: [
+      {
+        name: 'Create',
+        path: '/about',
+        navbar: true,
+        icon: 'mdi:pencil',
+        element: About,
+      },
+    ],
+  },
+
+  //Landing pages
   {
     name: 'Sign-in',
     path: '/signin',
@@ -40,18 +74,27 @@ export const pages: Array<IPage> = [
     icon: '',
     element: SignUp,
   },
-  {
-    name: 'User Management',
-    path: '/users',
-    navbar: true,
-    icon: 'mdi:account-multiple',
-    element: UsersAdmin,
-  },
 ];
 
-type PagesObject = { [K in IPage['name']]: IPage };
+type PagesTreeObject = { [K in IPageTreeItem['name']]: IPageTreeItem };
 
-export const pagesList: PagesObject = pages.reduce((obj, page) => {
-  obj[page.name] = page;
-  return obj;
-}, {} as PagesObject);
+const processPageTree = (
+  items: IPageTreeItem[],
+  acc: PagesTreeObject = {} as PagesTreeObject
+): PagesTreeObject => {
+  items.forEach((item) => {
+    if (!item.children || item.children.length === 0) {
+      acc[item.name] = item;
+    } else if (item.children) {
+      processPageTree(item.children, acc);
+    }
+  });
+  return acc as PagesTreeObject;
+};
+
+export const finalPagesList: PagesTreeObject = processPageTree(pageTree);
+
+type CapitalizeWords<S extends string> =
+  S extends `${infer FirstWord} ${infer Rest}`
+    ? `${Capitalize<FirstWord>} ${CapitalizeWords<Rest>}`
+    : Capitalize<S>;
