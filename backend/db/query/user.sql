@@ -15,7 +15,10 @@ INSERT INTO users (
 
 -- name: GetUser :one
 SELECT * FROM users 
-WHERE id = $1 LIMIT 1;
+JOIN user_roles ON users.role_id = user_roles.id
+JOIN user_statuses ON users.user_status_id = user_statuses.id
+WHERE users.id = $1 
+LIMIT 1;
 
 -- name: GetUserByEmail :one
 SELECT 

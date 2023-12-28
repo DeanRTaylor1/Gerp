@@ -9,6 +9,7 @@ const useAuthProvider = (): AuthContextType => {
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [authenticated, setAuthenticated] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [payload, setPayload] = useState<JwtPayload>({});
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
@@ -17,6 +18,8 @@ const useAuthProvider = (): AuthContextType => {
       if (decoded?.exp && decoded.exp * 1000 > Date.now()) {
         setAuthToken(token);
         setAuthenticated(true);
+        console.log({ decoded });
+        setPayload(decoded);
       } else {
         logout();
       }
@@ -28,16 +31,21 @@ const useAuthProvider = (): AuthContextType => {
     localStorage.setItem('access_token', token);
     setAuthToken(token);
     setAuthenticated(true);
+    const decoded: JwtPayload = jwtDecode<JwtPayload>(token);
+    console.log({ decoded });
+    setPayload(decoded);
   };
 
   const logout = (): void => {
     localStorage.removeItem('access_token');
     setAuthToken(null);
     setAuthenticated(false);
+    setPayload({});
   };
 
   return {
     authToken,
+    payload,
     login,
     logout,
     authenticated,

@@ -10,8 +10,21 @@ import (
 	db "github.com/deanrtaylor1/go-erp-template/db/sqlc"
 	"github.com/deanrtaylor1/go-erp-template/internal"
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v5/pgtype"
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
+
+type UserLike struct {
+	ID        int32            `json:"id"`
+	Username  string           `json:"username"`
+	FirstName string           `json:"first_name"`
+	LastName  string           `json:"last_name"`
+	Email     string           `json:"email"`
+	Password  string           `json:"password"`
+	Avatar    pgtype.Text      `json:"avatar"`
+	CreatedAt pgtype.Timestamp `json:"created_at"`
+	UpdatedAt pgtype.Timestamp `json:"updated_at"`
+}
 
 func (s *Server) GetUsers(c *gin.Context, params api.GetUsersParams) {
 
@@ -94,7 +107,15 @@ func (s *Server) DeleteUsersUserId(c *gin.Context, userId int) {
 	fmt.Println("TODO")
 }
 func (s *Server) GetUsersUserId(c *gin.Context, userId int) {
-	fmt.Println("TODO")
+	dbUser, err := s.DB.GetUser(c, int32(userId))
+	if err != nil {
+		Respond(c, http.StatusBadRequest, nil, "Something went wrong", internal.ContentTypeJSON)
+		return
+	}
+
+	userResponse := getUserRowToUserResponse(dbUser)
+	Respond(c, http.StatusAccepted, userResponse, "Success", internal.ContentTypeJSON)
+
 }
 func (s *Server) PutUsersUserId(c *gin.Context, userId int) {
 	// user, exists := c.Get("user")
@@ -114,6 +135,35 @@ func (s *Server) PutUsersUserId(c *gin.Context, userId int) {
 
 	// fmt.Printf("Successfully retrieved user: %+v\n", userData)
 	Respond(c, 200, nil, "success", internal.ContentTypeJSON)
+}
+
+func ptrInt64(v int32) *int64 {
+	r := int64(v)
+	return &r
+}
+
+func ptrString(v string) *string { return &v }
+
+func getUserRowToUserResponse(dbUser db.GetUserRow) *api.UserResponse {
+	return &api.UserResponse{
+		Id:        ptrInt64(dbUser.ID),
+		Username:  ptrString(dbUser.Username),
+		FirstName: ptrString(dbUser.FirstName),
+		LastName:  ptrString(dbUser.LastName),
+		Email:     (*openapi_types.Email)(ptrString(dbUser.Email)),
+		Avatar:    ptrString(dbUser.Avatar.String),
+		Role:      ptrString(dbUser.RoleName),
+		Status:    ptrString(dbUser.StatusName),
+		CreatedAt: ptrTime(dbUser.CreatedAt),
+		UpdatedAt: ptrTime(dbUser.UpdatedAt),
+	}
+}
+
+func ptrTime(t pgtype.Timestamp) *time.Time {
+	if t.Valid {
+		return &t.Time
+	}
+	return nil
 }
 
 func toUserResponse(user db.User, userStatus string, userRole string) *api.UserResponse {

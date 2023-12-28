@@ -27,7 +27,7 @@ type Querier interface {
 	GetMaritalStatusByName(ctx context.Context, statusName string) (GetMaritalStatusByNameRow, error)
 	GetMaritalStatusForUpdate(ctx context.Context, id int32) (MaritalStatus, error)
 	GetMaritalStatuses(ctx context.Context, arg GetMaritalStatusesParams) ([]MaritalStatus, error)
-	GetUser(ctx context.Context, id int32) (User, error)
+	GetUser(ctx context.Context, id int32) (GetUserRow, error)
 	GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error)
 	GetUserForUpdate(ctx context.Context, id int32) (User, error)
 	GetUserRole(ctx context.Context, id int32) (UserRole, error)

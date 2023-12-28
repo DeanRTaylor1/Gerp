@@ -138,6 +138,12 @@ export interface JwtPayload {
     'id'?: number;
     /**
      * 
+     * @type {number}
+     * @memberof JwtPayload
+     */
+    'user_id'?: number;
+    /**
+     * 
      * @type {string}
      * @memberof JwtPayload
      */

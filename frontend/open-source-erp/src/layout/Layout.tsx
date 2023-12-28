@@ -33,7 +33,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <div className={`${theme} flex h-screen min-h-screen`}>
       {/* Top Bar */}
       <div
-        className={`w-full border-b-2 border-gray-200 ${primary} fixed top-0 left-0 h-12 flex items-center z-10 shadow-sm`}
+        className={`w-full z-40 border-b-2 border-gray-200 ${primary} fixed top-0 left-0 h-16 flex items-center z-10 shadow-sm`}
       >
         <TopBar openNav={openNav} closeNavIfOpen={closeNavIfOpen} />
       </div>
@@ -41,7 +41,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <Navigation showNav={showNav} closeNavIfOpen={closeNavIfOpen} />
       {/* Content Area */}
       <div
-        className={`content flex flex-wrap items-start justify-start p-6 pt-14 gap-6 w-full ${secondary}`}
+        className={`content flex flex-wrap items-start justify-start p-6 mt-16 pt-2 gap-6 w-full ${secondary}`}
       >
         {children}
       </div>

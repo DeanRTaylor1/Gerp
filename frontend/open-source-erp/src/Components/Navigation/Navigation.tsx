@@ -33,9 +33,9 @@ const Navigation: React.FC<NavigationProps> = ({ showNav, closeNavIfOpen }) => {
     <div
       className={` ${primary} ${
         showNav
-          ? 'min-w-72 w-72 mt-2'
-          : 'w-16 xl:w-72 space-y-6 py-7 mt-2 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:shadow-md md:translate-x-0'
-      }  pt-12 pl-2 transition-all duration-200 ease-in-out`}
+          ? 'min-w-72 w-72 mt-16 z-50 pt-1'
+          : 'pt-1 w-16 xl:w-72 space-y-6 mt-16 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:shadow-md md:translate-x-0'
+      }   pl-2 transition-all duration-200 ease-in-out z-50`}
     >
       <nav>{navLinks}</nav>
     </div>

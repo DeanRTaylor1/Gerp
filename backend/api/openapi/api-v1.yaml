@@ -364,6 +364,9 @@ components:
       properties:
         id:
           type: integer
+          example: 0795b10d-b28a-460d-bac5-182e52efb590
+        user_id:
+          type: integer
           example: 1
         email:
           type: string

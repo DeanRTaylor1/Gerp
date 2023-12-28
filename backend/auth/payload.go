@@ -14,14 +14,15 @@ var (
 
 // Payload structure aligning with standard JWT claims
 type Payload struct {
-	ID    uuid.UUID `json:"id"`
-	Email string    `json:"email"`
-	Role  string    `json:"roles"`
-	Iat   int64     `json:"iat"` // Issued at, Unix time
-	Exp   int64     `json:"exp"` // Expiration time, Unix time
+	ID     uuid.UUID `json:"id"`
+	UserId int32     `json:"user_id"`
+	Email  string    `json:"email"`
+	Role   string    `json:"roles"`
+	Iat    int64     `json:"iat"` // Issued at, Unix time
+	Exp    int64     `json:"exp"` // Expiration time, Unix time
 }
 
-func NewPayload(email string, role string, duration time.Duration) (*Payload, error) {
+func NewPayload(userId int32, email string, role string, duration time.Duration) (*Payload, error) {
 	tokenID, err := uuid.NewRandom()
 	if err != nil {
 		return nil, err
@@ -31,11 +32,12 @@ func NewPayload(email string, role string, duration time.Duration) (*Payload, er
 	exp := time.Now().Add(duration).Unix()
 
 	payload := &Payload{
-		ID:    tokenID,
-		Email: email,
-		Role:  role,
-		Iat:   now,
-		Exp:   exp,
+		ID:     tokenID,
+		UserId: userId,
+		Email:  email,
+		Role:   role,
+		Iat:    now,
+		Exp:    exp,
 	}
 
 	return payload, nil

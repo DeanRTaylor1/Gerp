@@ -1,4 +1,5 @@
 import UserProfileForm from '../../Components/forms/UserProfileForm';
+import UserSummary from '../../Components/forms/UserSummary';
 import { useTheme } from '../../hooks/useTheme';
 import useTranslator from '../../hooks/useTranslator';
 import Card from '../../layout/Card';
@@ -12,12 +13,10 @@ const UserProfile = () => {
 
   return (
     <>
-      <div className="flex flex-col gap-14">
+      <div className="flex flex-col gap-6 pt-4 px-2">
         Profile
         <div className="flex gap-8 min-h-full">
-          <Card className="min-h-[90%]">
-            <section className="min-w-72 h-[450px]">Profile</section>
-          </Card>
+          <UserSummary />
           <Card className="px-0 ">
             <section>
               <div

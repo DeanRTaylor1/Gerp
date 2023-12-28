@@ -5,6 +5,7 @@ import Select from '../select/select';
 import languages from '../../constants/languages';
 import { Locale } from '../../recoil/globalState';
 import { useRecoilState } from 'recoil';
+import SlAvatar from '@shoelace-style/shoelace/dist/react/avatar/index.js';
 
 interface TopBarProps {
   openNav: () => void;
@@ -24,7 +25,7 @@ const TopBar: React.FC<TopBarProps> = ({ openNav, closeNavIfOpen }) => {
     setLocale(value);
   };
   return (
-    <div className="w-full mx-4 ">
+    <div className="w-full mx-4">
       <div className={`${primary} flex items-center justify-between space-x-2`}>
         <span className=" w-40 flex gap-2 items-center justify-left text-2xl font-extrabold">
           <span className="w-12">
@@ -51,8 +52,10 @@ const TopBar: React.FC<TopBarProps> = ({ openNav, closeNavIfOpen }) => {
             options={availableLangs}
             onChange={changeLanguage}
           />
-          <span className="flex justify-center items-center w-8 h-8 rounded-full  border-2 border-primary-text-light">
-            <Icon icon="mdi:account" width={30} />
+          <span className="flex justify-center items-center w-8 h-8 rounded-full  ">
+            <Link to={'/profile'}>
+              <SlAvatar label="User avatar" />
+            </Link>
           </span>
         </div>
       </div>

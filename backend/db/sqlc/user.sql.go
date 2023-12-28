@@ -80,13 +80,39 @@ func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
 }
 
 const getUser = `-- name: GetUser :one
-SELECT id, username, first_name, last_name, email, password, avatar, last_login, user_status_id, role_id, created_at, updated_at FROM users 
-WHERE id = $1 LIMIT 1
+SELECT users.id, username, first_name, last_name, email, password, avatar, last_login, user_status_id, role_id, users.created_at, users.updated_at, user_roles.id, role_name, user_roles.created_at, user_roles.updated_at, user_statuses.id, status_name, user_statuses.created_at, user_statuses.updated_at FROM users 
+JOIN user_roles ON users.role_id = user_roles.id
+JOIN user_statuses ON users.user_status_id = user_statuses.id
+WHERE users.id = $1 
+LIMIT 1
 `
 
-func (q *Queries) GetUser(ctx context.Context, id int32) (User, error) {
+type GetUserRow struct {
+	ID           int32            `json:"id"`
+	Username     string           `json:"username"`
+	FirstName    string           `json:"first_name"`
+	LastName     string           `json:"last_name"`
+	Email        string           `json:"email"`
+	Password     string           `json:"password"`
+	Avatar       pgtype.Text      `json:"avatar"`
+	LastLogin    pgtype.Timestamp `json:"last_login"`
+	UserStatusID int32            `json:"user_status_id"`
+	RoleID       int32            `json:"role_id"`
+	CreatedAt    pgtype.Timestamp `json:"created_at"`
+	UpdatedAt    pgtype.Timestamp `json:"updated_at"`
+	ID_2         int32            `json:"id_2"`
+	RoleName     string           `json:"role_name"`
+	CreatedAt_2  pgtype.Timestamp `json:"created_at_2"`
+	UpdatedAt_2  pgtype.Timestamp `json:"updated_at_2"`
+	ID_3         int32            `json:"id_3"`
+	StatusName   string           `json:"status_name"`
+	CreatedAt_3  pgtype.Timestamp `json:"created_at_3"`
+	UpdatedAt_3  pgtype.Timestamp `json:"updated_at_3"`
+}
+
+func (q *Queries) GetUser(ctx context.Context, id int32) (GetUserRow, error) {
 	row := q.db.QueryRow(ctx, getUser, id)
-	var i User
+	var i GetUserRow
 	err := row.Scan(
 		&i.ID,
 		&i.Username,
@@ -100,6 +126,14 @@ func (q *Queries) GetUser(ctx context.Context, id int32) (User, error) {
 		&i.RoleID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.ID_2,
+		&i.RoleName,
+		&i.CreatedAt_2,
+		&i.UpdatedAt_2,
+		&i.ID_3,
+		&i.StatusName,
+		&i.CreatedAt_3,
+		&i.UpdatedAt_3,
 	)
 	return i, err
 }
