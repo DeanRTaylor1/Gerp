@@ -11,6 +11,7 @@ import SearchInputField from '../Inputs/SearchInputField';
 import { Icon } from '@iconify/react';
 import { useToast } from '../../hooks/useToast';
 import Loading from '../Loader/Loading';
+import { InputType } from '../Inputs/Input.enum';
 
 const headLabels = [
   {
@@ -76,7 +77,7 @@ const UsersTable: React.FC = () => {
   return (
     <TableContainer style={{ overflow: 'unset' }}>
       <SearchInputField
-        type="input"
+        type={InputType.Search}
         name="Search:"
         placeholder="Search..."
         icon={<Icon icon="carbon:search" />}

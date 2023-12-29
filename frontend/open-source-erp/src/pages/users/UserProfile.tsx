@@ -15,7 +15,7 @@ const UserProfile = () => {
     <>
       <div className="flex flex-col gap-6 pt-4 px-2">
         Profile
-        <div className="flex gap-8 min-h-full">
+        <div className="flex flex-col lg:flex-row gap-8 min-h-full">
           <UserSummary />
           <Card className="px-0 ">
             <section>

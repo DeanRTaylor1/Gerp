@@ -114,7 +114,7 @@ func (s *Server) GetUsersUserId(c *gin.Context, userId int) {
 	}
 
 	userResponse := getUserRowToUserResponse(dbUser)
-	Respond(c, http.StatusAccepted, userResponse, "Success", internal.ContentTypeJSON)
+	Respond(c, http.StatusOK, userResponse, "Success", internal.ContentTypeJSON)
 
 }
 func (s *Server) PutUsersUserId(c *gin.Context, userId int) {

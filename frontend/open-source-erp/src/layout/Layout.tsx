@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTheme } from '../hooks/useTheme';
 import Navigation from '../Components/Navigation/Navigation';
 import TopBar from '../Components/Navigation/TopBar';
+import MobileNavigation from '../Components/Navigation/MobileNavigation';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -30,7 +31,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   };
 
   return (
-    <div className={`${theme} flex h-screen min-h-screen`}>
+    <div className={`${theme} flex  min-h-screen`}>
       {/* Top Bar */}
       <div
         className={`w-full z-40 border-b-2 border-gray-200 ${primary} fixed top-0 left-0 h-16 flex items-center z-10 shadow-sm`}
@@ -39,9 +40,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </div>
       {/* Sidebar */}
       <Navigation showNav={showNav} closeNavIfOpen={closeNavIfOpen} />
+      <MobileNavigation showNav={showNav} closeNavIfOpen={closeNavIfOpen} />
       {/* Content Area */}
       <div
-        className={`content flex flex-wrap items-start justify-start p-6 mt-16 pt-2 gap-6 w-full ${secondary}`}
+        className={`content flex flex-wrap items-start justify-center md:justify-start p-6 mt-16 pt-2 gap-6 w-full ${secondary}`}
       >
         {children}
       </div>
