@@ -80,34 +80,81 @@ func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
 }
 
 const getUser = `-- name: GetUser :one
-SELECT users.id, username, first_name, last_name, email, password, avatar, last_login, user_status_id, role_id, users.created_at, users.updated_at, user_roles.id, role_name, user_roles.created_at, user_roles.updated_at, user_statuses.id, status_name, user_statuses.created_at, user_statuses.updated_at FROM users 
+SELECT 
+    users.id,
+    users.username,
+    users.first_name,
+    users.last_name,
+    users.email,
+    users.password,
+    users.avatar,
+    users.last_login,
+    users.user_status_id,
+    users.role_id,
+    users.created_at,
+    users.updated_at,
+    user_roles.role_name AS role_name,
+    user_statuses.status_name AS status_name,
+    profiles.date_of_birth AS date_of_birth,
+    profiles.nationality AS nationality,
+    profiles.dependents AS dependents,
+    emergency_contacts.name AS emergency_contact_name,
+    emergency_contacts.contact_number AS emergency_contact_number,
+    emergency_contacts.contact_address AS emergency_contact_address,
+    departments.department_name AS department_name,
+    genders.gender_name AS gender,
+    marital_statuses.status_name AS marital_status,
+    addresses.address_line1 AS address_line_1,
+    addresses.address_line2 AS address_line_2,
+    addresses.city AS city,
+    addresses.state AS residence_state,
+    addresses.country AS country,
+    addresses.postal_code as postal_code,
+    addresses.country as country
+FROM users 
 JOIN user_roles ON users.role_id = user_roles.id
 JOIN user_statuses ON users.user_status_id = user_statuses.id
+LEFT JOIN profiles ON users.id = profiles.user_id
+LEFT JOIN emergency_contacts ON profiles.emergency_contact_id = emergency_contacts.id
+LEFT JOIN departments ON profiles.department_id = departments.id
+LEFT JOIN genders ON profiles.gender_id = genders.id
+LEFT JOIN marital_statuses ON profiles.marital_status_id = marital_statuses.id
+LEFT JOIN addresses ON profiles.id = addresses.id
 WHERE users.id = $1 
 LIMIT 1
 `
 
 type GetUserRow struct {
-	ID           int32            `json:"id"`
-	Username     string           `json:"username"`
-	FirstName    string           `json:"first_name"`
-	LastName     string           `json:"last_name"`
-	Email        string           `json:"email"`
-	Password     string           `json:"password"`
-	Avatar       pgtype.Text      `json:"avatar"`
-	LastLogin    pgtype.Timestamp `json:"last_login"`
-	UserStatusID int32            `json:"user_status_id"`
-	RoleID       int32            `json:"role_id"`
-	CreatedAt    pgtype.Timestamp `json:"created_at"`
-	UpdatedAt    pgtype.Timestamp `json:"updated_at"`
-	ID_2         int32            `json:"id_2"`
-	RoleName     string           `json:"role_name"`
-	CreatedAt_2  pgtype.Timestamp `json:"created_at_2"`
-	UpdatedAt_2  pgtype.Timestamp `json:"updated_at_2"`
-	ID_3         int32            `json:"id_3"`
-	StatusName   string           `json:"status_name"`
-	CreatedAt_3  pgtype.Timestamp `json:"created_at_3"`
-	UpdatedAt_3  pgtype.Timestamp `json:"updated_at_3"`
+	ID                      int32            `json:"id"`
+	Username                string           `json:"username"`
+	FirstName               string           `json:"first_name"`
+	LastName                string           `json:"last_name"`
+	Email                   string           `json:"email"`
+	Password                string           `json:"password"`
+	Avatar                  pgtype.Text      `json:"avatar"`
+	LastLogin               pgtype.Timestamp `json:"last_login"`
+	UserStatusID            int32            `json:"user_status_id"`
+	RoleID                  int32            `json:"role_id"`
+	CreatedAt               pgtype.Timestamp `json:"created_at"`
+	UpdatedAt               pgtype.Timestamp `json:"updated_at"`
+	RoleName                string           `json:"role_name"`
+	StatusName              string           `json:"status_name"`
+	DateOfBirth             pgtype.Timestamp `json:"date_of_birth"`
+	Nationality             pgtype.Text      `json:"nationality"`
+	Dependents              pgtype.Int4      `json:"dependents"`
+	EmergencyContactName    pgtype.Text      `json:"emergency_contact_name"`
+	EmergencyContactNumber  pgtype.Text      `json:"emergency_contact_number"`
+	EmergencyContactAddress pgtype.Text      `json:"emergency_contact_address"`
+	DepartmentName          pgtype.Text      `json:"department_name"`
+	Gender                  pgtype.Text      `json:"gender"`
+	MaritalStatus           pgtype.Text      `json:"marital_status"`
+	AddressLine1            pgtype.Text      `json:"address_line_1"`
+	AddressLine2            pgtype.Text      `json:"address_line_2"`
+	City                    pgtype.Text      `json:"city"`
+	ResidenceState          pgtype.Text      `json:"residence_state"`
+	Country                 pgtype.Text      `json:"country"`
+	PostalCode              pgtype.Text      `json:"postal_code"`
+	Country_2               pgtype.Text      `json:"country_2"`
 }
 
 func (q *Queries) GetUser(ctx context.Context, id int32) (GetUserRow, error) {
@@ -126,14 +173,24 @@ func (q *Queries) GetUser(ctx context.Context, id int32) (GetUserRow, error) {
 		&i.RoleID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.ID_2,
 		&i.RoleName,
-		&i.CreatedAt_2,
-		&i.UpdatedAt_2,
-		&i.ID_3,
 		&i.StatusName,
-		&i.CreatedAt_3,
-		&i.UpdatedAt_3,
+		&i.DateOfBirth,
+		&i.Nationality,
+		&i.Dependents,
+		&i.EmergencyContactName,
+		&i.EmergencyContactNumber,
+		&i.EmergencyContactAddress,
+		&i.DepartmentName,
+		&i.Gender,
+		&i.MaritalStatus,
+		&i.AddressLine1,
+		&i.AddressLine2,
+		&i.City,
+		&i.ResidenceState,
+		&i.Country,
+		&i.PostalCode,
+		&i.Country_2,
 	)
 	return i, err
 }
@@ -153,29 +210,52 @@ SELECT
     users.created_at,
     users.updated_at,
     user_roles.role_name AS role_name,
-    user_statuses.status_name AS status_name
+    user_statuses.status_name AS status_name,
+    profiles.date_of_birth AS date_of_birth,
+    profiles.nationality AS nationality,
+    profiles.dependents AS dependents,
+    emergency_contacts.name AS emergency_contact_name,
+    emergency_contacts.contact_number AS emergency_contact_number,
+    emergency_contacts.contact_address AS emergency_contact_address,
+    departments.department_name AS department_name,
+    genders.gender_name AS gender,
+    marital_statuses.status_name AS marital_status
 FROM users 
 JOIN user_roles ON users.role_id = user_roles.id
 JOIN user_statuses ON users.user_status_id = user_statuses.id
+LEFT JOIN profiles ON users.id = profiles.user_id
+LEFT JOIN emergency_contacts ON profiles.emergency_contact_id = emergency_contacts.id
+LEFT JOIN departments ON profiles.department_id = departments.id
+LEFT JOIN genders ON profiles.gender_id = genders.id
+LEFT JOIN marital_statuses ON profiles.marital_status_id = marital_status_id
 WHERE users.email = $1 
 LIMIT 1
 `
 
 type GetUserByEmailRow struct {
-	ID           int32            `json:"id"`
-	Username     string           `json:"username"`
-	FirstName    string           `json:"first_name"`
-	LastName     string           `json:"last_name"`
-	Email        string           `json:"email"`
-	Password     string           `json:"password"`
-	Avatar       pgtype.Text      `json:"avatar"`
-	LastLogin    pgtype.Timestamp `json:"last_login"`
-	UserStatusID int32            `json:"user_status_id"`
-	RoleID       int32            `json:"role_id"`
-	CreatedAt    pgtype.Timestamp `json:"created_at"`
-	UpdatedAt    pgtype.Timestamp `json:"updated_at"`
-	RoleName     string           `json:"role_name"`
-	StatusName   string           `json:"status_name"`
+	ID                      int32            `json:"id"`
+	Username                string           `json:"username"`
+	FirstName               string           `json:"first_name"`
+	LastName                string           `json:"last_name"`
+	Email                   string           `json:"email"`
+	Password                string           `json:"password"`
+	Avatar                  pgtype.Text      `json:"avatar"`
+	LastLogin               pgtype.Timestamp `json:"last_login"`
+	UserStatusID            int32            `json:"user_status_id"`
+	RoleID                  int32            `json:"role_id"`
+	CreatedAt               pgtype.Timestamp `json:"created_at"`
+	UpdatedAt               pgtype.Timestamp `json:"updated_at"`
+	RoleName                string           `json:"role_name"`
+	StatusName              string           `json:"status_name"`
+	DateOfBirth             pgtype.Timestamp `json:"date_of_birth"`
+	Nationality             pgtype.Text      `json:"nationality"`
+	Dependents              pgtype.Int4      `json:"dependents"`
+	EmergencyContactName    pgtype.Text      `json:"emergency_contact_name"`
+	EmergencyContactNumber  pgtype.Text      `json:"emergency_contact_number"`
+	EmergencyContactAddress pgtype.Text      `json:"emergency_contact_address"`
+	DepartmentName          pgtype.Text      `json:"department_name"`
+	Gender                  pgtype.Text      `json:"gender"`
+	MaritalStatus           pgtype.Text      `json:"marital_status"`
 }
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error) {
@@ -196,6 +276,15 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (GetUserByEm
 		&i.UpdatedAt,
 		&i.RoleName,
 		&i.StatusName,
+		&i.DateOfBirth,
+		&i.Nationality,
+		&i.Dependents,
+		&i.EmergencyContactName,
+		&i.EmergencyContactNumber,
+		&i.EmergencyContactAddress,
+		&i.DepartmentName,
+		&i.Gender,
+		&i.MaritalStatus,
 	)
 	return i, err
 }
@@ -236,13 +325,29 @@ SELECT
     users.password,
     users.avatar,
     users.last_login,
+    users.user_status_id,
+    users.role_id,
     users.created_at,
     users.updated_at,
     user_roles.role_name AS role_name,
-    user_statuses.status_name AS status_name
+    user_statuses.status_name AS status_name,
+    profiles.date_of_birth AS date_of_birth,
+    profiles.nationality AS nationality,
+    profiles.dependents AS dependents,
+    emergency_contacts.name AS emergency_contact_name,
+    emergency_contacts.contact_number AS emergency_contact_number,
+    emergency_contacts.contact_address AS emergency_contact_address,
+    departments.department_name AS department_name,
+    genders.gender_name AS gender,
+    marital_statuses.status_name AS marital_status
 FROM users 
 JOIN user_roles ON users.role_id = user_roles.id
 JOIN user_statuses ON users.user_status_id = user_statuses.id
+LEFT JOIN profiles ON users.id = profiles.user_id
+LEFT JOIN emergency_contacts ON profiles.emergency_contact_id = emergency_contacts.id
+LEFT JOIN departments ON profiles.department_id = departments.id
+LEFT JOIN genders ON profiles.gender_id = genders.id
+LEFT JOIN marital_statuses ON profiles.marital_status_id = marital_statuses.id
 LIMIT $2
 OFFSET $1
 `
@@ -253,18 +358,29 @@ type GetUsersParams struct {
 }
 
 type GetUsersRow struct {
-	ID         int32            `json:"id"`
-	Username   string           `json:"username"`
-	FirstName  string           `json:"first_name"`
-	LastName   string           `json:"last_name"`
-	Email      string           `json:"email"`
-	Password   string           `json:"password"`
-	Avatar     pgtype.Text      `json:"avatar"`
-	LastLogin  pgtype.Timestamp `json:"last_login"`
-	CreatedAt  pgtype.Timestamp `json:"created_at"`
-	UpdatedAt  pgtype.Timestamp `json:"updated_at"`
-	RoleName   string           `json:"role_name"`
-	StatusName string           `json:"status_name"`
+	ID                      int32            `json:"id"`
+	Username                string           `json:"username"`
+	FirstName               string           `json:"first_name"`
+	LastName                string           `json:"last_name"`
+	Email                   string           `json:"email"`
+	Password                string           `json:"password"`
+	Avatar                  pgtype.Text      `json:"avatar"`
+	LastLogin               pgtype.Timestamp `json:"last_login"`
+	UserStatusID            int32            `json:"user_status_id"`
+	RoleID                  int32            `json:"role_id"`
+	CreatedAt               pgtype.Timestamp `json:"created_at"`
+	UpdatedAt               pgtype.Timestamp `json:"updated_at"`
+	RoleName                string           `json:"role_name"`
+	StatusName              string           `json:"status_name"`
+	DateOfBirth             pgtype.Timestamp `json:"date_of_birth"`
+	Nationality             pgtype.Text      `json:"nationality"`
+	Dependents              pgtype.Int4      `json:"dependents"`
+	EmergencyContactName    pgtype.Text      `json:"emergency_contact_name"`
+	EmergencyContactNumber  pgtype.Text      `json:"emergency_contact_number"`
+	EmergencyContactAddress pgtype.Text      `json:"emergency_contact_address"`
+	DepartmentName          pgtype.Text      `json:"department_name"`
+	Gender                  pgtype.Text      `json:"gender"`
+	MaritalStatus           pgtype.Text      `json:"marital_status"`
 }
 
 func (q *Queries) GetUsers(ctx context.Context, arg GetUsersParams) ([]GetUsersRow, error) {
@@ -285,10 +401,21 @@ func (q *Queries) GetUsers(ctx context.Context, arg GetUsersParams) ([]GetUsersR
 			&i.Password,
 			&i.Avatar,
 			&i.LastLogin,
+			&i.UserStatusID,
+			&i.RoleID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.RoleName,
 			&i.StatusName,
+			&i.DateOfBirth,
+			&i.Nationality,
+			&i.Dependents,
+			&i.EmergencyContactName,
+			&i.EmergencyContactNumber,
+			&i.EmergencyContactAddress,
+			&i.DepartmentName,
+			&i.Gender,
+			&i.MaritalStatus,
 		); err != nil {
 			return nil, err
 		}

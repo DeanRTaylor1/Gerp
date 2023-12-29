@@ -60,6 +60,12 @@ type BadRequestErrorResponse struct {
 	Message *string `json:"message,omitempty"`
 }
 
+// GenderResponse defines model for GenderResponse.
+type GenderResponse struct {
+	GenderName *string `json:"genderName,omitempty"`
+	Id         *int64  `json:"id,omitempty"`
+}
+
 // LoginUserRequest defines model for LoginUserRequest.
 type LoginUserRequest struct {
 	Email    string `json:"email" validate:"email"`
@@ -71,6 +77,13 @@ type LoginUserResponse struct {
 	Data    *AccessTokenResponse `json:"data,omitempty"`
 	Message *string              `json:"message,omitempty"`
 	Status  *int                 `json:"status,omitempty"`
+}
+
+// MultiGendersResponse defines model for MultiGendersResponse.
+type MultiGendersResponse struct {
+	Data    *[]GenderResponse `json:"data,omitempty"`
+	Message *string           `json:"message,omitempty"`
+	Status  *int              `json:"status,omitempty"`
 }
 
 // MultiUsersResponse defines model for MultiUsersResponse.
@@ -99,16 +112,40 @@ type UserRequest struct {
 
 // UserResponse defines model for UserResponse.
 type UserResponse struct {
-	Avatar    *string              `json:"avatar,omitempty"`
-	CreatedAt *time.Time           `json:"createdAt,omitempty"`
-	Email     *openapi_types.Email `json:"email,omitempty"`
-	FirstName *string              `json:"firstName,omitempty"`
-	Id        *int64               `json:"id,omitempty"`
-	LastName  *string              `json:"lastName,omitempty"`
-	Role      *string              `json:"role,omitempty"`
-	Status    *string              `json:"status,omitempty"`
-	UpdatedAt *time.Time           `json:"updatedAt,omitempty"`
-	Username  *string              `json:"username,omitempty"`
+	AddressLine1            *string              `json:"addressLine1,omitempty"`
+	AddressLine2            *string              `json:"addressLine2,omitempty"`
+	Avatar                  *string              `json:"avatar,omitempty"`
+	City                    *string              `json:"city,omitempty"`
+	Country                 *string              `json:"country,omitempty"`
+	CreatedAt               *time.Time           `json:"createdAt,omitempty"`
+	DateOfBirth             *time.Time           `json:"dateOfBirth,omitempty"`
+	DepartmentName          *string              `json:"departmentName,omitempty"`
+	Dependents              *int32               `json:"dependents,omitempty"`
+	Email                   *openapi_types.Email `json:"email,omitempty"`
+	EmergencyContactAddress *string              `json:"emergencyContactAddress,omitempty"`
+	EmergencyContactName    *string              `json:"emergencyContactName,omitempty"`
+	EmergencyContactNumber  *int32               `json:"emergencyContactNumber,omitempty"`
+	FirstName               *string              `json:"firstName,omitempty"`
+	Gender                  *string              `json:"gender,omitempty"`
+	Id                      *int64               `json:"id,omitempty"`
+	LastName                *string              `json:"lastName,omitempty"`
+	MaritalStatus           *string              `json:"maritalStatus,omitempty"`
+	Nationality             *string              `json:"nationality,omitempty"`
+	PostalCode              *string              `json:"postalCode,omitempty"`
+	Role                    *string              `json:"role,omitempty"`
+	State                   *string              `json:"state,omitempty"`
+	Status                  *string              `json:"status,omitempty"`
+	UpdatedAt               *time.Time           `json:"updatedAt,omitempty"`
+	Username                *string              `json:"username,omitempty"`
+}
+
+// GetGendersParams defines parameters for GetGenders.
+type GetGendersParams struct {
+	// Offset Page number of the users list
+	Offset *int `form:"offset,omitempty" json:"offset,omitempty"`
+
+	// Limit Number of users per page
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
 }
 
 // GetUsersParams defines parameters for GetUsers.
@@ -196,6 +233,9 @@ type ServerInterface interface {
 	// Get auth token
 	// (POST /auth)
 	PostAuth(c *gin.Context)
+	// List Available Gender Options
+	// (GET /genders)
+	GetGenders(c *gin.Context, params GetGendersParams)
 	// Get a list of users
 	// (GET /users)
 	GetUsers(c *gin.Context, params GetUsersParams)
@@ -233,6 +273,42 @@ func (siw *ServerInterfaceWrapper) PostAuth(c *gin.Context) {
 	}
 
 	siw.Handler.PostAuth(c)
+}
+
+// GetGenders operation middleware
+func (siw *ServerInterfaceWrapper) GetGenders(c *gin.Context) {
+
+	var err error
+
+	c.Set(BearerAuthScopes, []string{})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetGendersParams
+
+	// ------------- Optional query parameter "offset" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "offset", c.Request.URL.Query(), &params.Offset)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter offset: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "limit", c.Request.URL.Query(), &params.Limit)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter limit: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetGenders(c, params)
 }
 
 // GetUsers operation middleware
@@ -384,6 +460,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	}
 
 	router.POST(options.BaseURL+"/auth", wrapper.PostAuth)
+	router.GET(options.BaseURL+"/genders", wrapper.GetGenders)
 	router.GET(options.BaseURL+"/users", wrapper.GetUsers)
 	router.POST(options.BaseURL+"/users", wrapper.PostUsers)
 	router.DELETE(options.BaseURL+"/users/:userId", wrapper.DeleteUsersUserId)
@@ -394,29 +471,33 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/8xYbW/bNhD+KwTXT4NsK20wdAIKLFm7IsPaBm2zAQu84SydbaYSqZKntG7g/z7wKL9J",
-	"cpwsrtsvdU0feW/P8/CYG5maojQaNTmZ3EiXTrEA/u9JmqJz780H1G/RlUY79MulNSVaUshGwEb/krfy",
-	"3/EzFGWOMpFXnyisRpJmpV9xZJWeyPk8khY/VspiJpPLzSOGS2szusKU5DySJ6XaHkAGBP5TV3kOI++Z",
-	"bIWRNBrfjGVyedM670YqwoI3t1zVC2AtzOR8OI9kgc7BBNesF2lE0hFQxQeNjS2AZCKVpiePVykrTThB",
-	"yzm386poaqz6AqSMfmGtsdvTTE2GG/U9jo+i3W434l/15kJD7Ruzzv60Yj2F7C1+rNDR/QON/3+gI8iE",
-	"DX7vFucfZqL0hUNbR9sOEAtQeQOqZqr7rlA0/YV/7aemaLmL5OeegVL1fIYT1D38TBZ6BBM+9hpylQH5",
-	"DcGDD68E5z4Zm31Vd4XSz55GBVA6Rffsn0vofTnp/R33fh7++EjOm2wLwa2FNry9irt498jiWCbyh8FK",
-	"Rwa1iAy6FGRbp13Fxu0ur9Nsaf7Yg+ouHHtV5aR8Jm53KktZuC2njaq0FOOwyb1TepLjw/vUzOmQOdzK",
-	"VbgGAtuI40kfCvhitKfNoJgFm/5VOXkAh9Yk5e76sBS1BaceLhhjZR29hgLbAewnuxy6zufc9uPgIJK3",
-	"5q9yaHVnwdjd0T68NCR06TJqq+mSDMOtWN86Sj0M7PNIphaBMDuhjZHEZ9MjxfG2tmxB+73Bfk/sziOp",
-	"subg9NNx52BwH8j6Tpl817TW+qkqs/sW7t6461A/HxSmlVU0e+elOOBghGDR+uFw9e23RUy///XeY4yt",
-	"/XzEv658TYnKAFilx4b1H11qVelHTJn4UVoE1RdjY8WLt+diBOkH1FnfH6KIs3hTohbvTGVTZJOT8zMZ",
-	"yWu0LpwS9+P+kS+CKVFDqWQin/TjfsxEoClnMYA6gdIEZfdQ50n3LJOJPDeOOMVALXR0arJZGCA1oeYt",
-	"UJa5SnnT4MoZvXqg7LrRWmNgg8T+jcALgYwc8eP46Gv4X1yrPoDNZvBgJH4NpPXlPI7jvUWwbWDviONM",
-	"s+iJhYj1Qyz7q8YtD527heOJUhUF2JlM5Esk4cElls9Llu5Lfk+hpjpGOfTbBp6n3N4JdsDwJRIPh4xc",
-	"CwUSW182eXMOExS6KkZohRkLmqLgg0Wu+GWivNHHCu1MRjLIgjTjsUNasBUCGcdQ5SSTzuGo6fT10l/w",
-	"VaIVpZ/Luv3lqlBb3B11+Ru28L8/9HWM3R2dPuHyLRP8hhQ4hUzUtt8J+hncjF6hTQB8jW1cMKK+Ohiu",
-	"65fGpYSsUJ4AwxZvGhVfkcc3S7wCDRMsfMpDP8ttle4Fab6Gdn9D2e54UHW06DV+4vKJ9JtL959hWlVG",
-	"C7ZtSGW4WwQIXYd8a8OXcjm48R9n2TyISI6EbRg853UGwgVbtzWUVcpPBCuRqhamm01dV607CNXx/si5",
-	"9rfFjvpykUIFskZtQ/4Cdtc1uv3uOXj14gPz5UQ4tguV6rjMA5tGM3H2fJciVV2CVB2ukN+B3MUHBX/9",
-	"NGq07YJX7wL+cFPZ6+65KsNrUVn/nPT/hvdLMhjkJoV8ahwlT+On8QBKNbg+kr4DtaObRSNPw+tFtqen",
-	"NwuMOGEx9zkIMgFpsDkoLlHRGCDbZ77QWWmUJsevp8LnqfSkPjRNTaXJrY5rFmM+nP8XAAD//2HU5rBv",
-	"GQAA",
+	"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",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

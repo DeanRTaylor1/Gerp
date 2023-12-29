@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/deanrtaylor1/go-erp-template/api"
@@ -13,18 +14,6 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
-
-type UserLike struct {
-	ID        int32            `json:"id"`
-	Username  string           `json:"username"`
-	FirstName string           `json:"first_name"`
-	LastName  string           `json:"last_name"`
-	Email     string           `json:"email"`
-	Password  string           `json:"password"`
-	Avatar    pgtype.Text      `json:"avatar"`
-	CreatedAt pgtype.Timestamp `json:"created_at"`
-	UpdatedAt pgtype.Timestamp `json:"updated_at"`
-}
 
 func (s *Server) GetUsers(c *gin.Context, params api.GetUsersParams) {
 
@@ -109,6 +98,7 @@ func (s *Server) DeleteUsersUserId(c *gin.Context, userId int) {
 func (s *Server) GetUsersUserId(c *gin.Context, userId int) {
 	dbUser, err := s.DB.GetUser(c, int32(userId))
 	if err != nil {
+		fmt.Println("error")
 		Respond(c, http.StatusBadRequest, nil, "Something went wrong", internal.ContentTypeJSON)
 		return
 	}
@@ -146,17 +136,68 @@ func ptrString(v string) *string { return &v }
 
 func getUserRowToUserResponse(dbUser db.GetUserRow) *api.UserResponse {
 	return &api.UserResponse{
-		Id:        ptrInt64(dbUser.ID),
-		Username:  ptrString(dbUser.Username),
-		FirstName: ptrString(dbUser.FirstName),
-		LastName:  ptrString(dbUser.LastName),
-		Email:     (*openapi_types.Email)(ptrString(dbUser.Email)),
-		Avatar:    ptrString(dbUser.Avatar.String),
-		Role:      ptrString(dbUser.RoleName),
-		Status:    ptrString(dbUser.StatusName),
-		CreatedAt: ptrTime(dbUser.CreatedAt),
-		UpdatedAt: ptrTime(dbUser.UpdatedAt),
+		Id:                      ptrInt64(int32(dbUser.ID)),
+		Username:                ptrString(dbUser.Username),
+		FirstName:               ptrString(dbUser.FirstName),
+		LastName:                ptrString(dbUser.LastName),
+		Email:                   (*openapi_types.Email)(ptrString(dbUser.Email)),
+		Avatar:                  ptrStringFromPGText(dbUser.Avatar),
+		Role:                    ptrString(dbUser.RoleName),
+		Status:                  ptrString(dbUser.StatusName),
+		CreatedAt:               ptrTimeFromPGTimestamp(dbUser.CreatedAt),
+		UpdatedAt:               ptrTimeFromPGTimestamp(dbUser.UpdatedAt),
+		DateOfBirth:             ptrTimeFromPGTimestamp(dbUser.DateOfBirth),
+		Nationality:             ptrStringFromPGText(dbUser.Nationality),
+		Dependents:              ptrInt32FromPGInt4(dbUser.Dependents),
+		EmergencyContactName:    ptrStringFromPGText(dbUser.EmergencyContactName),
+		EmergencyContactNumber:  ptrInt32FromString(dbUser.EmergencyContactNumber.String),
+		EmergencyContactAddress: ptrStringFromPGText(dbUser.EmergencyContactAddress),
+		DepartmentName:          ptrStringFromPGText(dbUser.DepartmentName),
+		Gender:                  ptrStringFromPGText(dbUser.Gender),
+		MaritalStatus:           ptrStringFromPGText(dbUser.MaritalStatus),
+		AddressLine1:            ptrStringFromPGText(dbUser.AddressLine1),
+		AddressLine2:            ptrStringFromPGText(dbUser.AddressLine2),
+		City:                    ptrStringFromPGText(dbUser.City),
+		State:                   ptrStringFromPGText(dbUser.ResidenceState),
+		Country:                 ptrStringFromPGText(dbUser.Country),
+		PostalCode:              ptrStringFromPGText(dbUser.PostalCode),
 	}
+}
+
+// Helper functions to handle pgtype conversions
+func ptrStringFromPGText(text pgtype.Text) *string {
+	if !text.Valid {
+		return nil
+	}
+	return &text.String
+}
+
+func ptrTimeFromPGTimestamp(timestamp pgtype.Timestamp) *time.Time {
+	if !timestamp.Valid {
+		return nil
+	}
+	t := timestamp.Time
+	return &t
+}
+
+func ptrInt32FromPGInt4(int4 pgtype.Int4) *int32 {
+	if !int4.Valid {
+		return nil
+	}
+	i := int4.Int32
+	return &i
+}
+
+func ptrInt32FromString(str string) *int32 {
+	if str == "" {
+		return nil
+	}
+	i, err := strconv.Atoi(str)
+	if err != nil {
+		return nil
+	}
+	int32Val := int32(i)
+	return &int32Val
 }
 
 func ptrTime(t pgtype.Timestamp) *time.Time {

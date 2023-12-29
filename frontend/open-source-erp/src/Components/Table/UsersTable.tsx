@@ -63,6 +63,7 @@ const UsersTable: React.FC = () => {
   const showToast = useToast();
   const fetchUsers = async () => {
     const response = await usersApi.usersGet(page * rowsPerPage, rowsPerPage);
+    console.log(response.data.data);
     return response.data.data || [];
   };
 

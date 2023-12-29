@@ -1,41 +1,54 @@
 import { UserResponse } from '../../axios';
-import { useAuth } from '../../context/useAuth';
-import useFetch from '../../hooks/useFetch';
-import { useToast } from '../../hooks/useToast';
-import { useUserApi } from '../../hooks/useUserApi';
 import Card from '../../layout/Card';
-import InputField from '../Inputs/InputField';
-import Loading from '../Loader/Loading';
-import { InputIconSlot, InputSize, InputType } from '../Inputs/Input.enum';
+import { InputType } from '../Inputs/Input.enum';
+import DisabledInputs from '../DisabledForms/DisabledInputs';
+import { valueOrEmptyString } from '../../utils/util';
 
-function UserSummary() {
-  const usersApi = useUserApi();
-  const showToast = useToast();
-  const { payload } = useAuth();
+interface UserSummaryProps {
+  user?: UserResponse | null | undefined;
+}
 
-  const fetchUser = async (): Promise<UserResponse | null> => {
-    const response = await usersApi.usersUserIdGet(payload.user_id!);
-    console.log(response.data.data);
-    return response.data.data || null;
-  };
-
-  const {
-    data: user,
-    isLoading,
-    error,
-  } = useFetch<UserResponse | null>(['user'], fetchUser);
-
-  if (isLoading) return <Loading />;
-  if (error) {
-    showToast('Error loading users.');
-    return null;
-  }
+function UserSummary({ user }: UserSummaryProps) {
+  const fieldConfigs = [
+    {
+      name: 'username',
+      icon: 'person-circle',
+      placeholder: 'Username',
+      value: valueOrEmptyString(user?.username),
+      type: InputType.Text,
+      additionalClasses: 'mb-4',
+    },
+    {
+      name: 'email',
+      icon: 'envelope',
+      placeholder: 'Email Address',
+      value: valueOrEmptyString(user?.email),
+      type: InputType.Email,
+      additionalClasses: 'mb-4',
+    },
+    {
+      name: 'role',
+      icon: 'key',
+      placeholder: 'Role',
+      value: valueOrEmptyString(user?.role),
+      type: InputType.Text,
+      additionalClasses: 'mb-4',
+    },
+    {
+      name: 'status',
+      icon: 'power',
+      placeholder: 'Status',
+      value: valueOrEmptyString(user?.status),
+      type: InputType.Text,
+      additionalClasses: 'mb-4',
+    },
+  ];
 
   return (
-    <Card className="min-h-[90%]">
+    <Card className="min-h-[90%] max-w-96">
       <section className="min-w-64 h-[450px] flex flex-col gap-4 items-center">
         {user && `${user.firstName} ${user.lastName}`}
-        <div className="flex justify-center items-center w-40 h-40 rounded-full overflow-hidden">
+        <div className=" max-w-64 flex justify-center items-center w-40 h-40 rounded-full overflow-hidden">
           <img
             src={(user as UserResponse).avatar}
             className="w-full h-full object-cover rounded-full"
@@ -43,50 +56,7 @@ function UserSummary() {
           />
         </div>
         <div className="w-[90%]">
-          <InputField
-            name="username"
-            size={InputSize.Med}
-            slot={InputIconSlot.Pre}
-            type={InputType.Text}
-            disabled={true}
-            placeholder="Username"
-            icon="person-circle"
-            value={user?.username}
-            additionalClasses="mb-4"
-          />
-          <InputField
-            name="email"
-            size={InputSize.Med}
-            slot={InputIconSlot.Pre}
-            type={InputType.Email}
-            disabled={true}
-            placeholder="Email Address"
-            icon="envelope"
-            value={user?.email}
-            additionalClasses="mb-4"
-          />
-          <InputField
-            name="email"
-            size={InputSize.Med}
-            slot={InputIconSlot.Pre}
-            type={InputType.Email}
-            disabled={true}
-            placeholder="Email Address"
-            icon="envelope"
-            value={user?.email}
-            additionalClasses="mb-4"
-          />
-          <InputField
-            name="status"
-            size={InputSize.Med}
-            slot={InputIconSlot.Pre}
-            type={InputType.Text}
-            disabled={true}
-            placeholder="Status"
-            icon="power"
-            value={user?.status}
-            additionalClasses="mb-4"
-          />
+          <DisabledInputs vertical={true} fields={fieldConfigs} />
         </div>
       </section>
     </Card>

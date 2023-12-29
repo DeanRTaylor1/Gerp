@@ -17,6 +17,11 @@ export interface InputFieldProps {
   additionalClasses?: string;
 }
 
+/**
+ * @description icons should be found here
+ *  https://shoelace.style/components/icon
+ * and passed as a string
+ */
 const InputField: React.FC<InputFieldProps> = ({
   additionalClasses,
   icon,
