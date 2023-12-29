@@ -26,9 +26,10 @@ WHERE gender_name = $1 LIMIT 1;
 -- name: UpdateGender :exec
 UPDATE genders
 SET
-  gender_name = $2,
+  gender_name = COALESCE($2, gender_name),
   updated_at = NOW()
 WHERE id = $1;
+
 
 
 -- name: DeleteGender :exec

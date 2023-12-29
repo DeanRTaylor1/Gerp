@@ -11,7 +11,7 @@ import (
 
 func (s *Server) GetGenders(c *gin.Context, params api.GetGendersParams) {
 
-	genders, err := s.DB.GetGenders(c, db.GetGendersParams{
+	genders, err := s.Store.Queries.GetGenders(c, db.GetGendersParams{
 		Offset: int32(*params.Offset),
 		Limit:  int32(*params.Limit),
 	})

@@ -3,6 +3,7 @@ import Home from '../pages/Home';
 import SignInPage from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
 import UsersAdmin from '../pages/UsersAdmin';
+import EditUserProfile from '../pages/users/EditUserProfile';
 import UserProfile from '../pages/users/UserProfile';
 
 type PageName =
@@ -12,6 +13,7 @@ type PageName =
   | 'sign-up'
   | 'user management'
   | 'profile'
+  | 'edit profile'
   | 'create';
 
 type PageCategory = 'users' | 'payslips';
@@ -71,8 +73,16 @@ export const pageTree: Array<IPageTreeItem> = [
     name: 'Profile',
     path: '/profile',
     navbar: false,
-    icon: 'mdi:home',
+    icon: 'mdi:account',
     element: UserProfile,
+    protected: true,
+  },
+  {
+    name: 'Edit Profile',
+    path: '/profile/edit/:id',
+    navbar: false,
+    icon: 'mdi:home',
+    element: EditUserProfile,
     protected: true,
   },
 

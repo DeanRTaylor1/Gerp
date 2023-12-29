@@ -27,13 +27,13 @@ type Server struct {
 	R             *gin.Engine
 	Env           config.EnvConfig
 	Logger        *internal.Logger
-	DB            *db.Queries
+	Store         *db.SQLStore
 	Authenticator auth.Authenticator
 }
 
 func NewServer(r *gin.Engine, dbConn *pgxpool.Pool) *Server {
 	Logger, err := internal.NewLogger("logs")
-	queries := db.New(dbConn)
+	store := db.NewStore(dbConn)
 
 	if err != nil {
 		panic(err)
@@ -46,7 +46,7 @@ func NewServer(r *gin.Engine, dbConn *pgxpool.Pool) *Server {
 		R:             gin.Default(),
 		Env:           config.Env,
 		Logger:        Logger,
-		DB:            queries,
+		Store:         store,
 		Authenticator: authenticator,
 	}
 }
@@ -69,7 +69,7 @@ func (s *Server) Start() {
 		fmt.Fprintf(os.Stderr, "Error loading swagger spec\n: %s", err)
 		os.Exit(1)
 	}
-	openAPIAuthFunc := auth.OpenAPIAuthFunc(s.Authenticator, s.DB)
+	openAPIAuthFunc := auth.OpenAPIAuthFunc(s.Authenticator, s.Store.Queries)
 
 	validationOpts := &middleware.Options{
 		ErrorHandler: validationErrorHandler,

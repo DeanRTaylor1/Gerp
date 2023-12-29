@@ -1,7 +1,14 @@
-import { createContext, useState, useEffect, ReactNode } from 'react';
+import {
+  createContext,
+  useState,
+  useEffect,
+  ReactNode,
+  useCallback,
+} from 'react';
 import { AuthContextType } from './useAuth';
 import { jwtDecode } from 'jwt-decode';
-import { JwtPayload } from '../axios';
+import { JwtPayload, UserResponse } from '../axios';
+import { useUserApi } from '../hooks/useUserApi';
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
@@ -9,23 +16,40 @@ const useAuthProvider = (): AuthContextType => {
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [authenticated, setAuthenticated] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [payload, setPayload] = useState<JwtPayload>({});
+  const [payload, setPayload] = useState<JwtPayload>({} as JwtPayload);
+  const [user, setUser] = useState<UserResponse>({} as UserResponse);
+  const userApi = useUserApi();
+
+  const getUser = useCallback(
+    async (userId: number) => {
+      try {
+        const response = await userApi.usersUserIdGet(userId);
+        if (response.data.data) {
+          console.log({ user: response.data.data });
+          setUser(response.data.data);
+        }
+      } catch (error) {
+        console.log({ error });
+      }
+    },
+    [userApi]
+  );
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
     if (token) {
       const decoded: JwtPayload = jwtDecode(token);
-      if (decoded?.exp && decoded.exp * 1000 > Date.now()) {
+      if (decoded.exp * 1000 > Date.now()) {
         setAuthToken(token);
         setAuthenticated(true);
-        console.log({ decoded });
         setPayload(decoded);
+        getUser(decoded.user_id);
       } else {
         logout();
       }
     }
     setLoading(false);
-  }, []);
+  }, [userApi, getUser]);
 
   const login = (token: string): void => {
     localStorage.setItem('access_token', token);
@@ -40,7 +64,7 @@ const useAuthProvider = (): AuthContextType => {
     localStorage.removeItem('access_token');
     setAuthToken(null);
     setAuthenticated(false);
-    setPayload({});
+    setPayload({} as JwtPayload);
   };
 
   return {
@@ -50,6 +74,7 @@ const useAuthProvider = (): AuthContextType => {
     logout,
     authenticated,
     loading,
+    user,
   };
 };
 

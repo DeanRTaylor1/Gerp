@@ -10,7 +10,7 @@ interface FormikFieldProps {
   additionalClasses?: string;
 }
 
-const FormikField: React.FC<FormikFieldProps> = ({
+const FormikFieldShoeLace: React.FC<FormikFieldProps> = ({
   name,
   type,
   placeholder,
@@ -29,12 +29,25 @@ const FormikField: React.FC<FormikFieldProps> = ({
         {...field}
         type={type}
         as="input"
-        className={`mb-4 block h-9 w-full border ${
-          meta.touched && meta.error ? 'border-red-500' : 'border-black'
-        } bg-[#f2f2f7] px-3 py-6 pl-14 text-sm text-[#333333]`}
+        className={`
+        block w-full
+        py-1.5 px-3
+        border-[var(--sl-input-border-width)] 
+        border-[var(--sl-input-border-color)]
+        rounded-[var(--sl-input-border-radius-medium)]
+        bg-[var(--sl-input-background-color)]
+        text-[var(--sl-input-font-size-medium)]
+        text-[var(--sl-input-color)]
+        placeholder-[var(--sl-input-placeholder-color)]
+        ${meta.touched && meta.error ? 'border-red-500' : ''} 
+        focus:border-[var(--sl-input-border-color-focus)]
+        focus:ring-[var(--sl-input-focus-ring-color)]
+        focus:ring-offset-[var(--sl-input-focus-ring-offset)]
+    `}
         maxLength={maxLength}
         placeholder={placeholder}
       />
+
       {meta.touched && meta.error ? (
         <div className="absolute right-0 top-0 mt-5 mr-4 text-red-500 text-xs italic">
           {meta.error}
@@ -44,4 +57,4 @@ const FormikField: React.FC<FormikFieldProps> = ({
   );
 };
 
-export default FormikField;
+export default FormikFieldShoeLace;

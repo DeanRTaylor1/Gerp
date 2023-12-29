@@ -154,37 +154,37 @@ export interface JwtPayload {
      * @type {number}
      * @memberof JwtPayload
      */
-    'id'?: number;
+    'id': number;
     /**
      * 
      * @type {number}
      * @memberof JwtPayload
      */
-    'user_id'?: number;
+    'user_id': number;
     /**
      * 
      * @type {string}
      * @memberof JwtPayload
      */
-    'email'?: string;
+    'email': string;
     /**
      * 
      * @type {string}
      * @memberof JwtPayload
      */
-    'roles'?: string;
+    'roles': string;
     /**
      * 
      * @type {number}
      * @memberof JwtPayload
      */
-    'iat'?: number;
+    'iat': number;
     /**
      * 
      * @type {number}
      * @memberof JwtPayload
      */
-    'exp'?: number;
+    'exp': number;
 }
 /**
  * 

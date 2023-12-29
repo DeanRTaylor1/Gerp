@@ -3,23 +3,22 @@ import UserProfileSummary from '../../Components/forms/UserProfileSummary';
 import UserSummary from '../../Components/forms/UserSummary';
 import { getFetchUser } from '../../api/users';
 import { UserResponse } from '../../axios';
-import { useAuth } from '../../context/useAuth';
 import useFetch from '../../hooks/useFetch';
 import { useToast } from '../../hooks/useToast';
 import { useUserApi } from '../../hooks/useUserApi';
+import { useParams } from 'react-router-dom';
 
-const UserProfile = () => {
+const EditUserProfile = () => {
   const usersApi = useUserApi();
   const showToast = useToast();
-  const { payload } = useAuth();
-
+  const { id } = useParams();
   const {
     data: user,
     isLoading,
     error,
   } = useFetch<UserResponse | null>(
     ['user'],
-    getFetchUser(usersApi, payload.user_id)
+    getFetchUser(usersApi, Number(id))
   );
 
   if (isLoading)
@@ -45,4 +44,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default EditUserProfile;

@@ -19,7 +19,7 @@ func (s *Server) PostAuth(c *gin.Context) {
 		return
 	}
 
-	dbUser, err := s.DB.GetUserByEmail(c, loginProps.Email)
+	dbUser, err := s.Store.Queries.GetUserByEmail(c, loginProps.Email)
 	if err != nil {
 		fmt.Println("Get User not found")
 		Respond(c, http.StatusUnauthorized, nil, "Unauthorized", internal.ContentTypeJSON)

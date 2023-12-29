@@ -31,7 +31,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   };
 
   return (
-    <div className={`${theme} flex  min-h-screen`}>
+    <div className={`${theme} flex  min-h-screen max-w-screen w-full`}>
       {/* Top Bar */}
       <div
         className={`w-full z-40 border-b-2 border-gray-200 ${primary} fixed top-0 left-0 h-16 flex items-center z-10 shadow-sm`}

@@ -134,7 +134,7 @@ function UserProfileSummary({ user }: UserProfileSummaryProps) {
               <DisabledInputs vertical={false} fields={fieldConfigs} />
               <p className="text-sm text-[#636262] pb-12">
                 <ShoeLaceCustomButton
-                  onClick={() => navigate('/')}
+                  onClick={() => navigate(`/profile/edit/${user?.id}`)}
                   icon="pencil-square"
                 >
                   {translator.global.edit}

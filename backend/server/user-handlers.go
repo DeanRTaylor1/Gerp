@@ -17,7 +17,7 @@ import (
 
 func (s *Server) GetUsers(c *gin.Context, params api.GetUsersParams) {
 
-	users, err := s.DB.GetUsers(c, db.GetUsersParams{Offset: int32(*params.Offset), Limit: int32(*params.Limit)})
+	users, err := s.Store.Queries.GetUsers(c, db.GetUsersParams{Offset: int32(*params.Offset), Limit: int32(*params.Limit)})
 
 	if err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
@@ -67,21 +67,21 @@ func (s *Server) PostUsers(c *gin.Context) {
 		return
 	}
 
-	dbRole, err := s.DB.GetUserRoleByName(c, "Employee")
+	dbRole, err := s.Store.Queries.GetUserRoleByName(c, "Employee")
 	if err != nil {
 		s.Logger.Error(fmt.Sprintf("Error getting user role %s", err))
 		Respond(c, http.StatusInternalServerError, err, "Something went wrong", internal.ContentTypeJSON)
 		return
 	}
 
-	dbStatus, err := s.DB.GetUserUserStatusByName(c, "Active")
+	dbStatus, err := s.Store.Queries.GetUserUserStatusByName(c, "Active")
 	if err != nil {
 		s.Logger.Error(fmt.Sprintf("Error getting user status %s", err))
 		Respond(c, http.StatusInternalServerError, err, "Something went wrong", internal.ContentTypeJSON)
 		return
 	}
 
-	dbUser, err := s.DB.CreateUser(c, user.ToCreateUserParams(hashedPassword))
+	dbUser, err := s.Store.Queries.CreateUser(c, user.ToCreateUserParams(hashedPassword))
 	if err != nil {
 		Respond(c, http.StatusInternalServerError, err, "Something went wrong", internal.ContentTypeJSON)
 		return
@@ -96,7 +96,7 @@ func (s *Server) DeleteUsersUserId(c *gin.Context, userId int) {
 	fmt.Println("TODO")
 }
 func (s *Server) GetUsersUserId(c *gin.Context, userId int) {
-	dbUser, err := s.DB.GetUser(c, int32(userId))
+	dbUser, err := s.Store.Queries.GetUser(c, int32(userId))
 	if err != nil {
 		fmt.Println("error")
 		Respond(c, http.StatusBadRequest, nil, "Something went wrong", internal.ContentTypeJSON)

@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { AuthContext } from './authProvider';
-import { JwtPayload } from '../axios';
+import { JwtPayload, UserResponse } from '../axios';
 
 export interface AuthContextType {
   authToken: string | null;
@@ -9,6 +9,7 @@ export interface AuthContextType {
   authenticated: boolean;
   loading: boolean;
   payload: JwtPayload;
+  user: UserResponse;
 }
 
 export const useAuth = (): AuthContextType => {

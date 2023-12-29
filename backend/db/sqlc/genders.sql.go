@@ -130,7 +130,7 @@ func (q *Queries) GetGenders(ctx context.Context, arg GetGendersParams) ([]Gende
 const updateGender = `-- name: UpdateGender :exec
 UPDATE genders
 SET
-  gender_name = $2,
+  gender_name = COALESCE($2, gender_name),
   updated_at = NOW()
 WHERE id = $1
 `

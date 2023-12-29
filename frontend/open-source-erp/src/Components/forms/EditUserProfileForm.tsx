@@ -1,13 +1,13 @@
 import { Formik, Form, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { UserRequest } from '../../axios';
-import FormikField from '../Inputs/FormikField';
 import SubmitButton from '../buttons/SubmitButton';
 import { useUserApi } from '../../hooks/useUserApi';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '../../hooks/useToast';
 import useTranslator from '../../hooks/useTranslator';
 import { Icon } from '@iconify/react';
+import FormikFieldShoeLace from '../Inputs/FormikFieldShoeLace';
 
 const UserRequestSchema = Yup.object().shape({
   username: Yup.string().required('Username is required'),
@@ -55,7 +55,7 @@ const SignUpForm = () => {
     >
       {() => (
         <Form className="mx-auto mb-4 max-w-sm pb-4">
-          <FormikField
+          <FormikFieldShoeLace
             icon={<Icon icon="solar:user-linear" />}
             name="username"
             type="text"
@@ -63,28 +63,28 @@ const SignUpForm = () => {
             maxLength={256}
             additionalClasses="mb-4"
           />
-          <FormikField
+          <FormikFieldShoeLace
             icon={<Icon icon="teenyicons:envelope-outline" />}
             name="email"
             type="email"
             placeholder={translator.global.email_address}
             additionalClasses="mb-4"
           />
-          <FormikField
+          <FormikFieldShoeLace
             icon={<Icon icon="mdi:password-outline" />}
             name="password"
             type="password"
             placeholder={translator.global.password}
             additionalClasses="mb-4"
           />
-          <FormikField
+          <FormikFieldShoeLace
             icon={<Icon icon="mdi:card-account-details-outline" />}
             name="firstName"
             type="text"
             placeholder="John"
             additionalClasses="mb-4"
           />
-          <FormikField
+          <FormikFieldShoeLace
             icon={<Icon icon="mdi:card-account-details-outline" />}
             name="lastName"
             type="text"
