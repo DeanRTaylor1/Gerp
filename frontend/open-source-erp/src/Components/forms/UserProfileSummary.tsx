@@ -1,17 +1,19 @@
 import Card from '../../layout/Card';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../hooks/useTheme';
 import useTranslator from '../../hooks/useTranslator';
 import { UserResponse } from '../../axios';
 import { dateTimeToDateString, valueOrEmptyString } from '../../utils/util';
 import { InputType } from '../Inputs/Input.enum';
 import DisabledInputs from '../DisabledForms/DisabledInputs';
+import ShoeLaceCustomButton from '../buttons/ShoeLaceCustomButton';
 
 interface UserProfileSummaryProps {
   user?: UserResponse | null | undefined;
 }
 
 function UserProfileSummary({ user }: UserProfileSummaryProps) {
+  const navigate = useNavigate();
   const { getColorClasses } = useTheme();
   const primary = getColorClasses('primary');
 
@@ -119,26 +121,30 @@ function UserProfileSummary({ user }: UserProfileSummaryProps) {
   ];
 
   return (
-    <Card className="px-0 ">
-      <section>
-        <div
-          className={`pt-4 min-h-full flex flex-col justify-center items-center ${primary}`}
-        >
-          <div className="flex flex-wrap justify-center items-center gap-4 max-w-full min-w-[350px] px-5 py-16 text-center md:px-10 md:py-24 lg:py-0">
-            <h2 className="mb-8 text-3xl font-bold md:mb-12 md:text-5xl">
-              {translator.global.profile}
-            </h2>
-            <DisabledInputs vertical={false} fields={fieldConfigs} />
-            <p className="text-sm text-[#636262]">
-              {translator.global.edit}{' '}
-              <Link to="/signin" className="text-sm font-bold text-black">
+    <>
+      <Card className="px-0 ">
+        <section>
+          <div
+            className={`pt-4 min-h-full flex flex-col justify-center items-center ${primary}`}
+          >
+            <div className="flex flex-wrap justify-center items-center gap-4 max-w-full min-w-[350px] px-5 py-16 text-center md:px-10 md:py-24 lg:py-0">
+              <h2 className="mb-8 text-3xl font-bold md:mb-12 md:text-5xl">
                 {translator.global.profile}
-              </Link>
-            </p>
+              </h2>
+              <DisabledInputs vertical={false} fields={fieldConfigs} />
+              <p className="text-sm text-[#636262] pb-12">
+                <ShoeLaceCustomButton
+                  onClick={() => navigate('/')}
+                  icon="pencil-square"
+                >
+                  {translator.global.edit}
+                </ShoeLaceCustomButton>{' '}
+              </p>
+            </div>
           </div>
-        </div>
-      </section>
-    </Card>
+        </section>
+      </Card>
+    </>
   );
 }
 
