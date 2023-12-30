@@ -13,6 +13,7 @@ import (
 	"github.com/deanrtaylor1/go-erp-template/config"
 	db "github.com/deanrtaylor1/go-erp-template/db/sqlc"
 	"github.com/deanrtaylor1/go-erp-template/internal"
+	"github.com/deanrtaylor1/go-erp-template/service"
 	"github.com/getkin/kin-openapi/openapi3filter"
 	"github.com/gin-gonic/gin"
 
@@ -24,15 +25,19 @@ import (
 )
 
 type Server struct {
-	R             *gin.Engine
-	Env           config.EnvConfig
-	Logger        *internal.Logger
-	Store         *db.SQLStore
-	Authenticator auth.Authenticator
+	R              *gin.Engine
+	Env            config.EnvConfig
+	Logger         *internal.Logger
+	Store          *db.SQLStore
+	Authenticator  auth.Authenticator
+	ProfileService service.ProfileService
+	UserService    service.UserService
+	AuthService    service.AuthService
+	GendersService service.GendersService
 }
 
 func NewServer(r *gin.Engine, dbConn *pgxpool.Pool) *Server {
-	Logger, err := internal.NewLogger("logs")
+	logger, err := internal.NewLogger("logs")
 	store := db.NewStore(dbConn)
 
 	if err != nil {
@@ -43,11 +48,15 @@ func NewServer(r *gin.Engine, dbConn *pgxpool.Pool) *Server {
 		log.Fatal(err)
 	}
 	return &Server{
-		R:             gin.Default(),
-		Env:           config.Env,
-		Logger:        Logger,
-		Store:         store,
-		Authenticator: authenticator,
+		R:              gin.Default(),
+		Env:            config.Env,
+		Logger:         logger,
+		Store:          store,
+		Authenticator:  authenticator,
+		ProfileService: service.NewProfileService(store, logger),
+		UserService:    service.NewUserService(store, logger),
+		AuthService:    service.NewAuthService(store, logger, authenticator, &config.Env),
+		GendersService: service.NewGendersService(logger, store),
 	}
 }
 
