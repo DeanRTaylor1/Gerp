@@ -44,7 +44,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Content Area */}
       <div
         className={`content flex flex-wrap items-start justify-center md:justify-start p-6 mt-16 pt-2 gap-6 w-full ${secondary} ${
-          showNav ? 'ml-16' : 'ml-16'
+          showNav ? 'md:ml-16' : 'md:ml-16'
         }`}
       >
         {children}

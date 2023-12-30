@@ -92,7 +92,7 @@ const EditUserProfile = () => {
 
   return (
     <>
-      <div className="flex flex-col gap-6 pt-4 px-2 w-full">
+      <div className="flex flex-col gap-6 pt-4  w-full">
         Profile
         <div className="flex flex-col lg:flex-row gap-8 w-full min-h-full">
           <UserSummary user={user} />
