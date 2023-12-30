@@ -5,12 +5,14 @@ import SlIcon from '@shoelace-style/shoelace/dist/react/icon/index.js';
 interface CustomStyledButtonProps {
   children: ReactNode;
   icon?: string;
-  onClick: MouseEventHandler<HTMLSpanElement>;
+  onClick?: MouseEventHandler<HTMLSpanElement>;
+  type?: 'submit' | 'button';
 }
 
 const ShoeLaceCustomButton: React.FC<CustomStyledButtonProps> = ({
   children,
   icon,
+  type = 'button',
   onClick,
 }) => {
   return (
@@ -38,7 +40,7 @@ const ShoeLaceCustomButton: React.FC<CustomStyledButtonProps> = ({
         `}
       </style>
       <span onClick={onClick}>
-        <SlButton className="custom-button">
+        <SlButton className="custom-button" type={type} onClick={onClick}>
           {children}
           {icon && <SlIcon name={icon} slot="suffix"></SlIcon>}
         </SlButton>

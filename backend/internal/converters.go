@@ -80,6 +80,19 @@ func ConvertToUpdateAddressParams(req api.PutProfileRequest) db.UpdateAddressPar
 	}
 }
 
+func ConvertProfileRequestToUpdateCreateAddressParams(req api.PutProfileRequest) db.CreateAddressParams {
+	return db.CreateAddressParams{
+		ProfileID:    Int64ToPGInt4(req.Id),
+		AddressLine1: req.AddressLine1,
+		AddressLine2: StringToPGText(req.AddressLine2),
+		City:         req.City,
+		State:        StringToPGText(req.State),
+		PostalCode:   StringToPGText(req.PostalCode),
+		Country:      req.Country,
+		AddressType:  StringToPGText(req.AddressType),
+	}
+}
+
 func ptrInt64(v int32) *int64 {
 	r := int64(v)
 	return &r

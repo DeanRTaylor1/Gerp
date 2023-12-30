@@ -26,20 +26,13 @@ func CustomOpenAPIValidationMiddleware(swagger *openapi3.T, opts middleware.Opti
 	validatorMiddleware := middleware.OapiRequestValidatorWithOptions(swagger, &opts)
 
 	return func(c *gin.Context) {
-		bypassPaths := map[string]bool{
-			"/":            true,
-			"/about":       true,
-			"/users":       true,
-			"/assets":      true,
-			"/favicon.ico": true,
-		}
+		path := c.Request.URL.Path
 
-		if _, ok := bypassPaths[c.Request.URL.Path]; ok {
+		if strings.HasPrefix(path, "/api/v1/") {
+			validatorMiddleware(c)
+		} else {
 			c.Next()
-			return
 		}
-
-		validatorMiddleware(c)
 	}
 }
 

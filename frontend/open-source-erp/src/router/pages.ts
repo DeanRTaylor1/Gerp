@@ -33,21 +33,21 @@ export const pageTree: Array<IPageTreeItem> = [
     name: 'Home',
     path: '/',
     navbar: true,
-    icon: 'mdi:home',
+    icon: 'house-door',
     element: Home,
     protected: true,
   },
   {
     name: 'Users',
     navbar: true,
-    icon: 'mdi:account-multiple',
+    icon: 'people',
     protected: true,
     children: [
       {
         name: 'User Management',
         path: '/users',
         navbar: true,
-        icon: 'mdi:account-multiple',
+        icon: 'pencil',
         element: UsersAdmin,
         protected: true,
       },
@@ -56,14 +56,14 @@ export const pageTree: Array<IPageTreeItem> = [
   {
     name: 'Payslips',
     navbar: true,
-    icon: 'mdi:file-document-edit',
+    icon: 'credit-card-2-back',
     protected: true,
     children: [
       {
         name: 'Create',
         path: '/about',
         navbar: true,
-        icon: 'mdi:pencil',
+        icon: 'plus-circle',
         element: About,
         protected: true,
       },

@@ -19,7 +19,7 @@ const Select: React.FC<SelectProps> = ({
   return (
     <div className={`flex gap-2 ${additionalClasses}`}>
       <label className="flex gap-2 items-center justify-center">
-        {title}
+        {title && `${title}:`}
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}

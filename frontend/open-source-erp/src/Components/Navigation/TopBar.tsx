@@ -28,12 +28,14 @@ const TopBar: React.FC<TopBarProps> = ({ openNav, closeNavIfOpen }) => {
 
   return (
     <div className="w-full px-4">
-      <div className={`${primary} flex items-center justify-between space-x-2`}>
+      <div
+        className={`${primary} dark:bg-transparent bg-transparent flex items-center justify-between space-x-2`}
+      >
         <span className=" w-40 flex gap-2 items-center justify-left text-2xl font-extrabold">
           <span className="w-12">
             <Icon
               onClick={openNav}
-              className="xl:hidden pl-2 w-8 h-8 hover:cursor-pointer"
+              className=" pl-2 w-8 h-8 hover:cursor-pointer"
               width="30"
               icon="mdi:menu"
             />
