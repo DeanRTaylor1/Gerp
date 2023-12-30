@@ -30,7 +30,7 @@ function FormWithValidation<T extends FormikValues>({
       onSubmit={onSubmit}
     >
       {() => (
-        <Form className="w-full  mt-8 mb-4 items-center justify-center pb-4 flex flex-col md:flex-row md:flex-wrap gap-4 ">
+        <Form className="w-full mt-8 mb-4 items-center justify-center pb-4 flex flex-col md:flex-row md:flex-wrap gap-4 ">
           <div className="flex flex-col items-center justify-center gap-8">
             <div className="w-full items-center justify-center  flex flex-col md:flex-row md:flex-wrap gap-4">
               {fieldConfigs.map((fieldConfig, index) => (

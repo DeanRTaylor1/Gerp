@@ -69,12 +69,7 @@ const fieldConfigs: FormikFieldProps[] = [
     type: 'text',
     placeholder: 'Enter your nationality',
   },
-  {
-    name: 'maritalStatusId',
-    label: 'Marital Status',
-    type: 'number',
-    placeholder: 'Enter your marital status ID',
-  },
+
   {
     name: 'dependents',
     label: 'Dependents',
@@ -191,7 +186,7 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
   };
 
   return (
-    <Card>
+    <Card className="pb-0">
       <h3 className="bg-transparent">Edit Profile</h3>
       <FormWithValidation<PutProfileRequest>
         initialValues={initialValues}
@@ -201,7 +196,7 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
       >
         {' '}
         <div
-          className={`relative w-[225px] md:w-[40%] md:max-w-[40%] flex flex-col`}
+          className={`relative w-[225px] md:w-[40%] md:max-w-[40%] flex flex-col h-[62px]`}
         >
           <LabelComponent label={'Select Gender'} />
           <Field
@@ -218,7 +213,7 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
           </Field>
         </div>
         <div
-          className={`relative w-[225px] md:w-[40%] md:max-w-[40%] flex flex-col my-2`}
+          className={`relative w-[225px] md:w-[40%] md:max-w-[40%] flex flex-col my-2 h-[62px]`}
         >
           <LabelComponent label={'Select Marital Status'} />
           <Field

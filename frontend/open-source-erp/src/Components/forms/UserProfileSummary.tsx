@@ -135,7 +135,7 @@ function UserProfileSummary({ user }: UserProfileSummaryProps) {
           <div
             className={`pt-4 min-h-full flex flex-col justify-center items-center ${primary}`}
           >
-            <div className="flex flex-wrap justify-center items-center gap-4 max-w-full min-w-[350px] px-5 py-16 text-center md:px-10 md:py-24 lg:py-0">
+            <div className="flex flex-wrap justify-center items-center gap-4 max-w-full min-w-[350px] px-5 pt-16 py-4 text-center md:px-10 md:py-24 lg:py-0">
               <h2 className="mb-8 text-3xl font-bold md:mb-12 md:text-5xl">
                 {translator.global.profile}
               </h2>
