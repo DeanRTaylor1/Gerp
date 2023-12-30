@@ -19,6 +19,7 @@ const TableHead: React.FC<TableHeadProps> = ({ headLabel }) => {
                 {headLabel.map((header) => (
                     <th key={header.id} className={secondary + " font-semibold text-left p-3 border-b border-gray-300"} style={{ textAlign: header.align || 'left' }}>{header.label}</th>
                 ))}
+                <th key={headLabel.length + 1} className={secondary + " font-semibold text-left p-3 border-b border-gray-300"} style={{ textAlign: 'right' }}></th>
             </tr>
         </thead>
     );

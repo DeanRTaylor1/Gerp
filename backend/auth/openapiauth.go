@@ -22,6 +22,7 @@ func OpenAPIAuthFunc(authenticator Authenticator, q db.Querier) openapi3filter.A
 		req := input.RequestValidationInput.Request
 		ginCtx := middleware.GetGinContext(ctx)
 		authHeader := req.Header.Get("Authorization")
+
 		if authHeader == "" {
 			return fmt.Errorf("authorization header is required")
 		}
@@ -42,12 +43,12 @@ func OpenAPIAuthFunc(authenticator Authenticator, q db.Querier) openapi3filter.A
 		}
 
 		scopes := input.Scopes
-		fmt.Printf("%v", scopes)
-		if len(scopes) > 0 && user.RoleName != "admin" {
+		if len(scopes) > 0 && user.RoleName != "Administrator" {
 			if !slices.Contains(scopes, user.RoleName) {
 				return fmt.Errorf("invalid scopes %w", err)
 			}
 		}
+
 		ginCtx.Set("user", user)
 
 		return nil

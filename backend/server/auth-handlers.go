@@ -19,7 +19,7 @@ func (s *Server) PostAuth(c *gin.Context) {
 		return
 	}
 
-	dbUser, err := s.DB.GetUserByEmail(c, loginProps.Email)
+	dbUser, err := s.Store.Queries.GetUserByEmail(c, loginProps.Email)
 	if err != nil {
 		fmt.Println("Get User not found")
 		Respond(c, http.StatusUnauthorized, nil, "Unauthorized", internal.ContentTypeJSON)
@@ -35,12 +35,12 @@ func (s *Server) PostAuth(c *gin.Context) {
 
 	duration := time.Duration(s.Env.Jwt_Duration) * time.Hour
 
-	accesToken, err := s.Authenticator.CreateToken(dbUser.Email, dbUser.RoleName, duration)
+	accessToken, err := s.Authenticator.CreateToken(dbUser.ID, dbUser.Email, dbUser.RoleName, duration)
 	if err != nil {
 		Respond(c, http.StatusInternalServerError, nil, "Something went wrong.", internal.ContentTypeJSON)
 		return
 	}
-	response := toLoginUserResponse(accesToken)
+	response := toLoginUserResponse(accessToken)
 
 	Respond(c, http.StatusCreated, response, "success", internal.ContentTypeJSON)
 }

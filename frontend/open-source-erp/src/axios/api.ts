@@ -127,6 +127,68 @@ export interface ErrorResponse {
 /**
  * 
  * @export
+ * @interface GenderResponse
+ */
+export interface GenderResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof GenderResponse
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GenderResponse
+     */
+    'genderName'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface JwtPayload
+ */
+export interface JwtPayload {
+    /**
+     * 
+     * @type {number}
+     * @memberof JwtPayload
+     */
+    'id': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof JwtPayload
+     */
+    'user_id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof JwtPayload
+     */
+    'email': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof JwtPayload
+     */
+    'roles': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof JwtPayload
+     */
+    'iat': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof JwtPayload
+     */
+    'exp': number;
+}
+/**
+ * 
+ * @export
  * @interface LoginUserRequest
  */
 export interface LoginUserRequest {
@@ -171,6 +233,31 @@ export interface LoginUserResponse {
 /**
  * 
  * @export
+ * @interface MultiGendersResponse
+ */
+export interface MultiGendersResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof MultiGendersResponse
+     */
+    'status'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof MultiGendersResponse
+     */
+    'message'?: string;
+    /**
+     * 
+     * @type {Array<GenderResponse>}
+     * @memberof MultiGendersResponse
+     */
+    'data'?: Array<GenderResponse>;
+}
+/**
+ * 
+ * @export
  * @interface MultiUsersResponse
  */
 export interface MultiUsersResponse {
@@ -192,6 +279,115 @@ export interface MultiUsersResponse {
      * @memberof MultiUsersResponse
      */
     'data'?: Array<UserResponse>;
+}
+/**
+ * 
+ * @export
+ * @interface PutProfileRequest
+ */
+export interface PutProfileRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof PutProfileRequest
+     */
+    'id': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PutProfileRequest
+     */
+    'userId': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PutProfileRequest
+     */
+    'genderId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PutProfileRequest
+     */
+    'dateOfBirth': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PutProfileRequest
+     */
+    'nationality': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof PutProfileRequest
+     */
+    'maritalStatusId': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PutProfileRequest
+     */
+    'dependents'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PutProfileRequest
+     */
+    'emergencyContactId'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PutProfileRequest
+     */
+    'departmentId'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PutProfileRequest
+     */
+    'latestContractId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PutProfileRequest
+     */
+    'addressLine1': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PutProfileRequest
+     */
+    'addressLine2'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PutProfileRequest
+     */
+    'city': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PutProfileRequest
+     */
+    'state'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PutProfileRequest
+     */
+    'postalCode'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PutProfileRequest
+     */
+    'country': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PutProfileRequest
+     */
+    'addressType'?: string;
 }
 /**
  * 
@@ -339,6 +535,96 @@ export interface UserResponse {
      * @type {string}
      * @memberof UserResponse
      */
+    'dateOfBirth'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'nationality'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof UserResponse
+     */
+    'dependents'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'emergencyContactName'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof UserResponse
+     */
+    'emergencyContactNumber'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'emergencyContactAddress'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'departmentName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'gender'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'maritalStatus'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'addressLine1'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'addressLine2'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'city'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'state'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'country'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'postalCode'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserResponse
+     */
     'createdAt'?: string;
     /**
      * 
@@ -453,6 +739,241 @@ export class AuthenticationApi extends BaseAPI {
      */
     public authPost(loginUserRequest: LoginUserRequest, options?: AxiosRequestConfig) {
         return AuthenticationApiFp(this.configuration).authPost(loginUserRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * GendersApi - axios parameter creator
+ * @export
+ */
+export const GendersApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary List Available Gender Options
+         * @param {number} [offset] Page number of the users list
+         * @param {number} [limit] Number of users per page
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gendersGet: async (offset?: number, limit?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/genders`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * GendersApi - functional programming interface
+ * @export
+ */
+export const GendersApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = GendersApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary List Available Gender Options
+         * @param {number} [offset] Page number of the users list
+         * @param {number} [limit] Number of users per page
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gendersGet(offset?: number, limit?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MultiGendersResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gendersGet(offset, limit, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['GendersApi.gendersGet']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * GendersApi - factory interface
+ * @export
+ */
+export const GendersApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = GendersApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary List Available Gender Options
+         * @param {number} [offset] Page number of the users list
+         * @param {number} [limit] Number of users per page
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gendersGet(offset?: number, limit?: number, options?: any): AxiosPromise<MultiGendersResponse> {
+            return localVarFp.gendersGet(offset, limit, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * GendersApi - object-oriented interface
+ * @export
+ * @class GendersApi
+ * @extends {BaseAPI}
+ */
+export class GendersApi extends BaseAPI {
+    /**
+     * 
+     * @summary List Available Gender Options
+     * @param {number} [offset] Page number of the users list
+     * @param {number} [limit] Number of users per page
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GendersApi
+     */
+    public gendersGet(offset?: number, limit?: number, options?: AxiosRequestConfig) {
+        return GendersApiFp(this.configuration).gendersGet(offset, limit, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * ProfilesApi - axios parameter creator
+ * @export
+ */
+export const ProfilesApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Update User profiles
+         * @param {PutProfileRequest} putProfileRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        profilesPut: async (putProfileRequest: PutProfileRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'putProfileRequest' is not null or undefined
+            assertParamExists('profilesPut', 'putProfileRequest', putProfileRequest)
+            const localVarPath = `/profiles`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(putProfileRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ProfilesApi - functional programming interface
+ * @export
+ */
+export const ProfilesApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ProfilesApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Update User profiles
+         * @param {PutProfileRequest} putProfileRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async profilesPut(putProfileRequest: PutProfileRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.profilesPut(putProfileRequest, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['ProfilesApi.profilesPut']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ProfilesApi - factory interface
+ * @export
+ */
+export const ProfilesApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ProfilesApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Update User profiles
+         * @param {PutProfileRequest} putProfileRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        profilesPut(putProfileRequest: PutProfileRequest, options?: any): AxiosPromise<ApiResponse> {
+            return localVarFp.profilesPut(putProfileRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ProfilesApi - object-oriented interface
+ * @export
+ * @class ProfilesApi
+ * @extends {BaseAPI}
+ */
+export class ProfilesApi extends BaseAPI {
+    /**
+     * 
+     * @summary Update User profiles
+     * @param {PutProfileRequest} putProfileRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProfilesApi
+     */
+    public profilesPut(putProfileRequest: PutProfileRequest, options?: AxiosRequestConfig) {
+        return ProfilesApiFp(this.configuration).profilesPut(putProfileRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
