@@ -233,6 +233,25 @@ export interface LoginUserResponse {
 /**
  * 
  * @export
+ * @interface MaritalStatusesResponse
+ */
+export interface MaritalStatusesResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof MaritalStatusesResponse
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof MaritalStatusesResponse
+     */
+    'statusName'?: string;
+}
+/**
+ * 
+ * @export
  * @interface MultiGendersResponse
  */
 export interface MultiGendersResponse {
@@ -254,6 +273,31 @@ export interface MultiGendersResponse {
      * @memberof MultiGendersResponse
      */
     'data'?: Array<GenderResponse>;
+}
+/**
+ * 
+ * @export
+ * @interface MultiMaritalStatusesResponse
+ */
+export interface MultiMaritalStatusesResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof MultiMaritalStatusesResponse
+     */
+    'status'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof MultiMaritalStatusesResponse
+     */
+    'message'?: string;
+    /**
+     * 
+     * @type {Array<MaritalStatusesResponse>}
+     * @memberof MultiMaritalStatusesResponse
+     */
+    'data'?: Array<MaritalStatusesResponse>;
 }
 /**
  * 
@@ -753,8 +797,8 @@ export const GendersApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 
          * @summary List Available Gender Options
-         * @param {number} [offset] Page number of the users list
-         * @param {number} [limit] Number of users per page
+         * @param {number} [offset] Page number of the genders list
+         * @param {number} [limit] Number of genders per page
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -807,8 +851,8 @@ export const GendersApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary List Available Gender Options
-         * @param {number} [offset] Page number of the users list
-         * @param {number} [limit] Number of users per page
+         * @param {number} [offset] Page number of the genders list
+         * @param {number} [limit] Number of genders per page
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -831,8 +875,8 @@ export const GendersApiFactory = function (configuration?: Configuration, basePa
         /**
          * 
          * @summary List Available Gender Options
-         * @param {number} [offset] Page number of the users list
-         * @param {number} [limit] Number of users per page
+         * @param {number} [offset] Page number of the genders list
+         * @param {number} [limit] Number of genders per page
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -852,14 +896,135 @@ export class GendersApi extends BaseAPI {
     /**
      * 
      * @summary List Available Gender Options
-     * @param {number} [offset] Page number of the users list
-     * @param {number} [limit] Number of users per page
+     * @param {number} [offset] Page number of the genders list
+     * @param {number} [limit] Number of genders per page
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof GendersApi
      */
     public gendersGet(offset?: number, limit?: number, options?: AxiosRequestConfig) {
         return GendersApiFp(this.configuration).gendersGet(offset, limit, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * MaritalStatusesApi - axios parameter creator
+ * @export
+ */
+export const MaritalStatusesApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary List Available Marital Status Options for Forms
+         * @param {number} [offset] Page number of the list
+         * @param {number} [limit] Number of items per page
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        maritalStatusesGet: async (offset?: number, limit?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/marital-statuses`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * MaritalStatusesApi - functional programming interface
+ * @export
+ */
+export const MaritalStatusesApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = MaritalStatusesApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary List Available Marital Status Options for Forms
+         * @param {number} [offset] Page number of the list
+         * @param {number} [limit] Number of items per page
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async maritalStatusesGet(offset?: number, limit?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MultiMaritalStatusesResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.maritalStatusesGet(offset, limit, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['MaritalStatusesApi.maritalStatusesGet']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * MaritalStatusesApi - factory interface
+ * @export
+ */
+export const MaritalStatusesApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = MaritalStatusesApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary List Available Marital Status Options for Forms
+         * @param {number} [offset] Page number of the list
+         * @param {number} [limit] Number of items per page
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        maritalStatusesGet(offset?: number, limit?: number, options?: any): AxiosPromise<MultiMaritalStatusesResponse> {
+            return localVarFp.maritalStatusesGet(offset, limit, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * MaritalStatusesApi - object-oriented interface
+ * @export
+ * @class MaritalStatusesApi
+ * @extends {BaseAPI}
+ */
+export class MaritalStatusesApi extends BaseAPI {
+    /**
+     * 
+     * @summary List Available Marital Status Options for Forms
+     * @param {number} [offset] Page number of the list
+     * @param {number} [limit] Number of items per page
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof MaritalStatusesApi
+     */
+    public maritalStatusesGet(offset?: number, limit?: number, options?: AxiosRequestConfig) {
+        return MaritalStatusesApiFp(this.configuration).maritalStatusesGet(offset, limit, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

@@ -1,13 +1,17 @@
 import * as Yup from 'yup';
 import {
   GenderResponse,
+  MaritalStatusesResponse,
   PutProfileRequest,
   UserRequest,
   UserResponse,
 } from '../../axios';
 
 import Card from '../../layout/Card';
-import { FormikFieldProps } from '../Inputs/FormikFieldShoeLace';
+import {
+  FormikFieldProps,
+  LabelComponent,
+} from '../Inputs/FormikFieldShoeLace';
 import FormWithValidation from './FormWithValidation';
 import { Field, FormikHelpers } from 'formik';
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +19,8 @@ import { useToast } from '../../hooks/useToast';
 import useTranslator from '../../hooks/useTranslator';
 import { useProfilesApi } from '../../hooks/useProfilesApi';
 import { useTheme } from '../../hooks/useTheme';
+import axios from 'axios';
+import { useQueryClient } from '@tanstack/react-query';
 
 const PutUserProfileSchema = Yup.object().shape({
   id: Yup.number().required('ID is required').integer('ID must be an integer'),
@@ -36,10 +42,10 @@ const PutUserProfileSchema = Yup.object().shape({
     'Latest Contract ID must be an integer'
   ),
   addressLine1: Yup.string().required('Address Line 1 is required'),
-  addressLine2: Yup.string(),
+  addressLine2: Yup.string().nullable().notRequired(),
   city: Yup.string().required('City is required'),
-  state: Yup.string(),
-  postalCode: Yup.string(),
+  state: Yup.string().nullable().notRequired(),
+  postalCode: Yup.string().nullable().notRequired(),
   country: Yup.string().required('Country is required'),
   addressType: Yup.string().default('residential'),
 });
@@ -47,6 +53,7 @@ const PutUserProfileSchema = Yup.object().shape({
 interface EditUserProfileFormProps {
   genders: GenderResponse[];
   user: UserResponse;
+  maritalStatuses: MaritalStatusesResponse[];
 }
 
 const fieldConfigs: FormikFieldProps[] = [
@@ -115,14 +122,25 @@ const fieldConfigs: FormikFieldProps[] = [
 const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
   genders,
   user,
+  maritalStatuses,
 }) => {
+  console.log({ maritalStatuses });
+  const queryClient = useQueryClient();
+
   const initialValues: PutProfileRequest = {
     id: user.id || 0,
     userId: user.id || 0,
     genderId: genders.find((gender) => gender.genderName === user.gender)?.id,
     dateOfBirth: user.dateOfBirth || '',
     nationality: user.nationality || '',
-    maritalStatusId: 0,
+    maritalStatusId:
+      maritalStatuses.find(
+        (maritalStatus) => maritalStatus.statusName === user.maritalStatus
+      )?.id ||
+      maritalStatuses.find(
+        (maritalStatus) => maritalStatus.statusName === 'Single'
+      )?.id ||
+      1,
     dependents: user.dependents,
     emergencyContactId: undefined,
     departmentId: undefined,
@@ -147,23 +165,28 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
     values: PutProfileRequest,
     formikHelpers: FormikHelpers<UserRequest>
   ) => {
-    console.log(values.dateOfBirth);
-    console.log(new Date(values.dateOfBirth).toISOString());
-    console.log(typeof values.genderId);
     const finalData = {
       ...values,
       dateOfBirth: new Date(values.dateOfBirth).toISOString(),
       genderId: Number(values.genderId),
+      maritalStatusId: Number(values.maritalStatusId),
     };
+    console.log(JSON.stringify(finalData));
     try {
       formikHelpers.setSubmitting(true);
       await profileApi.profilesPut(finalData);
       showToast(translator.global.success, 'success');
       formikHelpers.setSubmitting(false);
+      queryClient.invalidateQueries({ queryKey: ['user'] });
       navigate('/profile');
     } catch (error) {
-      showToast(translator.global.something_went_wrong);
-      console.log({ error });
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          showToast(error.response.data.message);
+        }
+      } else {
+        showToast(translator.global.something_went_wrong);
+      }
     }
   };
 
@@ -177,15 +200,40 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
         onSubmit={handleSubmit}
       >
         {' '}
-        <Field as="select" name="genderId" className={selectDropdown}>
-          <option value="">Select Gender</option>{' '}
-          {/* Optional default option */}
-          {genders.map((gender) => (
-            <option key={gender.id} value={gender.id}>
-              {gender.genderName}
-            </option>
-          ))}
-        </Field>
+        <div
+          className={`relative w-[225px] md:w-[40%] md:max-w-[40%] flex flex-col`}
+        >
+          <LabelComponent label={'Select Gender'} />
+          <Field
+            as="select"
+            name="genderId"
+            className={`${selectDropdown} min-w-[225px] md:w-full h-[38px] mt-2 mb-2`}
+          >
+            <option value="">Select Gender</option>{' '}
+            {genders.map((gender) => (
+              <option key={gender.id} value={gender.id}>
+                {gender.genderName}
+              </option>
+            ))}
+          </Field>
+        </div>
+        <div
+          className={`relative w-[225px] md:w-[40%] md:max-w-[40%] flex flex-col my-2`}
+        >
+          <LabelComponent label={'Select Marital Status'} />
+          <Field
+            as="select"
+            name="maritalStatusId"
+            className={`${selectDropdown} min-w-[225px] md:w-full h-[38px] mt-2 mb-2`}
+          >
+            <option value="">Select Marital Status</option>{' '}
+            {maritalStatuses.map((maritalStatus) => (
+              <option key={maritalStatus.id} value={maritalStatus.id}>
+                {maritalStatus.statusName}
+              </option>
+            ))}
+          </Field>
+        </div>
       </FormWithValidation>
     </Card>
   );

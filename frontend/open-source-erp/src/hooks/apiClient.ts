@@ -1,6 +1,7 @@
 import {
   AuthenticationApi,
   GendersApi,
+  MaritalStatusesApi,
   ProfilesApi,
   UserManagementApi,
 } from '../axios';
@@ -11,11 +12,13 @@ const customAxiosInstance = createAxiosInstance();
 const config = new Configuration({
   basePath: 'http://localhost:8080/api/v1',
 });
+
 const authenticationApiClient = new AuthenticationApi(
   config,
   undefined,
   customAxiosInstance
 );
+
 const userManagementApiClient = new UserManagementApi(
   config,
   undefined,
@@ -30,9 +33,16 @@ const profilesApiClient = new ProfilesApi(
   customAxiosInstance
 );
 
+const maritalStatusesApiClient = new MaritalStatusesApi(
+  config,
+  undefined,
+  customAxiosInstance
+);
+
 export {
   authenticationApiClient,
   userManagementApiClient,
   gendersApiClient,
   profilesApiClient,
+  maritalStatusesApiClient,
 };

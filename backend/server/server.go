@@ -25,15 +25,16 @@ import (
 )
 
 type Server struct {
-	R              *gin.Engine
-	Env            config.EnvConfig
-	Logger         *internal.Logger
-	Store          *db.SQLStore
-	Authenticator  auth.Authenticator
-	ProfileService service.ProfileService
-	UserService    service.UserService
-	AuthService    service.AuthService
-	GendersService service.GendersService
+	R                      *gin.Engine
+	Env                    config.EnvConfig
+	Logger                 *internal.Logger
+	Store                  *db.SQLStore
+	Authenticator          auth.Authenticator
+	ProfileService         service.ProfileService
+	UserService            service.UserService
+	AuthService            service.AuthService
+	GendersService         service.GendersService
+	MaritalStatusesService service.MaritalStatusService
 }
 
 func NewServer(r *gin.Engine, dbConn *pgxpool.Pool) *Server {
@@ -48,15 +49,16 @@ func NewServer(r *gin.Engine, dbConn *pgxpool.Pool) *Server {
 		log.Fatal(err)
 	}
 	return &Server{
-		R:              gin.Default(),
-		Env:            config.Env,
-		Logger:         logger,
-		Store:          store,
-		Authenticator:  authenticator,
-		ProfileService: service.NewProfileService(store, logger),
-		UserService:    service.NewUserService(store, logger),
-		AuthService:    service.NewAuthService(store, logger, authenticator, &config.Env),
-		GendersService: service.NewGendersService(logger, store),
+		R:                      gin.Default(),
+		Env:                    config.Env,
+		Logger:                 logger,
+		Store:                  store,
+		Authenticator:          authenticator,
+		ProfileService:         service.NewProfileService(store, logger),
+		UserService:            service.NewUserService(store, logger),
+		AuthService:            service.NewAuthService(store, logger, authenticator, &config.Env),
+		GendersService:         service.NewGendersService(logger, store),
+		MaritalStatusesService: service.NewMaritalStatusService(logger, store),
 	}
 }
 

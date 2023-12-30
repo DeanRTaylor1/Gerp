@@ -3,6 +3,7 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { useTheme } from '../../hooks/useTheme';
 import { IPageTreeItem } from '../../router/pages';
+import SlIcon from '@shoelace-style/shoelace/dist/react/icon/index.js';
 
 interface NavButtonProps {
   to?: string;
@@ -66,17 +67,17 @@ const NavButton: React.FC<NavButtonProps> = React.memo(
       return (
         <Link
           to={to}
-          className={`${linkClassName} flex gap-2 h-12 justify-left items-center`}
+          className={`${linkClassName} max-w-72 flex gap-2 h-12 justify-left items-center`}
           onClick={closeNavIfOpen}
         >
           <div>
-            <Icon icon={icon} width={24} />
+            <SlIcon name={icon} />
           </div>
           <div
             className={`transform ${
               showNav
                 ? 'transition-opacity ease-in duration-500 opacity-100'
-                : 'opacity-0 hidden xl:block xl:opacity-100'
+                : 'opacity-0 hidden '
             }`}
           >
             {name}
@@ -85,19 +86,18 @@ const NavButton: React.FC<NavButtonProps> = React.memo(
       );
     } else {
       return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2" onClick={toggleChildrenVisibility}>
           <div
             className={`${parentClassName} flex gap-2 h-12 justify-left items-center cursor-pointer`}
-            onClick={toggleChildrenVisibility}
           >
             <div>
-              <Icon icon={icon} width={24} />
+              <SlIcon name={icon} />
             </div>
             <div
               className={`w-full flex justify-between items-center transform ${
                 showNav
                   ? 'transition-opacity ease-in duration-500 opacity-100'
-                  : 'opacity-0 hidden xl:flex xl:opacity-100'
+                  : 'opacity-0 hidden '
               }`}
             >
               <h3>{name}</h3>

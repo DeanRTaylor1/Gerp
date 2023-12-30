@@ -35,7 +35,7 @@ const TopBar: React.FC<TopBarProps> = ({ openNav, closeNavIfOpen }) => {
           <span className="w-12">
             <Icon
               onClick={openNav}
-              className="xl:hidden pl-2 w-8 h-8 hover:cursor-pointer"
+              className=" pl-2 w-8 h-8 hover:cursor-pointer"
               width="30"
               icon="mdi:menu"
             />

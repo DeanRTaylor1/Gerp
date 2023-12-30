@@ -8,6 +8,14 @@ import { InputType } from '../Inputs/Input.enum';
 import DisabledInputs from '../DisabledForms/DisabledInputs';
 import ShoeLaceCustomButton from '../buttons/ShoeLaceCustomButton';
 
+const getDependentsText = (dependents: string | number) => {
+  console.log({ dependents });
+  if (dependents === null || dependents === undefined || dependents === '')
+    return 'Dependents'; // Handle null or undefined
+  if (dependents === 0) return '0 dependents'; // Handle zero dependents
+  return `${dependents} ${dependents === 1 ? 'dependent' : 'dependents'}`; // Handle 1 or more dependents
+};
+
 interface UserProfileSummaryProps {
   user?: UserResponse | null | undefined;
 }
@@ -64,9 +72,9 @@ function UserProfileSummary({ user }: UserProfileSummaryProps) {
       name: 'dependents',
       icon: 'diagram-2',
       placeholder: 'dependents',
-      value: `${valueOrEmptyString(user?.dependents?.toString())} ${
-        user?.dependents && user?.dependents > 1 ? 'dependents' : 'dependent'
-      }`,
+      value:
+        (user?.dependents && getDependentsText(user?.dependents)) ||
+        'Dependents',
       type: InputType.Text,
       additionalClasses: 'mb-4',
     },

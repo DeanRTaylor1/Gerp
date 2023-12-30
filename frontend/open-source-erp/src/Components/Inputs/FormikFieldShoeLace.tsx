@@ -11,7 +11,7 @@ export interface FormikFieldProps {
   additionalClasses?: string;
 }
 
-const LabelComponent: React.FC<{ label: string }> = ({ label }) => (
+export const LabelComponent: React.FC<{ label: string }> = ({ label }) => (
   <div className="absolute top-[-20px] left-0">{label}</div>
 );
 

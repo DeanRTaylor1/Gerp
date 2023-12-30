@@ -45,7 +45,7 @@ function UserSummary({ user }: UserSummaryProps) {
   ];
 
   return (
-    <Card className="min-h-[90%] max-w-96">
+    <Card className="min-h-[90%]  max-w-[350px]">
       <section className="min-w-64 h-[450px] flex flex-col gap-4 items-center">
         {user && `${user.firstName} ${user.lastName}`}
         <div className=" max-w-64 flex justify-center items-center w-40 h-40 rounded-full overflow-hidden">
