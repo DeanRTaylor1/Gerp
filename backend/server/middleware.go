@@ -24,17 +24,20 @@ func customErrorHandler(c *gin.Context, err error, statusCode int) {
 
 func CustomOpenAPIValidationMiddleware(swagger *openapi3.T, opts middleware.Options) gin.HandlerFunc {
 	validatorMiddleware := middleware.OapiRequestValidatorWithOptions(swagger, &opts)
+	fmt.Println("CHecking")
 
 	return func(c *gin.Context) {
-		// Paths to bypass validation
-		bypassPaths := []string{"/", "/about", "/assets", "/favicon.ico"}
+		bypassPaths := map[string]bool{
+			"/":            true,
+			"/about":       true,
+			"/users":       true,
+			"/assets":      true,
+			"/favicon.ico": true,
+		}
 
-		// Check if the request path should bypass validation
-		for _, path := range bypassPaths {
-			if strings.HasPrefix(c.Request.URL.Path, path) {
-				c.Next()
-				return
-			}
+		if _, ok := bypassPaths[c.Request.URL.Path]; ok {
+			c.Next()
+			return
 		}
 
 		validatorMiddleware(c)

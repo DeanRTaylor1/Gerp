@@ -11,6 +11,7 @@ import (
 )
 
 func (s *Server) PutProfiles(c *gin.Context) {
+
 	var profileReq api.PutProfilesJSONRequestBody
 	if err := c.ShouldBindJSON(&profileReq); err != nil {
 		Respond(c, http.StatusBadRequest, err, "Invalid", internal.ContentTypeJSON)

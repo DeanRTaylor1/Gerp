@@ -19,6 +19,8 @@ paths:
       tags:
         - Profiles
       summary: Update User profiles
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -119,7 +121,7 @@ paths:
         - User Management
       summary: Get a list of users
       security:
-        - bearerAuth: ["admin"]
+        - bearerAuth: ["Administrator"]
       parameters:
         - in: query
           name: offset
@@ -354,7 +356,6 @@ components:
         - username
         - email
         - password
-        - status
       properties:
         username:
           type: string
@@ -608,7 +609,7 @@ components:
           example: john.smith1@email.com
         roles:
           type: string
-          example: admin
+          example: Administrator
         iat:
           type: int
         exp:

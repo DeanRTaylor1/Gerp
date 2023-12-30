@@ -283,6 +283,115 @@ export interface MultiUsersResponse {
 /**
  * 
  * @export
+ * @interface PutProfileRequest
+ */
+export interface PutProfileRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof PutProfileRequest
+     */
+    'id': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PutProfileRequest
+     */
+    'userId': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PutProfileRequest
+     */
+    'genderId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PutProfileRequest
+     */
+    'dateOfBirth': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PutProfileRequest
+     */
+    'nationality': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof PutProfileRequest
+     */
+    'maritalStatusId': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PutProfileRequest
+     */
+    'dependents'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PutProfileRequest
+     */
+    'emergencyContactId'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PutProfileRequest
+     */
+    'departmentId'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PutProfileRequest
+     */
+    'latestContractId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PutProfileRequest
+     */
+    'addressLine1': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PutProfileRequest
+     */
+    'addressLine2'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PutProfileRequest
+     */
+    'city': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PutProfileRequest
+     */
+    'state'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PutProfileRequest
+     */
+    'postalCode'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PutProfileRequest
+     */
+    'country': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PutProfileRequest
+     */
+    'addressType'?: string;
+}
+/**
+ * 
+ * @export
  * @interface ServerSideErrorResponse
  */
 export interface ServerSideErrorResponse {
@@ -751,6 +860,120 @@ export class GendersApi extends BaseAPI {
      */
     public gendersGet(offset?: number, limit?: number, options?: AxiosRequestConfig) {
         return GendersApiFp(this.configuration).gendersGet(offset, limit, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * ProfilesApi - axios parameter creator
+ * @export
+ */
+export const ProfilesApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Update User profiles
+         * @param {PutProfileRequest} putProfileRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        profilesPut: async (putProfileRequest: PutProfileRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'putProfileRequest' is not null or undefined
+            assertParamExists('profilesPut', 'putProfileRequest', putProfileRequest)
+            const localVarPath = `/profiles`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(putProfileRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ProfilesApi - functional programming interface
+ * @export
+ */
+export const ProfilesApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ProfilesApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Update User profiles
+         * @param {PutProfileRequest} putProfileRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async profilesPut(putProfileRequest: PutProfileRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.profilesPut(putProfileRequest, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['ProfilesApi.profilesPut']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ProfilesApi - factory interface
+ * @export
+ */
+export const ProfilesApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ProfilesApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Update User profiles
+         * @param {PutProfileRequest} putProfileRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        profilesPut(putProfileRequest: PutProfileRequest, options?: any): AxiosPromise<ApiResponse> {
+            return localVarFp.profilesPut(putProfileRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ProfilesApi - object-oriented interface
+ * @export
+ * @class ProfilesApi
+ * @extends {BaseAPI}
+ */
+export class ProfilesApi extends BaseAPI {
+    /**
+     * 
+     * @summary Update User profiles
+     * @param {PutProfileRequest} putProfileRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProfilesApi
+     */
+    public profilesPut(putProfileRequest: PutProfileRequest, options?: AxiosRequestConfig) {
+        return ProfilesApiFp(this.configuration).profilesPut(putProfileRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
