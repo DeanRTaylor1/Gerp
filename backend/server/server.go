@@ -33,6 +33,7 @@ type Server struct {
 	ProfileService service.ProfileService
 	UserService    service.UserService
 	AuthService    service.AuthService
+	GendersService service.GendersService
 }
 
 func NewServer(r *gin.Engine, dbConn *pgxpool.Pool) *Server {
@@ -55,6 +56,7 @@ func NewServer(r *gin.Engine, dbConn *pgxpool.Pool) *Server {
 		ProfileService: service.NewProfileService(store, logger),
 		UserService:    service.NewUserService(store, logger),
 		AuthService:    service.NewAuthService(store, logger, authenticator, &config.Env),
+		GendersService: service.NewGendersService(logger, store),
 	}
 }
 
