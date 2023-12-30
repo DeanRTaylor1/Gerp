@@ -12,10 +12,27 @@ import (
 
 func (s *Server) PutProfiles(c *gin.Context) {
 
+	userObj, exists := c.Get("user")
+	if !exists {
+		Respond(c, http.StatusBadRequest, nil, "Unauthorized", internal.ContentTypeJSON)
+		return
+	}
+
+	user, ok := userObj.(db.GetUserByEmailRow)
+	if !ok {
+		Respond(c, http.StatusBadRequest, nil, "Unauthorized: User type assertion failed", internal.ContentTypeJSON)
+		return
+	}
+
 	var profileReq api.PutProfilesJSONRequestBody
 	if err := c.ShouldBindJSON(&profileReq); err != nil {
 		Respond(c, http.StatusBadRequest, err, "Invalid", internal.ContentTypeJSON)
 		return
+	}
+
+	if user.ID != int32(profileReq.UserId) && user.RoleName != "Administrator" {
+		s.Logger.Error(fmt.Sprintf("Update Rejected: Current User: %d Trying to update User: %d. Current USers Role: %s", user.ID, profileReq.UserId, user.RoleName))
+		Respond(c, http.StatusUnauthorized, nil, "Unauthorized", internal.ContentTypeJSON)
 	}
 
 	addressUpdate := convertToUpdateAddressParams(profileReq)

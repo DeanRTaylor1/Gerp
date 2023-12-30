@@ -24,7 +24,6 @@ func customErrorHandler(c *gin.Context, err error, statusCode int) {
 
 func CustomOpenAPIValidationMiddleware(swagger *openapi3.T, opts middleware.Options) gin.HandlerFunc {
 	validatorMiddleware := middleware.OapiRequestValidatorWithOptions(swagger, &opts)
-	fmt.Println("CHecking")
 
 	return func(c *gin.Context) {
 		bypassPaths := map[string]bool{
