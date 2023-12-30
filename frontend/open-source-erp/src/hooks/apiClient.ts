@@ -1,4 +1,9 @@
-import { AuthenticationApi, UserManagementApi } from '../axios';
+import {
+  AuthenticationApi,
+  GendersApi,
+  ProfilesApi,
+  UserManagementApi,
+} from '../axios';
 import { Configuration } from '../axios/configuration';
 import { createAxiosInstance } from '../utils/auth';
 
@@ -17,4 +22,17 @@ const userManagementApiClient = new UserManagementApi(
   customAxiosInstance
 );
 
-export { authenticationApiClient, userManagementApiClient };
+const gendersApiClient = new GendersApi(config, undefined, customAxiosInstance);
+
+const profilesApiClient = new ProfilesApi(
+  config,
+  undefined,
+  customAxiosInstance
+);
+
+export {
+  authenticationApiClient,
+  userManagementApiClient,
+  gendersApiClient,
+  profilesApiClient,
+};
