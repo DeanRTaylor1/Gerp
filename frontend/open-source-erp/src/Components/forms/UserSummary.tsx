@@ -45,10 +45,10 @@ function UserSummary({ user }: UserSummaryProps) {
   ];
 
   return (
-    <Card className="min-h-[90%] max-w-[348px] flex flex-col justify-center items-center">
-      <section className="min-w-64 max-w-72 h-[450px] flex flex-col gap-4 items-center justify-center">
+    <Card overrideClasses="min-h-[90%] max-w-[348px] flex flex-col justify-center items-center h-fit p-4 shadow-md rounded-lg">
+      <section className="min-w-64 max-w-96 w-full h-[450px] flex flex-col gap-4 items-center justify-center">
         {user && `${user.firstName} ${user.lastName}`}
-        <div className=" max-w-64 flex justify-center items-center w-40 h-40 rounded-full overflow-hidden">
+        <div className=" max-w-96 flex justify-center items-center w-40 h-40 rounded-full overflow-hidden">
           <img
             src={(user as UserResponse).avatar}
             className="w-full h-full object-cover rounded-full"

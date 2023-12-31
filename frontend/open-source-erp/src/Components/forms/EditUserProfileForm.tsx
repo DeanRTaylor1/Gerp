@@ -186,7 +186,7 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
   };
 
   return (
-    <Card className="pb-0">
+    <Card overrideClasses=" max-w-full w-full h-fit p-4 shadow-md rounded-lg h-fit p-4 shadow-md rounded-lg">
       <h3 className="bg-transparent">Edit Profile</h3>
       <FormWithValidation<PutProfileRequest>
         initialValues={initialValues}
