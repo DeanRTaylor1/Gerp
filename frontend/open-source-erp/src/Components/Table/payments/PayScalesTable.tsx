@@ -1,62 +1,60 @@
+import { Icon } from '@iconify/react/dist/iconify.js';
 import { useState } from 'react';
-import Table from './Table';
-import TableBody from './TableBody';
-import TableContainer from './TableContainer';
-import TableHead from './TableHead';
-import TablePagination from './TablePagination';
-import TableRow from './TableRow';
-import { useUserApi } from '../../hooks/useUserApi';
-import useFetch from '../../hooks/useFetch';
-import SearchInputField from '../Inputs/SearchInputField';
-import { Icon } from '@iconify/react';
-import { useToast } from '../../hooks/useToast';
-import Loading from '../Loader/Loading';
-import { InputType } from '../Inputs/Input.enum';
-import { getHeadLabels } from '../../utils/table';
-import { UserResponse } from '../../axios';
+import useFetch from '../../../hooks/useFetch';
+import { useToast } from '../../../hooks/useToast';
+import { useUserApi } from '../../../hooks/useUserApi';
+import { InputType } from '../../Inputs/Input.enum';
+import SearchInputField from '../../Inputs/SearchInputField';
+import Loading from '../../Loader/Loading';
+import Table from '../Table';
+import TableBody from '../TableBody';
+import TableContainer from '../TableContainer';
+import TableHead from '../TableHead';
+import TablePagination from '../TablePagination';
+import TableRow from '../TableRow';
 
-// const headLabels = [
-//   {
-//     id: 'avatar',
-//     label: 'Avatar',
-//   },
-//   {
-//     id: 'id',
-//     label: 'Id',
-//   },
-//   {
-//     id: 'username',
-//     label: 'Username',
-//   },
-//   {
-//     id: 'firstName',
-//     label: 'FirstName',
-//   },
-//   {
-//     id: 'lastName',
-//     label: 'LastName',
-//   },
-//   {
-//     id: 'email',
-//     label: 'Email',
-//   },
-//   {
-//     id: 'role',
-//     label: 'Role',
-//   },
-//   {
-//     id: 'status',
-//     label: 'Status',
-//   },
-//   {
-//     id: 'createdAt',
-//     label: 'CreatedAt',
-//   },
-//   {
-//     id: 'updatedAt',
-//     label: 'UpdatedAt',
-//   },
-// ];
+const headLabels = [
+  {
+    id: 'avatar',
+    label: 'Avatar',
+  },
+  {
+    id: 'id',
+    label: 'Id',
+  },
+  {
+    id: 'username',
+    label: 'Username',
+  },
+  {
+    id: 'firstName',
+    label: 'FirstName',
+  },
+  {
+    id: 'lastName',
+    label: 'LastName',
+  },
+  {
+    id: 'email',
+    label: 'Email',
+  },
+  {
+    id: 'role',
+    label: 'Role',
+  },
+  {
+    id: 'status',
+    label: 'Status',
+  },
+  {
+    id: 'createdAt',
+    label: 'CreatedAt',
+  },
+  {
+    id: 'updatedAt',
+    label: 'UpdatedAt',
+  },
+];
 
 const UsersTable: React.FC = () => {
   const [page, setPage] = useState(0);
@@ -77,10 +75,6 @@ const UsersTable: React.FC = () => {
     return null;
   }
 
-  if (!users || users.length === 0) {
-    return null;
-  }
-
   return (
     <TableContainer style={{ overflow: 'unset' }}>
       <SearchInputField
@@ -91,7 +85,7 @@ const UsersTable: React.FC = () => {
         additionalClasses="pl-8 w-60"
       />
       <Table>
-        <TableHead headLabel={getHeadLabels<UserResponse>(users[0])} />
+        <TableHead headLabel={headLabels} />
         <TableBody>
           {users &&
             users.length > 0 &&

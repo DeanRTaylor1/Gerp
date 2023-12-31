@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
@@ -67,6 +68,20 @@ func ConvertToUpdateProfileParams(req api.PutProfileRequest) db.UpdateProfilePar
 	}
 }
 
+func ConvertToCreateProfileParams(req api.PutProfileRequest) db.CreateProfileParams {
+	return db.CreateProfileParams{
+		UserID:             Int64ToPGInt4(req.UserId),
+		LatestContractID:   PointerInt64ToPGInt4(req.LatestContractId),
+		GenderID:           PointerInt64ToPGInt4(req.GenderId),
+		DateOfBirth:        TimeToPGTimestamp(req.DateOfBirth),
+		Nationality:        req.Nationality,
+		MaritalStatusID:    int32(req.MaritalStatusId),
+		Dependents:         PointerInt32ToPGInt4(req.Dependents),
+		EmergencyContactID: PointerInt64ToPGInt4(req.EmergencyContactId),
+		DepartmentID:       PointerInt64ToPGInt4(req.DepartmentId),
+	}
+}
+
 func ConvertToUpdateAddressParams(req api.PutProfileRequest) db.UpdateAddressParams {
 	return db.UpdateAddressParams{
 		ProfileID:    Int64ToPGInt4(req.Id),
@@ -80,7 +95,8 @@ func ConvertToUpdateAddressParams(req api.PutProfileRequest) db.UpdateAddressPar
 	}
 }
 
-func ConvertProfileRequestToUpdateCreateAddressParams(req api.PutProfileRequest) db.CreateAddressParams {
+func ConvertProfileRequestToCreateAddressParams(req api.PutProfileRequest) db.CreateAddressParams {
+	fmt.Println(req.Id)
 	return db.CreateAddressParams{
 		ProfileID:    Int64ToPGInt4(req.Id),
 		AddressLine1: req.AddressLine1,
@@ -114,7 +130,7 @@ func GetUserRowToUserResponse(dbUser db.GetUserRow) *api.UserResponse {
 		UpdatedAt:               ptrTimeFromPGTimestamp(dbUser.UpdatedAt),
 		DateOfBirth:             ptrTimeFromPGTimestamp(dbUser.DateOfBirth),
 		Nationality:             ptrStringFromPGText(dbUser.Nationality),
-		Dependents:              ptrInt32FromPGInt4(dbUser.Dependents),
+		Dependents:              PtrInt32FromPGInt4(dbUser.Dependents),
 		EmergencyContactName:    ptrStringFromPGText(dbUser.EmergencyContactName),
 		EmergencyContactNumber:  ptrInt32FromString(dbUser.EmergencyContactNumber.String),
 		EmergencyContactAddress: ptrStringFromPGText(dbUser.EmergencyContactAddress),
@@ -127,6 +143,7 @@ func GetUserRowToUserResponse(dbUser db.GetUserRow) *api.UserResponse {
 		State:                   ptrStringFromPGText(dbUser.ResidenceState),
 		Country:                 ptrStringFromPGText(dbUser.Country),
 		PostalCode:              ptrStringFromPGText(dbUser.PostalCode),
+		ProfileId:               ptrInt64(dbUser.ProfileID.Int32),
 	}
 }
 
@@ -146,7 +163,7 @@ func ptrTimeFromPGTimestamp(timestamp pgtype.Timestamp) *time.Time {
 	return &t
 }
 
-func ptrInt32FromPGInt4(int4 pgtype.Int4) *int32 {
+func PtrInt32FromPGInt4(int4 pgtype.Int4) *int32 {
 	if !int4.Valid {
 		return nil
 	}

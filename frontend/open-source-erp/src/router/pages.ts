@@ -1,8 +1,8 @@
-import About from '../pages/About';
 import Home from '../pages/Home';
 import SignInPage from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
 import UsersAdmin from '../pages/UsersAdmin';
+import PayScales from '../pages/payments/admin/PayScales';
 import EditUserProfile from '../pages/users/EditUserProfile';
 import UserProfile from '../pages/users/UserProfile';
 
@@ -14,9 +14,11 @@ type PageName =
   | 'user management'
   | 'profile'
   | 'edit profile'
+  | 'payments'
+  | 'pay scales'
   | 'create';
 
-type PageCategory = 'users' | 'payslips';
+type PageCategory = 'users' | 'payments';
 
 export interface IPageTreeItem {
   name: CapitalizeWords<PageName | PageCategory>;
@@ -45,7 +47,7 @@ export const pageTree: Array<IPageTreeItem> = [
     children: [
       {
         name: 'User Management',
-        path: '/users',
+        path: '/admin/users',
         navbar: true,
         icon: 'pencil',
         element: UsersAdmin,
@@ -54,17 +56,17 @@ export const pageTree: Array<IPageTreeItem> = [
     ],
   },
   {
-    name: 'Payslips',
+    name: 'Payments',
     navbar: true,
     icon: 'credit-card-2-back',
     protected: true,
     children: [
       {
-        name: 'Create',
-        path: '/about',
+        name: 'Pay Scales',
+        path: '/admin/pay-scales',
         navbar: true,
-        icon: 'plus-circle',
-        element: About,
+        icon: 'cash-stack',
+        element: PayScales,
         protected: true,
       },
     ],

@@ -53,3 +53,14 @@ func (s *Server) GetUsersUserId(c *gin.Context, userId int) {
 func (s *Server) PutUsersUserId(c *gin.Context, userId int) {
 	Respond(c, 200, nil, "success", internal.ContentTypeJSON)
 }
+
+func (s *Server) GetUsersStatuses(c *gin.Context, params api.GetUsersStatusesParams) {
+	userStatuses, err := s.UserService.GetUsersStatuses(c, params)
+	if err != nil {
+		Respond(c, http.StatusInternalServerError, nil, "Something went wrong.", internal.ContentTypeJSON)
+		return
+	}
+
+	Respond(c, http.StatusOK, userStatuses, "Success", internal.ContentTypeJSON)
+
+}
