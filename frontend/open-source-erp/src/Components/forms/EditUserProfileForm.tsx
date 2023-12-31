@@ -9,19 +9,16 @@ import {
 } from '../../axios';
 
 import Card from '../../layout/Card';
-import {
-  FormikFieldProps,
-  LabelComponent,
-} from '../Inputs/FormikFieldShoeLace';
+import { FormikFieldProps } from '../Inputs/FormikFieldCustom';
 import FormWithValidation from './FormWithValidation';
-import { Field, FormikHelpers } from 'formik';
+import { FormikHelpers } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '../../hooks/useToast';
 import useTranslator from '../../hooks/useTranslator';
 import { useProfilesApi } from '../../hooks/useProfilesApi';
-import { useTheme } from '../../hooks/useTheme';
 import { useQueryClient } from '@tanstack/react-query';
 import { handleApiError } from '../../utils/error';
+import { InputType } from '../Inputs/Input.enum';
 
 const PutUserProfileSchema = Yup.object().shape({
   id: Yup.number().required('ID is required').integer('ID must be an integer'),
@@ -58,64 +55,121 @@ interface EditUserProfileFormProps {
   user: UserResponse;
   maritalStatuses: MaritalStatusesResponse[];
 }
+const getFieldConfigsForUserProfile = (
+  genders: Array<GenderResponse>,
+  maritalStatuses: Array<MaritalStatusesResponse>
+): Array<FormikFieldProps> => {
+  const fieldConfigs: Array<FormikFieldProps> = [
+    {
+      name: 'genderId',
+      label: 'Gender',
+      icon: 'gender-ambiguous',
+      placeholder: 'Gender',
+      type: InputType.Text,
+      additionalClasses: 'mb-4',
+      isSelect: true,
+      options: genders.map((gender) => ({
+        value: String(gender.id)!,
+        label: gender.genderName!,
+      })),
+    },
+    {
+      name: 'nationality',
+      label: 'Nationality',
+      icon: 'globe-europe-africa',
+      placeholder: 'Nationality',
+      type: InputType.Text,
+      additionalClasses: 'mb-4',
+    },
+    {
+      name: 'departments',
+      label: 'Department',
+      icon: 'buildings',
+      placeholder: 'Department',
+      type: InputType.Text,
+      additionalClasses: 'mb-4',
+    },
+    {
+      name: 'dateOfBirth',
+      label: 'Date of Birth',
+      icon: 'calendar2-event',
+      placeholder: 'Date of Birth',
+      type: InputType.Date,
+      additionalClasses: 'mb-4',
+    },
+    {
+      name: 'maritalStatusId',
+      label: 'Marital Status',
+      icon: 'heart-half',
+      placeholder: 'Marital Status',
+      type: InputType.Text,
+      additionalClasses: 'mb-4',
+      isSelect: true,
+      options: maritalStatuses.map((status) => ({
+        value: String(status.id)!,
+        label: status.statusName!,
+      })),
+    },
+    {
+      name: 'dependents',
+      label: 'Dependents',
+      icon: 'diagram-2',
+      placeholder: 'Dependents',
+      type: InputType.Number,
+      additionalClasses: 'mb-4',
+    },
+    {
+      name: 'addressLine1',
+      label: 'Address Line 1',
+      icon: 'house',
+      placeholder: 'Address Line 1',
+      type: InputType.Text,
+      additionalClasses: 'mb-4',
+    },
+    {
+      name: 'addressLine2',
+      label: 'Address Line 2',
+      icon: 'house',
+      placeholder: 'Address Line 2',
+      type: InputType.Text,
+      additionalClasses: 'mb-4',
+    },
+    {
+      name: 'city',
+      label: 'City',
+      icon: 'buildings',
+      placeholder: 'City',
+      type: InputType.Text,
+      additionalClasses: 'mb-4',
+    },
+    {
+      name: 'state',
+      label: 'State/Province',
+      icon: 'buildings',
+      placeholder: 'State/Province',
+      type: InputType.Text,
+      additionalClasses: 'mb-4',
+    },
+    {
+      name: 'postalCode',
+      label: 'Postal Code',
+      icon: 'envelope-open',
+      placeholder: 'Postal Code',
+      type: InputType.Text,
+      additionalClasses: 'mb-4',
+    },
+    {
+      name: 'country',
+      label: 'Country',
+      icon: 'globe-europe-africa',
+      placeholder: 'Country',
+      type: InputType.Text,
+      additionalClasses: 'mb-4',
+    },
+  ];
 
-const fieldConfigs: FormikFieldProps[] = [
-  {
-    name: 'dateOfBirth',
-    label: 'Date of Birth',
-    type: 'date',
-    placeholder: 'Enter your date of birth',
-  },
-  {
-    name: 'nationality',
-    label: 'Nationality',
-    type: 'text',
-    placeholder: 'Enter your nationality',
-  },
-
-  {
-    name: 'dependents',
-    label: 'Dependents',
-    type: 'number',
-    placeholder: 'Enter number of dependents',
-  },
-  {
-    name: 'addressLine1',
-    label: 'Address Line 1',
-    type: 'text',
-    placeholder: 'Enter your address line 1',
-  },
-  {
-    name: 'addressLine2',
-    label: 'Address Line 2',
-    type: 'text',
-    placeholder: 'Enter your address line 2',
-  },
-  {
-    name: 'city',
-    label: 'City',
-    type: 'text',
-    placeholder: 'Enter your city',
-  },
-  {
-    name: 'state',
-    label: 'State',
-    type: 'text',
-    placeholder: 'Enter your state',
-  },
-  {
-    name: 'postalCode',
-    label: 'Postal Code',
-    type: 'text',
-    placeholder: 'Enter your postal code',
-  },
-  {
-    name: 'country',
-    label: 'Country',
-    type: 'text',
-    placeholder: 'Enter your country',
-  },
-];
+  return fieldConfigs;
+};
 
 const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
   genders,
@@ -152,12 +206,10 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
     addressType: '',
   };
 
-  const { getStyles } = useTheme();
   const showToast = useToast();
   const navigate = useNavigate();
   const translator = useTranslator();
   const profileApi = useProfilesApi();
-  const selectDropdown = getStyles('selectDropdown');
 
   const handleSubmit = async (
     values: PutProfileRequest,
@@ -187,45 +239,9 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
       <FormWithValidation<PutProfileRequest>
         initialValues={initialValues}
         validationSchema={PutUserProfileSchema}
-        fieldConfigs={fieldConfigs}
+        fieldConfigs={getFieldConfigsForUserProfile(genders, maritalStatuses)}
         onSubmit={handleSubmit}
-      >
-        {' '}
-        <div
-          className={`relative w-[225px] md:w-[40%] md:max-w-[40%] flex flex-col h-[62px]`}
-        >
-          <LabelComponent label={'Select Gender'} />
-          <Field
-            as="select"
-            name="genderId"
-            className={`${selectDropdown} min-w-[225px] md:w-full h-[38px] mt-2 mb-2`}
-          >
-            <option value="">Select Gender</option>{' '}
-            {genders.map((gender) => (
-              <option key={gender.id} value={gender.id}>
-                {gender.genderName}
-              </option>
-            ))}
-          </Field>
-        </div>
-        <div
-          className={`relative w-[225px] md:w-[40%] md:max-w-[40%] flex flex-col my-2 h-[62px]`}
-        >
-          <LabelComponent label={'Select Marital Status'} />
-          <Field
-            as="select"
-            name="maritalStatusId"
-            className={`${selectDropdown} min-w-[225px] md:w-full h-[38px] mt-2 mb-2`}
-          >
-            <option value="">Select Marital Status</option>{' '}
-            {maritalStatuses.map((maritalStatus) => (
-              <option key={maritalStatus.id} value={maritalStatus.id}>
-                {maritalStatus.statusName}
-              </option>
-            ))}
-          </Field>
-        </div>
-      </FormWithValidation>
+      ></FormWithValidation>
     </Card>
   );
 };
