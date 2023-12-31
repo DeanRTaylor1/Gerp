@@ -67,10 +67,12 @@ const NavButton: React.FC<NavButtonProps> = React.memo(
       return (
         <Link
           to={to}
-          className={`${linkClassName} max-w-72 flex gap-2 h-12 justify-left items-center`}
+          className={`${linkClassName} max-w-72 flex gap-2 h-12  items-center ${
+            showNav ? 'justiify-left' : 'justify-left'
+          }`}
           onClick={closeNavIfOpen}
         >
-          <div>
+          <div className="flex justify-center items-center">
             <SlIcon name={icon} />
           </div>
           <div

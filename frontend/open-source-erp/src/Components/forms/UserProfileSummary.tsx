@@ -130,7 +130,7 @@ function UserProfileSummary({ user }: UserProfileSummaryProps) {
 
   return (
     <>
-      <Card className="px-0 ">
+      <Card overrideClasses="px-0 max-w-full w-full h-fit p-4 shadow-md rounded-lg">
         <section>
           <div
             className={`pt-4 min-h-full flex flex-col justify-center items-center ${primary}`}
