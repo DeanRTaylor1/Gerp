@@ -74,19 +74,16 @@ func (s *profileServiceImpl) UpdateProfile(ctx *gin.Context, user db.GetUserByEm
 			if err != nil {
 				return err
 			}
-		} else {
-			_, err := s.store.Queries.CreateProfile(ctx, profileCreate)
-			if err != nil {
-				return err
-			}
-		}
-
-		if len(addresses) >= 1 {
 			err = s.store.Queries.UpdateAddress(ctx, addressUpdate)
 			if err != nil {
 				return err
 			}
 		} else {
+			profile, err := s.store.Queries.CreateProfile(ctx, profileCreate)
+			if err != nil {
+				return err
+			}
+			addressCreateParams.ProfileID = internal.Int32ToPGInt4(profile.ID)
 			_, err = s.store.Queries.CreateAddress(ctx, addressCreateParams)
 			if err != nil {
 				return err

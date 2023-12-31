@@ -120,7 +120,7 @@ LEFT JOIN emergency_contacts ON profiles.emergency_contact_id = emergency_contac
 LEFT JOIN departments ON profiles.department_id = departments.id
 LEFT JOIN genders ON profiles.gender_id = genders.id
 LEFT JOIN marital_statuses ON profiles.marital_status_id = marital_statuses.id
-LEFT JOIN addresses ON profiles.id = addresses.id
+LEFT JOIN addresses ON profiles.id = addresses.profile_id
 WHERE users.id = $1 
 LIMIT 1
 `
