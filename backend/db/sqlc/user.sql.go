@@ -98,6 +98,7 @@ SELECT
     profiles.date_of_birth AS date_of_birth,
     profiles.nationality AS nationality,
     profiles.dependents AS dependents,
+    profiles.id AS profile_id,
     emergency_contacts.name AS emergency_contact_name,
     emergency_contacts.contact_number AS emergency_contact_number,
     emergency_contacts.contact_address AS emergency_contact_address,
@@ -142,6 +143,7 @@ type GetUserRow struct {
 	DateOfBirth             pgtype.Timestamp `json:"date_of_birth"`
 	Nationality             pgtype.Text      `json:"nationality"`
 	Dependents              pgtype.Int4      `json:"dependents"`
+	ProfileID               pgtype.Int4      `json:"profile_id"`
 	EmergencyContactName    pgtype.Text      `json:"emergency_contact_name"`
 	EmergencyContactNumber  pgtype.Text      `json:"emergency_contact_number"`
 	EmergencyContactAddress pgtype.Text      `json:"emergency_contact_address"`
@@ -178,6 +180,7 @@ func (q *Queries) GetUser(ctx context.Context, id int32) (GetUserRow, error) {
 		&i.DateOfBirth,
 		&i.Nationality,
 		&i.Dependents,
+		&i.ProfileID,
 		&i.EmergencyContactName,
 		&i.EmergencyContactNumber,
 		&i.EmergencyContactAddress,

@@ -9,6 +9,9 @@ import { AuthContextType } from './useAuth';
 import { jwtDecode } from 'jwt-decode';
 import { JwtPayload, UserResponse } from '../axios';
 import { useUserApi } from '../hooks/useUserApi';
+import { handleApiError } from '../utils/error';
+import { useToast } from '../hooks/useToast';
+import useTranslator from '../hooks/useTranslator';
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
@@ -19,6 +22,8 @@ const useAuthProvider = (): AuthContextType => {
   const [payload, setPayload] = useState<JwtPayload>({} as JwtPayload);
   const [user, setUser] = useState<UserResponse>({} as UserResponse);
   const userApi = useUserApi();
+  const showToast = useToast();
+  const translator = useTranslator();
 
   const getUser = useCallback(
     async (userId: number) => {
@@ -29,7 +34,8 @@ const useAuthProvider = (): AuthContextType => {
           setUser(response.data.data);
         }
       } catch (error) {
-        console.log({ error });
+        handleApiError(error, showToast, translator);
+        logout();
       }
     },
     [userApi]

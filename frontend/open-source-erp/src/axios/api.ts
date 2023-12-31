@@ -302,6 +302,31 @@ export interface MultiMaritalStatusesResponse {
 /**
  * 
  * @export
+ * @interface MultiUserStatusesResponse
+ */
+export interface MultiUserStatusesResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof MultiUserStatusesResponse
+     */
+    'status'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof MultiUserStatusesResponse
+     */
+    'message'?: string;
+    /**
+     * 
+     * @type {Array<UserStatusesResponse>}
+     * @memberof MultiUserStatusesResponse
+     */
+    'data'?: Array<UserStatusesResponse>;
+}
+/**
+ * 
+ * @export
  * @interface MultiUsersResponse
  */
 export interface MultiUsersResponse {
@@ -534,6 +559,12 @@ export interface UserResponse {
     'id'?: number;
     /**
      * 
+     * @type {number}
+     * @memberof UserResponse
+     */
+    'profileId'?: number;
+    /**
+     * 
      * @type {string}
      * @memberof UserResponse
      */
@@ -676,6 +707,25 @@ export interface UserResponse {
      * @memberof UserResponse
      */
     'updatedAt'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface UserStatusesResponse
+ */
+export interface UserStatusesResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof UserStatusesResponse
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserStatusesResponse
+     */
+    'statusName'?: string;
 }
 
 /**
@@ -1547,6 +1597,127 @@ export class UserManagementApi extends BaseAPI {
      */
     public usersUserIdPut(userId: number, userRequest: UserRequest, options?: AxiosRequestConfig) {
         return UserManagementApiFp(this.configuration).usersUserIdPut(userId, userRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * UserStatusesApi - axios parameter creator
+ * @export
+ */
+export const UserStatusesApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Get all user statuses
+         * @param {number} [offset] Page number of the list
+         * @param {number} [limit] Number of items per page
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        usersStatusesGet: async (offset?: number, limit?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/users/statuses`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * UserStatusesApi - functional programming interface
+ * @export
+ */
+export const UserStatusesApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = UserStatusesApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Get all user statuses
+         * @param {number} [offset] Page number of the list
+         * @param {number} [limit] Number of items per page
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async usersStatusesGet(offset?: number, limit?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MultiUserStatusesResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.usersStatusesGet(offset, limit, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['UserStatusesApi.usersStatusesGet']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * UserStatusesApi - factory interface
+ * @export
+ */
+export const UserStatusesApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = UserStatusesApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Get all user statuses
+         * @param {number} [offset] Page number of the list
+         * @param {number} [limit] Number of items per page
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        usersStatusesGet(offset?: number, limit?: number, options?: any): AxiosPromise<MultiUserStatusesResponse> {
+            return localVarFp.usersStatusesGet(offset, limit, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * UserStatusesApi - object-oriented interface
+ * @export
+ * @class UserStatusesApi
+ * @extends {BaseAPI}
+ */
+export class UserStatusesApi extends BaseAPI {
+    /**
+     * 
+     * @summary Get all user statuses
+     * @param {number} [offset] Page number of the list
+     * @param {number} [limit] Number of items per page
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserStatusesApi
+     */
+    public usersStatusesGet(offset?: number, limit?: number, options?: AxiosRequestConfig) {
+        return UserStatusesApiFp(this.configuration).usersStatusesGet(offset, limit, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

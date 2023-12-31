@@ -32,6 +32,7 @@ SELECT
     profiles.date_of_birth AS date_of_birth,
     profiles.nationality AS nationality,
     profiles.dependents AS dependents,
+    profiles.id AS profile_id,
     emergency_contacts.name AS emergency_contact_name,
     emergency_contacts.contact_number AS emergency_contact_number,
     emergency_contacts.contact_address AS emergency_contact_address,

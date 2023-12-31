@@ -15,6 +15,7 @@ type UserService interface {
 	GetUsers(ctx *gin.Context, params api.GetUsersParams) ([]api.UserResponse, error)
 	PostUsers(ctx *gin.Context, userData api.UserRequest) (*api.UserResponse, error)
 	GetUserByUserId(ctx *gin.Context, userId int) (*api.UserResponse, error)
+	GetUsersStatuses(ctx *gin.Context, params api.GetUsersStatusesParams) (*[]api.UserStatusesResponse, error)
 }
 
 type userServiceImpl struct {
@@ -107,4 +108,30 @@ func (s *userServiceImpl) GetUserByUserId(ctx *gin.Context, userId int) (*api.Us
 	userResponse := internal.GetUserRowToUserResponse(dbUser)
 
 	return userResponse, nil
+}
+
+func (s *userServiceImpl) GetUsersStatuses(ctx *gin.Context, params api.GetUsersStatusesParams) (*[]api.UserStatusesResponse, error) {
+	userStatusRows, err := s.store.Queries.GetUserStatuses(ctx, db.GetUserStatusesParams{
+		Offset: int32(*params.Offset),
+		Limit:  int32(*params.Limit),
+	})
+
+	if err != nil {
+		s.logger.Error(fmt.Sprintf("Error getting User Statuses Error: %v", err.Error()))
+		return nil, err
+	}
+
+	userStatuses := make([]api.UserStatusesResponse, len(userStatusRows))
+	for i, v := range userStatusRows {
+		id := int64(v.ID)
+		statusName := v.StatusName
+
+		userStatuses[i] = api.UserStatusesResponse{
+			Id:         &id,
+			StatusName: &statusName,
+		}
+
+	}
+
+	return &userStatuses, nil
 }

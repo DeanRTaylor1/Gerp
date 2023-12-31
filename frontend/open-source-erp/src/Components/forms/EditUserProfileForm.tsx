@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as Yup from 'yup';
 import {
   GenderResponse,
@@ -19,8 +20,8 @@ import { useToast } from '../../hooks/useToast';
 import useTranslator from '../../hooks/useTranslator';
 import { useProfilesApi } from '../../hooks/useProfilesApi';
 import { useTheme } from '../../hooks/useTheme';
-import axios from 'axios';
 import { useQueryClient } from '@tanstack/react-query';
+import { handleApiError } from '../../utils/error';
 
 const PutUserProfileSchema = Yup.object().shape({
   id: Yup.number().required('ID is required').integer('ID must be an integer'),
@@ -33,7 +34,9 @@ const PutUserProfileSchema = Yup.object().shape({
   maritalStatusId: Yup.number()
     .required('Marital Status ID is required')
     .integer('Marital Status ID must be an integer'),
-  dependents: Yup.number().integer('Dependents must be an integer'),
+  dependents: Yup.number()
+    .integer('Dependents must be an integer')
+    .positive('Must be positive'),
   emergencyContactId: Yup.number().integer(
     'Emergency Contact ID must be an integer'
   ),
@@ -123,7 +126,7 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
   const queryClient = useQueryClient();
 
   const initialValues: PutProfileRequest = {
-    id: user.id || 0,
+    id: user.profileId || 0,
     userId: user.id || 0,
     genderId: genders.find((gender) => gender.genderName === user.gender)?.id,
     dateOfBirth: user.dateOfBirth || '',
@@ -166,7 +169,6 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
       genderId: Number(values.genderId),
       maritalStatusId: Number(values.maritalStatusId),
     };
-    console.log(JSON.stringify(finalData));
     try {
       formikHelpers.setSubmitting(true);
       await profileApi.profilesPut(finalData);
@@ -175,13 +177,7 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
       queryClient.invalidateQueries({ queryKey: ['user'] });
       navigate('/profile');
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response) {
-          showToast(error.response.data.message);
-        }
-      } else {
-        showToast(translator.global.something_went_wrong);
-      }
+      handleApiError(error, showToast, translator);
     }
   };
 
