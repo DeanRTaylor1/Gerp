@@ -4,7 +4,7 @@ import TableBody from './TableBody';
 import TableContainer from './TableContainer';
 import TableHead from './TableHead';
 import TablePagination from './TablePagination';
-import TableRow from './TableRowCustom';
+import TableRow from './TableRow';
 import { useUserApi } from '../../hooks/useUserApi';
 import useFetch from '../../hooks/useFetch';
 import SearchInputField from '../Inputs/SearchInputField';
