@@ -39,7 +39,18 @@ const FormikFieldCustom: React.FC<FormikFieldProps> = ({
   );
 
   const handleChange = (event: SlInputEvent) => {
-    helpers.setValue((event.target as SlInputElement).value);
+    let data: number | string = (event.target as SlInputElement).value;
+    switch (type) {
+      case InputType.Number:
+        data = Number(data);
+        break;
+      case InputType.Text:
+        break;
+    }
+
+    console.log({ data });
+
+    helpers.setValue(data);
   };
 
   return (

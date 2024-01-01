@@ -19,6 +19,10 @@ import { useProfilesApi } from '../../hooks/useProfilesApi';
 import { useQueryClient } from '@tanstack/react-query';
 import { handleApiError } from '../../utils/error';
 import { InputType } from '../Inputs/Input.enum';
+import {
+  getCountryOptions,
+  getNationalityOptions,
+} from '../../utils/countries';
 
 const PutUserProfileSchema = Yup.object().shape({
   id: Yup.number().required('ID is required').integer('ID must be an integer'),
@@ -80,6 +84,8 @@ const getFieldConfigsForUserProfile = (
       placeholder: 'Nationality',
       type: InputType.Text,
       additionalClasses: 'mb-4',
+      isSelect: true,
+      options: getNationalityOptions(),
     },
     {
       name: 'departments',
@@ -165,6 +171,8 @@ const getFieldConfigsForUserProfile = (
       placeholder: 'Country',
       type: InputType.Text,
       additionalClasses: 'mb-4',
+      isSelect: true,
+      options: getCountryOptions(),
     },
   ];
 
@@ -176,14 +184,14 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
   user,
   maritalStatuses,
 }) => {
-  console.log({ maritalStatuses });
+  console.log({ user });
   const queryClient = useQueryClient();
 
   const initialValues: PutProfileRequest = {
     id: user.profileId || 0,
     userId: user.id || 0,
     genderId: genders.find((gender) => gender.genderName === user.gender)?.id,
-    dateOfBirth: user.dateOfBirth || '',
+    dateOfBirth: new Date(user.dateOfBirth!).toISOString().split('T')[0] || '',
     nationality: user.nationality || '',
     maritalStatusId:
       maritalStatuses.find(
@@ -193,7 +201,7 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
         (maritalStatus) => maritalStatus.statusName === 'Single'
       )?.id ||
       1,
-    dependents: user.dependents,
+    dependents: user.dependents || 0,
     emergencyContactId: undefined,
     departmentId: undefined,
     latestContractId: undefined,

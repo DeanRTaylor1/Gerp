@@ -254,14 +254,14 @@ export const countryList = [
 
 export const getCountryOptions = () => {
   return Object.values(countries).map((country) => ({
-    value: country.native,
+    value: country.native.split(' ').join('_'),
     label: country.native, // Country name
   }));
 };
 
 export const getNationalityOptions = () => {
   return Object.values(languages).map((country) => ({
-    value: country.native,
+    value: country.native.split(' ').join('_'),
     label: country.native,
   }));
 };

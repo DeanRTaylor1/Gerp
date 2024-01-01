@@ -24,6 +24,11 @@ function FormWithValidation<T extends FormikValues>({
   onSubmit,
 }: FormWithValidationProps<T>) {
   const translator = useTranslator();
+  // const handleSubmit = (values: T) => {
+  //   console.log({ values });
+  //   onSubmit(values);
+  // };
+
   return (
     <Formik
       initialValues={initialValues}
