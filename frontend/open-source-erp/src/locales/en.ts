@@ -29,6 +29,7 @@ const en: Translator = {
     city: 'City',
     state_province: 'State/Province',
     gender: 'Gender',
+    create: 'Create',
   },
 };
 

@@ -14,7 +14,7 @@ const languages = {
 export function countryCodeToFlagEmoji(countryCode: string) {
   return countryCode
     .toUpperCase()
-    .replace(/./g, (char: string, index: number) =>
+    .replace(/./g, (_char: string, index: number) =>
       String.fromCodePoint(127397 + countryCode.charCodeAt(index))
     );
 }

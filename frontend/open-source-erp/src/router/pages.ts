@@ -2,6 +2,8 @@ import Home from '../pages/Home';
 import SignInPage from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
 import UsersAdmin from '../pages/UsersAdmin';
+import AddDepartment from '../pages/departments/AddDepartment';
+import ManageDepartmentsPage from '../pages/departments/Departments';
 import PayScales from '../pages/payments/admin/PayScales';
 import EditUserProfile from '../pages/users/EditUserProfile';
 import UserProfile from '../pages/users/UserProfile';
@@ -16,9 +18,11 @@ type PageName =
   | 'edit profile'
   | 'payments'
   | 'pay scales'
+  | 'manage departments'
+  | 'create department'
   | 'create';
 
-type PageCategory = 'users' | 'payments';
+type PageCategory = 'users' | 'payments' | 'departments';
 
 export interface IPageTreeItem {
   name: CapitalizeWords<PageName | PageCategory>;
@@ -67,6 +71,30 @@ export const pageTree: Array<IPageTreeItem> = [
         navbar: true,
         icon: 'cash-stack',
         element: PayScales,
+        protected: true,
+      },
+    ],
+  },
+  {
+    name: 'Departments',
+    navbar: true,
+    icon: 'building-fill-gear',
+    protected: true,
+    children: [
+      {
+        name: 'Manage Departments',
+        path: '/admin/departments',
+        navbar: true,
+        icon: 'gear-wide',
+        element: ManageDepartmentsPage,
+        protected: true,
+      },
+      {
+        name: 'Create Department',
+        path: '/admin/departments/create',
+        navbar: true,
+        icon: 'plus-circle',
+        element: AddDepartment,
         protected: true,
       },
     ],

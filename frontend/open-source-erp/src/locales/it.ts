@@ -29,6 +29,7 @@ const it: Translator = {
     city: 'Città',
     state_province: 'Stato/Provincia',
     gender: 'Genere',
+    create: 'Creare',
   },
 };
 

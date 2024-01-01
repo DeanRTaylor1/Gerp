@@ -4,6 +4,7 @@ import EditUserProfileForm from '../../Components/forms/EditUserProfileForm';
 import UserSummary from '../../Components/forms/UserSummary';
 import { getFetchUser } from '../../api/users';
 import {
+  DepartmentsResponse,
   GenderResponse,
   MaritalStatusesResponse,
   UserResponse,
@@ -15,6 +16,7 @@ import { useMaritalStatusesApi } from '../../hooks/useMaritalStatusesApi';
 import { useToast } from '../../hooks/useToast';
 import { useUserApi } from '../../hooks/useUserApi';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useDepartmentsApi } from '../../hooks/useDepartmentsApi';
 
 const EditUserProfile = () => {
   const usersApi = useUserApi();
@@ -40,7 +42,7 @@ const EditUserProfile = () => {
 
   const genderApi = useGendersApi();
   const getGenders = async (): Promise<GenderResponse[] | null> => {
-    const response = await genderApi.gendersGet(0, 10);
+    const response = await genderApi.gendersGet();
 
     return response.data.data || null;
   };
@@ -55,7 +57,14 @@ const EditUserProfile = () => {
   const getMaritalStatuses = async (): Promise<
     MaritalStatusesResponse[] | null
   > => {
-    const response = await maritalStatusesApi.maritalStatusesGet(0, 10);
+    const response = await maritalStatusesApi.maritalStatusesGet();
+
+    return response.data.data || null;
+  };
+
+  const departmentsApi = useDepartmentsApi();
+  const getDepartments = async (): Promise<DepartmentsResponse[] | null> => {
+    const response = await departmentsApi.departmentsGet();
 
     return response.data.data || null;
   };
@@ -69,7 +78,18 @@ const EditUserProfile = () => {
     getMaritalStatuses
   );
 
-  if (userIsLoading || gendersAreLoading || maritalStatusesAreLoading) {
+  const {
+    data: departmentData,
+    isLoading: departmentsAreLoading,
+    error: departmentsError,
+  } = useFetch<DepartmentsResponse[] | null>(['departments'], getDepartments);
+
+  if (
+    userIsLoading ||
+    gendersAreLoading ||
+    maritalStatusesAreLoading ||
+    departmentsAreLoading
+  ) {
     return (
       <div className="w-full h-full flex justify-center mt-10">
         <Loading />
@@ -101,6 +121,15 @@ const EditUserProfile = () => {
     );
   }
 
+  if (departmentsError) {
+    showToast('Error loading your profile.');
+    return (
+      <div className="w-full h-full flex justify-center mt-10">
+        <Loading />
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="flex flex-col gap-6 pt-4  w-full">
@@ -110,6 +139,7 @@ const EditUserProfile = () => {
           <EditUserProfileForm
             genders={genders!}
             user={user!}
+            departments={departmentData!}
             maritalStatuses={maritalStatuses!}
           />
         </div>
