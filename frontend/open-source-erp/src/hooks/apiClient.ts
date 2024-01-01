@@ -1,5 +1,6 @@
 import {
   AuthenticationApi,
+  DepartmentsApi,
   GendersApi,
   MaritalStatusesApi,
   ProfilesApi,
@@ -39,10 +40,17 @@ const maritalStatusesApiClient = new MaritalStatusesApi(
   customAxiosInstance
 );
 
+const departmentsApiClient = new DepartmentsApi(
+  config,
+  undefined,
+  customAxiosInstance
+);
+
 export {
   authenticationApiClient,
   userManagementApiClient,
   gendersApiClient,
   profilesApiClient,
   maritalStatusesApiClient,
+  departmentsApiClient,
 };

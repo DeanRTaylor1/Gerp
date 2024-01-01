@@ -14,6 +14,7 @@ interface FormWithValidationProps<T extends FormikValues> {
   validationSchema: Yup.ObjectSchema<T>;
   fieldConfigs: FormikFieldProps[];
   onSubmit: (...args: any[]) => void;
+  stretchFields?: boolean;
 }
 
 function FormWithValidation<T extends FormikValues>({
@@ -22,6 +23,7 @@ function FormWithValidation<T extends FormikValues>({
   validationSchema,
   fieldConfigs,
   onSubmit,
+  stretchFields,
 }: FormWithValidationProps<T>) {
   const translator = useTranslator();
   // const handleSubmit = (values: T) => {
@@ -37,7 +39,11 @@ function FormWithValidation<T extends FormikValues>({
     >
       {() => (
         <Form className="w-full mt-8 mb-4 items-center justify-center pb-4 flex flex-col md:flex-row md:flex-wrap gap-4 ">
-          <div className="flex flex-col items-center justify-center gap-8">
+          <div
+            className={`flex flex-col items-center justify-center gap-8 ${
+              stretchFields ? 'w-full' : ''
+            }`}
+          >
             <div className="w-full items-center justify-center flex flex-col md:flex-row md:flex-wrap gap-4">
               {fieldConfigs.map((fieldConfig, index) => {
                 if (fieldConfig.isSelect) {

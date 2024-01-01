@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as Yup from 'yup';
 import {
+  DepartmentsResponse,
   GenderResponse,
   MaritalStatusesResponse,
   PutProfileRequest,
@@ -59,11 +60,13 @@ interface EditUserProfileFormProps {
   genders: GenderResponse[];
   user: UserResponse;
   maritalStatuses: MaritalStatusesResponse[];
+  departments: DepartmentsResponse[];
 }
 
 const getFieldConfigsForUserProfile = (
   genders: Array<GenderResponse>,
   maritalStatuses: Array<MaritalStatusesResponse>,
+  departments: Array<DepartmentsResponse>,
   translator: Translator
 ): Array<FormikFieldProps> => {
   const fieldConfigs: Array<FormikFieldProps> = [
@@ -91,12 +94,17 @@ const getFieldConfigsForUserProfile = (
       options: getNationalityOptions(),
     },
     {
-      name: 'departments',
+      name: 'departmentId',
       label: translator.global.department,
       icon: 'buildings',
       placeholder: translator.global.department,
       type: InputType.Text,
       additionalClasses: 'mb-4',
+      isSelect: true,
+      options: departments.map((department) => ({
+        value: String(department.id)!,
+        label: department.departmentName!,
+      })),
     },
     {
       name: 'dateOfBirth',
@@ -186,6 +194,7 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
   genders,
   user,
   maritalStatuses,
+  departments,
 }) => {
   console.log({ user });
   const queryClient = useQueryClient();
@@ -209,7 +218,10 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
       1,
     dependents: user.dependents || 0,
     emergencyContactId: undefined,
-    departmentId: undefined,
+    departmentId:
+      departments.find(
+        (department) => user.departmentName === department.departmentName
+      )?.id || undefined,
     latestContractId: undefined,
     addressLine1: user.addressLine1 || '',
     addressLine2: user.addressLine2 || null,
@@ -233,6 +245,7 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
       ...values,
       dateOfBirth: new Date(values.dateOfBirth).toISOString(),
       genderId: Number(values.genderId),
+      departmentId: Number(values.departmentId),
       maritalStatusId: Number(values.maritalStatusId),
     };
     try {
@@ -258,6 +271,7 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
         fieldConfigs={getFieldConfigsForUserProfile(
           genders,
           maritalStatuses,
+          departments,
           translator
         )}
         onSubmit={handleSubmit}

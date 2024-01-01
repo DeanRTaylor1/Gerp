@@ -27,5 +27,6 @@ export type Translator = {
     city: string;
     state_province: string;
     gender: string;
+    create: string;
   };
 };

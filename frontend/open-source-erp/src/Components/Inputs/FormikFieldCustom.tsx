@@ -9,7 +9,17 @@ import { InputIconSlot, InputType } from './Input.enum';
 import { Option } from './FormikSelectCustom';
 import SlIcon from '@shoelace-style/shoelace/dist/react/icon/index.js';
 
+/**
+ * @description FormikFieldProps is a custom interface that provides
+ * all required data for our custom forms
+ */
 export interface FormikFieldProps {
+  /**
+   * @type {string}
+   * @description the name must match the schema which matches the api request
+   * Example the api field is firstName,the name in this interface must be
+   * firstName too
+   */
   name: string;
   label: string;
   type: InputType;

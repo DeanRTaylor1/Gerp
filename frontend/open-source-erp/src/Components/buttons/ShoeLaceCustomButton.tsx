@@ -3,7 +3,7 @@ import SlButton from '@shoelace-style/shoelace/dist/react/button/index.js';
 import SlIcon from '@shoelace-style/shoelace/dist/react/icon/index.js';
 
 interface CustomStyledButtonProps {
-  children: ReactNode;
+  children?: ReactNode;
   icon?: string;
   onClick?: MouseEventHandler<HTMLSpanElement>;
   type?: 'submit' | 'button';

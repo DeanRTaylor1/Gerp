@@ -6,12 +6,14 @@ interface TableHeadProps {
   rowOrder: Array<string>;
   headLabels: Map<string, TableHeadLabel<UserResponse>>;
   additionalColumns?: number;
+  additionalClasses?: string;
 }
 
 const TableHead: React.FC<TableHeadProps> = ({
   headLabels,
   rowOrder,
   additionalColumns,
+  additionalClasses,
 }) => {
   const { getColorClasses } = useTheme();
   const secondary = getColorClasses('secondary');
@@ -25,7 +27,8 @@ const TableHead: React.FC<TableHeadProps> = ({
               key={columnData?.id}
               className={
                 secondary +
-                ' font-semibold text-left p-3 border-b border-gray-300'
+                ' font-semibold text-left p-3 border-b border-gray-300 ' +
+                additionalClasses
               }
               style={{ textAlign: 'left' }}
               scope="col"
