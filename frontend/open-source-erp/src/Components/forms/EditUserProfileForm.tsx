@@ -60,6 +60,7 @@ interface EditUserProfileFormProps {
   user: UserResponse;
   maritalStatuses: MaritalStatusesResponse[];
 }
+
 const getFieldConfigsForUserProfile = (
   genders: Array<GenderResponse>,
   maritalStatuses: Array<MaritalStatusesResponse>,
@@ -193,7 +194,10 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
     id: user.profileId || 0,
     userId: user.id || 0,
     genderId: genders.find((gender) => gender.genderName === user.gender)?.id,
-    dateOfBirth: new Date(user.dateOfBirth!).toISOString().split('T')[0] || '',
+    dateOfBirth:
+      (user.dateOfBirth &&
+        new Date(user.dateOfBirth).toISOString().split('T')[0]) ||
+      new Date().toISOString(),
     nationality: user.nationality || '',
     maritalStatusId:
       maritalStatuses.find(

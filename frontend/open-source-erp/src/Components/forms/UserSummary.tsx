@@ -45,7 +45,7 @@ function UserSummary({ user }: UserSummaryProps) {
   ];
 
   return (
-    <Card overrideClasses="min-h-[90%] max-w-[348px] flex flex-col justify-center items-center h-fit p-4 shadow-md rounded-lg">
+    <Card overrideClasses="min-h-[90%] w-full max-w-[348px] flex flex-col justify-center items-center h-fit p-4 shadow-md rounded-lg">
       <section className="min-w-64 max-w-96 w-full h-[450px] flex flex-col gap-4 items-center justify-center">
         {user && `${user.firstName} ${user.lastName}`}
         <div className=" max-w-96 flex justify-center items-center w-40 h-40 rounded-full overflow-hidden">

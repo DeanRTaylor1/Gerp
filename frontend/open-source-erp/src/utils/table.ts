@@ -1,3 +1,5 @@
+import { TableBodyItem } from '../Components/Table/TableRowCustom';
+
 export type TableHeadLabel<T> = { id: keyof T; label: keyof T };
 
 class StringProcesser {
@@ -26,19 +28,51 @@ class StringProcesser {
 function getHeadLabels<T extends object>(
   entity: T,
   exclusions?: string[]
-): TableHeadLabel<T>[] {
+): Map<string, TableHeadLabel<T>> {
   const exclusionStore = new Set(exclusions);
 
-  return (Object.keys(entity) as Array<keyof T>)
+  const rowHeads = new Map<string, TableHeadLabel<T>>();
+
+  (Object.keys(entity) as Array<keyof T>)
     .filter((key) => !exclusionStore.has(key as string))
     .map((key) => {
       const label = new StringProcesser(key as string).capitalise().getString();
 
-      return {
+      rowHeads.set(key as string, {
         id: key as keyof T,
         label: label as keyof T,
-      };
+      });
     });
+
+  return rowHeads;
 }
 
-export { getHeadLabels };
+const dateFieldsArr = ['createdAt', 'updatedAt'];
+const imageFieldsArr = ['avatar'];
+const dateFields = new Set(dateFieldsArr);
+const imageFields = new Set(imageFieldsArr);
+
+function createUserRowData<T extends object>(
+  data: T,
+  dateFields: Set<string>,
+  imageFields: Set<string>
+): Map<string, TableBodyItem> {
+  const rowData = new Map<string, TableBodyItem>();
+
+  for (const [key, value] of Object.entries(data)) {
+    let type: 'string' | 'image' | 'date' = 'string';
+
+    if (imageFields.has(key)) {
+      type = 'image';
+    } else if (dateFields.has(key)) {
+      type = 'date';
+    }
+
+    const dataItem: TableBodyItem = { name: key, value, type };
+    rowData.set(key, dataItem);
+  }
+
+  return rowData;
+}
+
+export { getHeadLabels, dateFields, createUserRowData, imageFields };

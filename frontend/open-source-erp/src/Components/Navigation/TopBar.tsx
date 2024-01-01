@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
-import { Link } from 'react-router-dom';
+import { Link, NavigateFunction, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../hooks/useTheme';
 import languages, { countryCodeToFlagEmoji } from '../../constants/languages';
 import { Locale } from '../../recoil/globalState';
@@ -10,6 +10,49 @@ import SlSelect, {
 } from '@shoelace-style/shoelace/dist/react/select/index.js';
 import SlOption from '@shoelace-style/shoelace/dist/react/option/index.js';
 import type SlSelectElement from '@shoelace-style/shoelace/dist/components/select/select.js';
+
+import SlButton from '@shoelace-style/shoelace/dist/react/button/index.js';
+import SlDropdown from '@shoelace-style/shoelace/dist/react/dropdown/index.js';
+import SlMenu, {
+  SlSelectEvent,
+} from '@shoelace-style/shoelace/dist/react/menu/index.js';
+import SlMenuItem from '@shoelace-style/shoelace/dist/react/menu-item/index.js';
+import React from 'react';
+import { finalPagesList } from '../../router/pages';
+
+interface ProfileDropdownProps {
+  children: React.ReactNode;
+  logout: () => void;
+  navigate: NavigateFunction;
+}
+const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
+  children,
+  logout,
+  navigate,
+}) => {
+  function handleSelect(event: SlSelectEvent) {
+    const selectedItem = event.detail.item;
+    switch (selectedItem.value) {
+      case 'logout':
+        return logout();
+      case 'profile':
+        navigate(`${finalPagesList.Profile.path}`);
+    }
+  }
+
+  return (
+    <SlDropdown className="w-16 h-10">
+      <SlButton className="w-18 h-10 p-0" slot="trigger" caret>
+        {children}
+      </SlButton>
+      <SlMenu onSlSelect={handleSelect}>
+        <SlMenuItem value="profile">Profile</SlMenuItem>
+        <SlMenuItem value="logout">Logout</SlMenuItem>
+      </SlMenu>
+    </SlDropdown>
+  );
+};
+
 interface TopBarProps {
   openNav: () => void;
   closeNavIfOpen: () => void;
@@ -18,7 +61,9 @@ interface TopBarProps {
 const TopBar: React.FC<TopBarProps> = ({ openNav, closeNavIfOpen }) => {
   const { getColorClasses } = useTheme();
   const primary = getColorClasses('primary');
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+
+  const navigate = useNavigate();
 
   const availableLangs = Object.values(languages).map((language) => ({
     ...language,
@@ -37,15 +82,15 @@ const TopBar: React.FC<TopBarProps> = ({ openNav, closeNavIfOpen }) => {
   };
 
   return (
-    <div className="w-full px-4">
+    <div className="w-full md:px-4">
       <div
-        className={`${primary} dark:bg-transparent bg-transparent flex items-center justify-between space-x-2`}
+        className={`${primary} dark:bg-transparent bg-transparent flex items-center justify-between `}
       >
-        <span className=" w-40 flex gap-2 items-center justify-left text-2xl font-extrabold">
+        <span className="w-[40%] flex gap-2 items-center justify-left text-2xl font-extrabold">
           <span className="w-12">
             <Icon
               onClick={openNav}
-              className=" pl-2 w-8 h-8 hover:cursor-pointer"
+              className="pl-2 w-8 h-8 hover:cursor-pointer"
               width="30"
               icon="mdi:menu"
             />
@@ -58,7 +103,7 @@ const TopBar: React.FC<TopBarProps> = ({ openNav, closeNavIfOpen }) => {
             <h1>Go-erp</h1>
           </Link>
         </span>{' '}
-        <div className="flex gap-4 items-center py-2 ">
+        <div className="flex gap-4 items-center py-2 w-[50%] md:w-[220px]">
           <span className="w-20">
             <SlSelect
               className="custom-select"
@@ -76,15 +121,19 @@ const TopBar: React.FC<TopBarProps> = ({ openNav, closeNavIfOpen }) => {
               ))}
             </SlSelect>
           </span>
-          <span className="flex justify-center items-center w-12 h-12 rounded-full ">
-            <Link to={'/profile'}>
-              <img
-                src={user.avatar}
-                alt={user.username}
-                className="rounded-full h-8 w-8 object-cover inline-block"
-              />
-            </Link>
-          </span>
+          <ProfileDropdown
+            navigate={navigate}
+            logout={logout}
+            children={
+              <span className="flex justify-center items-center w-10 h-10 rounded-full ">
+                <img
+                  src={user.avatar}
+                  alt={user.username}
+                  className="rounded-full h-6 w-6 object-cover inline-block"
+                />
+              </span>
+            }
+          />
         </div>
       </div>
     </div>

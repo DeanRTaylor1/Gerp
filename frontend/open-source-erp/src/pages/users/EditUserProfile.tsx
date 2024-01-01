@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import Loading from '../../Components/Loader/Loading';
 import EditUserProfileForm from '../../Components/forms/EditUserProfileForm';
 import UserSummary from '../../Components/forms/UserSummary';
@@ -7,17 +8,20 @@ import {
   MaritalStatusesResponse,
   UserResponse,
 } from '../../axios';
+import { useAuth } from '../../context/useAuth';
 import useFetch from '../../hooks/useFetch';
 import { useGendersApi } from '../../hooks/useGendersApi';
 import { useMaritalStatusesApi } from '../../hooks/useMaritalStatusesApi';
 import { useToast } from '../../hooks/useToast';
 import { useUserApi } from '../../hooks/useUserApi';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const EditUserProfile = () => {
   const usersApi = useUserApi();
   const showToast = useToast();
   const { id } = useParams();
+  const { verifyRoleAndId, user: loggedInUser } = useAuth();
+  const navigate = useNavigate();
   const {
     data: user,
     isLoading: userIsLoading,
@@ -26,6 +30,13 @@ const EditUserProfile = () => {
     ['user', id],
     getFetchUser(usersApi, Number(id))
   );
+
+  useEffect(() => {
+    const valid = verifyRoleAndId('Administrator', Number(id), navigate);
+    if (valid === false) {
+      showToast('Not Authorized', 'error');
+    }
+  }, [verifyRoleAndId, id, navigate, showToast, loggedInUser]);
 
   const genderApi = useGendersApi();
   const getGenders = async (): Promise<GenderResponse[] | null> => {
@@ -94,7 +105,7 @@ const EditUserProfile = () => {
     <>
       <div className="flex flex-col gap-6 pt-4  w-full">
         Profile
-        <div className="flex flex-col lg:flex-row gap-8 w-full min-h-full">
+        <div className="flex flex-col justify-center items-center lg:flex-row gap-8 w-full min-h-full">
           <UserSummary user={user} />
           <EditUserProfileForm
             genders={genders!}

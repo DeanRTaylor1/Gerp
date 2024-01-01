@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"fmt"
 	"strconv"
 	"time"
 
@@ -96,7 +95,6 @@ func ConvertToUpdateAddressParams(req api.PutProfileRequest) db.UpdateAddressPar
 }
 
 func ConvertProfileRequestToCreateAddressParams(req api.PutProfileRequest) db.CreateAddressParams {
-	fmt.Println(req.Id)
 	return db.CreateAddressParams{
 		ProfileID:    Int64ToPGInt4(req.Id),
 		AddressLine1: req.AddressLine1,

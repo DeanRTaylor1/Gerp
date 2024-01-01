@@ -36,7 +36,7 @@ const UserProfile = () => {
     <>
       <div className="flex flex-col gap-6 pt-4 px-2">
         Profile
-        <div className="flex flex-col lg:flex-row gap-8 min-h-full">
+        <div className="flex flex-col justify-center items-center lg:flex-row gap-8 min-h-full w-full">
           <UserSummary user={user} />
           <UserProfileSummary user={user} />
         </div>
