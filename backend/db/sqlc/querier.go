@@ -12,6 +12,7 @@ import (
 
 type Querier interface {
 	CreateAddress(ctx context.Context, arg CreateAddressParams) (Address, error)
+	CreateDepartment(ctx context.Context, departmentName string) (Department, error)
 	CreateGender(ctx context.Context, genderName string) (Gender, error)
 	CreateMaritalStatus(ctx context.Context, statusName string) (MaritalStatus, error)
 	CreateProfile(ctx context.Context, arg CreateProfileParams) (Profile, error)
@@ -19,6 +20,7 @@ type Querier interface {
 	CreateUserRole(ctx context.Context, roleName string) (UserRole, error)
 	CreateUserStatus(ctx context.Context, statusName string) (UserStatus, error)
 	DeleteAddress(ctx context.Context, id int32) error
+	DeleteDepartment(ctx context.Context, id int32) error
 	DeleteGender(ctx context.Context, id int32) error
 	DeleteMaritalStatus(ctx context.Context, id int32) error
 	DeleteProfile(ctx context.Context, id int32) error
@@ -29,6 +31,9 @@ type Querier interface {
 	GetAddressForUpdate(ctx context.Context, id int32) (Address, error)
 	GetAddressesByProfileId(ctx context.Context, profileID pgtype.Int4) ([]Address, error)
 	GetAllAddresses(ctx context.Context, arg GetAllAddressesParams) ([]Address, error)
+	GetAllDepartments(ctx context.Context, arg GetAllDepartmentsParams) ([]Department, error)
+	GetDepartment(ctx context.Context, id int32) (Department, error)
+	GetDepartmentForUpdate(ctx context.Context, id int32) (Department, error)
 	GetGender(ctx context.Context, id int32) (Gender, error)
 	GetGenderByName(ctx context.Context, genderName string) (GetGenderByNameRow, error)
 	GetGenderForUpdate(ctx context.Context, id int32) (Gender, error)
@@ -53,6 +58,7 @@ type Querier interface {
 	GetUserUserStatusByName(ctx context.Context, statusName string) (GetUserUserStatusByNameRow, error)
 	GetUsers(ctx context.Context, arg GetUsersParams) ([]GetUsersRow, error)
 	UpdateAddress(ctx context.Context, arg UpdateAddressParams) error
+	UpdateDepartment(ctx context.Context, arg UpdateDepartmentParams) error
 	UpdateGender(ctx context.Context, arg UpdateGenderParams) error
 	UpdateLastLogin(ctx context.Context, id int32) error
 	UpdateMaritalStatus(ctx context.Context, arg UpdateMaritalStatusParams) error

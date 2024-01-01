@@ -108,6 +108,38 @@ export interface BadRequestErrorResponse {
 /**
  * 
  * @export
+ * @interface CreateDepartmentRequest
+ */
+export interface CreateDepartmentRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateDepartmentRequest
+     */
+    'departmentName': string;
+}
+/**
+ * 
+ * @export
+ * @interface DepartmentsResponse
+ */
+export interface DepartmentsResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof DepartmentsResponse
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof DepartmentsResponse
+     */
+    'departmentName'?: string;
+}
+/**
+ * 
+ * @export
  * @interface ErrorResponse
  */
 export interface ErrorResponse {
@@ -248,6 +280,31 @@ export interface MaritalStatusesResponse {
      * @memberof MaritalStatusesResponse
      */
     'statusName'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface MultiDepartmentsResponse
+ */
+export interface MultiDepartmentsResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof MultiDepartmentsResponse
+     */
+    'status'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof MultiDepartmentsResponse
+     */
+    'message'?: string;
+    /**
+     * 
+     * @type {Array<DepartmentsResponse>}
+     * @memberof MultiDepartmentsResponse
+     */
+    'data'?: Array<DepartmentsResponse>;
 }
 /**
  * 
@@ -833,6 +890,202 @@ export class AuthenticationApi extends BaseAPI {
      */
     public authPost(loginUserRequest: LoginUserRequest, options?: AxiosRequestConfig) {
         return AuthenticationApiFp(this.configuration).authPost(loginUserRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * DepartmentsApi - axios parameter creator
+ * @export
+ */
+export const DepartmentsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Get all Departments
+         * @param {number} [offset] Page number of the list
+         * @param {number} [limit] Number of items per page
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        departmentsGet: async (offset?: number, limit?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/departments`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Create a Department
+         * @param {CreateDepartmentRequest} createDepartmentRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        departmentsPost: async (createDepartmentRequest: CreateDepartmentRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createDepartmentRequest' is not null or undefined
+            assertParamExists('departmentsPost', 'createDepartmentRequest', createDepartmentRequest)
+            const localVarPath = `/departments`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createDepartmentRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * DepartmentsApi - functional programming interface
+ * @export
+ */
+export const DepartmentsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = DepartmentsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Get all Departments
+         * @param {number} [offset] Page number of the list
+         * @param {number} [limit] Number of items per page
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async departmentsGet(offset?: number, limit?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MultiDepartmentsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.departmentsGet(offset, limit, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['DepartmentsApi.departmentsGet']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Create a Department
+         * @param {CreateDepartmentRequest} createDepartmentRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async departmentsPost(createDepartmentRequest: CreateDepartmentRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DepartmentsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.departmentsPost(createDepartmentRequest, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['DepartmentsApi.departmentsPost']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * DepartmentsApi - factory interface
+ * @export
+ */
+export const DepartmentsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = DepartmentsApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Get all Departments
+         * @param {number} [offset] Page number of the list
+         * @param {number} [limit] Number of items per page
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        departmentsGet(offset?: number, limit?: number, options?: any): AxiosPromise<MultiDepartmentsResponse> {
+            return localVarFp.departmentsGet(offset, limit, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Create a Department
+         * @param {CreateDepartmentRequest} createDepartmentRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        departmentsPost(createDepartmentRequest: CreateDepartmentRequest, options?: any): AxiosPromise<DepartmentsResponse> {
+            return localVarFp.departmentsPost(createDepartmentRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * DepartmentsApi - object-oriented interface
+ * @export
+ * @class DepartmentsApi
+ * @extends {BaseAPI}
+ */
+export class DepartmentsApi extends BaseAPI {
+    /**
+     * 
+     * @summary Get all Departments
+     * @param {number} [offset] Page number of the list
+     * @param {number} [limit] Number of items per page
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DepartmentsApi
+     */
+    public departmentsGet(offset?: number, limit?: number, options?: AxiosRequestConfig) {
+        return DepartmentsApiFp(this.configuration).departmentsGet(offset, limit, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Create a Department
+     * @param {CreateDepartmentRequest} createDepartmentRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DepartmentsApi
+     */
+    public departmentsPost(createDepartmentRequest: CreateDepartmentRequest, options?: AxiosRequestConfig) {
+        return DepartmentsApiFp(this.configuration).departmentsPost(createDepartmentRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
