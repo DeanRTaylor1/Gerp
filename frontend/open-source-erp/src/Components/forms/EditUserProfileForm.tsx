@@ -23,6 +23,7 @@ import {
   getCountryOptions,
   getNationalityOptions,
 } from '../../utils/countries';
+import { Translator } from '../../locales/Translator';
 
 const PutUserProfileSchema = Yup.object().shape({
   id: Yup.number().required('ID is required').integer('ID must be an integer'),
@@ -61,14 +62,15 @@ interface EditUserProfileFormProps {
 }
 const getFieldConfigsForUserProfile = (
   genders: Array<GenderResponse>,
-  maritalStatuses: Array<MaritalStatusesResponse>
+  maritalStatuses: Array<MaritalStatusesResponse>,
+  translator: Translator
 ): Array<FormikFieldProps> => {
   const fieldConfigs: Array<FormikFieldProps> = [
     {
       name: 'genderId',
-      label: 'Gender',
+      label: translator.global.gender,
       icon: 'gender-ambiguous',
-      placeholder: 'Gender',
+      placeholder: translator.global.gender,
       type: InputType.Text,
       additionalClasses: 'mb-4',
       isSelect: true,
@@ -79,9 +81,9 @@ const getFieldConfigsForUserProfile = (
     },
     {
       name: 'nationality',
-      label: 'Nationality',
+      label: translator.global.nationality,
       icon: 'globe-europe-africa',
-      placeholder: 'Nationality',
+      placeholder: translator.global.nationality,
       type: InputType.Text,
       additionalClasses: 'mb-4',
       isSelect: true,
@@ -89,25 +91,25 @@ const getFieldConfigsForUserProfile = (
     },
     {
       name: 'departments',
-      label: 'Department',
+      label: translator.global.department,
       icon: 'buildings',
-      placeholder: 'Department',
+      placeholder: translator.global.department,
       type: InputType.Text,
       additionalClasses: 'mb-4',
     },
     {
       name: 'dateOfBirth',
-      label: 'Date of Birth',
+      label: translator.global.date_of_birth,
       icon: 'calendar2-event',
-      placeholder: 'Date of Birth',
+      placeholder: translator.global.date_of_birth,
       type: InputType.Date,
       additionalClasses: 'mb-4',
     },
     {
       name: 'maritalStatusId',
-      label: 'Marital Status',
+      label: translator.global.marital_status,
       icon: 'heart-half',
-      placeholder: 'Marital Status',
+      placeholder: translator.global.marital_status,
       type: InputType.Text,
       additionalClasses: 'mb-4',
       isSelect: true,
@@ -118,57 +120,57 @@ const getFieldConfigsForUserProfile = (
     },
     {
       name: 'dependents',
-      label: 'Dependents',
+      label: translator.global.dependents,
       icon: 'diagram-2',
-      placeholder: 'Dependents',
+      placeholder: translator.global.dependents,
       type: InputType.Number,
       additionalClasses: 'mb-4',
     },
     {
       name: 'addressLine1',
-      label: 'Address Line 1',
+      label: translator.global.address_line_1,
       icon: 'house',
-      placeholder: 'Address Line 1',
+      placeholder: translator.global.address_line_1,
       type: InputType.Text,
       additionalClasses: 'mb-4',
     },
     {
       name: 'addressLine2',
-      label: 'Address Line 2',
+      label: translator.global.address_line_2,
       icon: 'house',
-      placeholder: 'Address Line 2',
+      placeholder: translator.global.address_line_2,
       type: InputType.Text,
       additionalClasses: 'mb-4',
     },
     {
       name: 'city',
-      label: 'City',
+      label: translator.global.city,
       icon: 'buildings',
-      placeholder: 'City',
+      placeholder: translator.global.city,
       type: InputType.Text,
       additionalClasses: 'mb-4',
     },
     {
       name: 'state',
-      label: 'State/Province',
+      label: translator.global.state_province,
       icon: 'buildings',
-      placeholder: 'State/Province',
+      placeholder: translator.global.state_province,
       type: InputType.Text,
       additionalClasses: 'mb-4',
     },
     {
       name: 'postalCode',
-      label: 'Postal Code',
+      label: translator.global.postal_code,
       icon: 'envelope-open',
-      placeholder: 'Postal Code',
+      placeholder: translator.global.postal_code,
       type: InputType.Text,
       additionalClasses: 'mb-4',
     },
     {
       name: 'country',
-      label: 'Country',
+      label: translator.global.country,
       icon: 'globe-europe-africa',
-      placeholder: 'Country',
+      placeholder: translator.global.country,
       type: InputType.Text,
       additionalClasses: 'mb-4',
       isSelect: true,
@@ -242,12 +244,18 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
   };
 
   return (
-    <Card overrideClasses=" max-w-full w-full h-fit p-4 shadow-md rounded-lg h-fit p-4 shadow-md rounded-lg">
-      <h3 className="bg-transparent">Edit Profile</h3>
+    <Card overrideClasses="flex flex-col gap-4 justify-center items-center max-w-full w-full h-fit p-4 shadow-md rounded-lg h-fit p-4 shadow-md rounded-lg">
+      <h3 className="mt-4 text-3xl font-bold md:mb-12 md:text-5xl">
+        {`${translator.global.edit} ${translator.global.profile}`}
+      </h3>{' '}
       <FormWithValidation<PutProfileRequest>
         initialValues={initialValues}
         validationSchema={PutUserProfileSchema}
-        fieldConfigs={getFieldConfigsForUserProfile(genders, maritalStatuses)}
+        fieldConfigs={getFieldConfigsForUserProfile(
+          genders,
+          maritalStatuses,
+          translator
+        )}
         onSubmit={handleSubmit}
       ></FormWithValidation>
     </Card>
