@@ -1,4 +1,4 @@
-import { TableBodyItem } from '../Components/Table/TableRowCustom';
+import { TableBodyItem } from '../Components/Table/TableRow';
 
 export type TableHeadLabel<T> = { id: keyof T; label: keyof T };
 
