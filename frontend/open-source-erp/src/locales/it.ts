@@ -1,4 +1,6 @@
-const it = {
+import { Translator } from './Translator';
+
+const it: Translator = {
   global: {
     txt_welcome_back: 'Bentornato',
     welcome: 'Benvenuto',
@@ -15,6 +17,18 @@ const it = {
     have_an_account: 'Hai già un account?',
     profile: 'Profilo',
     edit: 'Modificare',
+    country: 'Paese',
+    postal_code: 'Codice Postale',
+    nationality: 'Nazionalità',
+    department: 'Reparto',
+    date_of_birth: 'Data di Nascita',
+    marital_status: 'Stato Civile',
+    dependents: 'Persone a Carico',
+    address_line_1: 'Indirizzo Linea 1',
+    address_line_2: 'Indirizzo Linea 2',
+    city: 'Città',
+    state_province: 'Stato/Provincia',
+    gender: 'Genere',
   },
 };
 

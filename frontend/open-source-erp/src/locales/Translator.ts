@@ -1,0 +1,31 @@
+export type Translator = {
+  global: {
+    txt_welcome_back: string;
+    welcome: string;
+    no_account: string;
+    sign_up_now: string;
+    login: string;
+    email_address: string;
+    password: string;
+    username: string;
+    Submit: string;
+    login_now: string;
+    something_went_wrong: string;
+    success: string;
+    have_an_account: string;
+    profile: string;
+    edit: string;
+    country: string;
+    postal_code: string;
+    nationality: string;
+    department: string;
+    date_of_birth: string;
+    marital_status: string;
+    dependents: string;
+    address_line_1: string;
+    address_line_2: string;
+    city: string;
+    state_province: string;
+    gender: string;
+  };
+};

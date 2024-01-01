@@ -14,6 +14,7 @@
     "@shoelace-style/shoelace": "^2.12.0",
     "@tanstack/react-query": "^5.15.0",
     "axios": "^1.6.2",
+    "countries-list": "^3.0.6",
     "formik": "^2.4.5",
     "jwt-decode": "^4.0.0",
     "react": "^18.2.0",

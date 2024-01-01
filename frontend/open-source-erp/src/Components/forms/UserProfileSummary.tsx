@@ -40,7 +40,7 @@ function UserProfileSummary({ user }: UserProfileSummaryProps) {
       name: 'nationality',
       icon: 'globe-europe-africa',
       placeholder: 'Nationality',
-      value: valueOrEmptyString(user?.nationality),
+      value: valueOrEmptyString(user?.nationality).split('_').join(' '),
       type: InputType.Text,
       additionalClasses: 'mb-4',
     },
@@ -122,7 +122,7 @@ function UserProfileSummary({ user }: UserProfileSummaryProps) {
       name: 'country',
       icon: 'globe-europe-africa',
       placeholder: 'Country',
-      value: valueOrEmptyString(user?.country),
+      value: valueOrEmptyString(user?.country).split('_').join(' '),
       type: InputType.Text,
       additionalClasses: 'mb-4',
     },
@@ -136,9 +136,9 @@ function UserProfileSummary({ user }: UserProfileSummaryProps) {
             className={`pt-4 min-h-full flex flex-col justify-center items-center ${primary}`}
           >
             <div className="flex flex-wrap justify-center items-center gap-4 max-w-full min-w-[350px] px-5 pt-16 py-4 text-center md:px-10 md:py-24 lg:py-0">
-              <h2 className="mb-8 text-3xl font-bold md:mb-12 md:text-5xl">
+              <h3 className="mb-8 text-3xl font-bold md:mb-12 md:text-5xl">
                 {translator.global.profile}
-              </h2>
+              </h3>
               <DisabledInputs vertical={false} fields={fieldConfigs} />
               <p className="text-sm text-[#636262] pb-12">
                 <ShoeLaceCustomButton

@@ -1,12 +1,15 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../../hooks/useTheme';
-import Select from '../select/select';
-import languages from '../../constants/languages';
+import languages, { countryCodeToFlagEmoji } from '../../constants/languages';
 import { Locale } from '../../recoil/globalState';
 import { useRecoilState } from 'recoil';
 import { useAuth } from '../../context/useAuth';
-
+import SlSelect, {
+  type SlChangeEvent,
+} from '@shoelace-style/shoelace/dist/react/select/index.js';
+import SlOption from '@shoelace-style/shoelace/dist/react/option/index.js';
+import type SlSelectElement from '@shoelace-style/shoelace/dist/components/select/select.js';
 interface TopBarProps {
   openNav: () => void;
   closeNavIfOpen: () => void;
@@ -17,13 +20,20 @@ const TopBar: React.FC<TopBarProps> = ({ openNav, closeNavIfOpen }) => {
   const primary = getColorClasses('primary');
   const { user } = useAuth();
 
-  const availableLangs = Object.values(languages).map(
-    (language) => language.value
-  );
+  const availableLangs = Object.values(languages).map((language) => ({
+    ...language,
+    flag: countryCodeToFlagEmoji(language.countryCode),
+  }));
+
   const [locale, setLocale] = useRecoilState(Locale);
 
   const changeLanguage = (value: string) => {
     setLocale(value);
+  };
+
+  const handleChange = (event: SlChangeEvent) => {
+    const value = (event.target as SlSelectElement).value;
+    changeLanguage(value as string);
   };
 
   return (
@@ -48,14 +58,24 @@ const TopBar: React.FC<TopBarProps> = ({ openNav, closeNavIfOpen }) => {
             <h1>Go-erp</h1>
           </Link>
         </span>{' '}
-        <div className="flex gap-4 items-center  py-2">
-          <Select
-            additionalClasses=""
-            title=""
-            value={locale}
-            options={availableLangs}
-            onChange={changeLanguage}
-          />
+        <div className="flex gap-4 items-center py-2 ">
+          <span className="w-20">
+            <SlSelect
+              className="custom-select"
+              label=""
+              value={locale}
+              onSlChange={(e) => handleChange(e)}
+            >
+              {availableLangs.map((availableLang) => (
+                <SlOption
+                  key={availableLang.countryCode}
+                  value={availableLang.value}
+                >
+                  {availableLang.flag}
+                </SlOption>
+              ))}
+            </SlSelect>
+          </span>
           <span className="flex justify-center items-center w-12 h-12 rounded-full ">
             <Link to={'/profile'}>
               <img

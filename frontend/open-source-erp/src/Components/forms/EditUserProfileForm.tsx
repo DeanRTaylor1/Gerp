@@ -9,19 +9,21 @@ import {
 } from '../../axios';
 
 import Card from '../../layout/Card';
-import {
-  FormikFieldProps,
-  LabelComponent,
-} from '../Inputs/FormikFieldShoeLace';
+import { FormikFieldProps } from '../Inputs/FormikFieldCustom';
 import FormWithValidation from './FormWithValidation';
-import { Field, FormikHelpers } from 'formik';
+import { FormikHelpers } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '../../hooks/useToast';
 import useTranslator from '../../hooks/useTranslator';
 import { useProfilesApi } from '../../hooks/useProfilesApi';
-import { useTheme } from '../../hooks/useTheme';
 import { useQueryClient } from '@tanstack/react-query';
 import { handleApiError } from '../../utils/error';
+import { InputType } from '../Inputs/Input.enum';
+import {
+  getCountryOptions,
+  getNationalityOptions,
+} from '../../utils/countries';
+import { Translator } from '../../locales/Translator';
 
 const PutUserProfileSchema = Yup.object().shape({
   id: Yup.number().required('ID is required').integer('ID must be an integer'),
@@ -58,78 +60,140 @@ interface EditUserProfileFormProps {
   user: UserResponse;
   maritalStatuses: MaritalStatusesResponse[];
 }
+const getFieldConfigsForUserProfile = (
+  genders: Array<GenderResponse>,
+  maritalStatuses: Array<MaritalStatusesResponse>,
+  translator: Translator
+): Array<FormikFieldProps> => {
+  const fieldConfigs: Array<FormikFieldProps> = [
+    {
+      name: 'genderId',
+      label: translator.global.gender,
+      icon: 'gender-ambiguous',
+      placeholder: translator.global.gender,
+      type: InputType.Text,
+      additionalClasses: 'mb-4',
+      isSelect: true,
+      options: genders.map((gender) => ({
+        value: String(gender.id)!,
+        label: gender.genderName!,
+      })),
+    },
+    {
+      name: 'nationality',
+      label: translator.global.nationality,
+      icon: 'globe-europe-africa',
+      placeholder: translator.global.nationality,
+      type: InputType.Text,
+      additionalClasses: 'mb-4',
+      isSelect: true,
+      options: getNationalityOptions(),
+    },
+    {
+      name: 'departments',
+      label: translator.global.department,
+      icon: 'buildings',
+      placeholder: translator.global.department,
+      type: InputType.Text,
+      additionalClasses: 'mb-4',
+    },
+    {
+      name: 'dateOfBirth',
+      label: translator.global.date_of_birth,
+      icon: 'calendar2-event',
+      placeholder: translator.global.date_of_birth,
+      type: InputType.Date,
+      additionalClasses: 'mb-4',
+    },
+    {
+      name: 'maritalStatusId',
+      label: translator.global.marital_status,
+      icon: 'heart-half',
+      placeholder: translator.global.marital_status,
+      type: InputType.Text,
+      additionalClasses: 'mb-4',
+      isSelect: true,
+      options: maritalStatuses.map((status) => ({
+        value: String(status.id)!,
+        label: status.statusName!,
+      })),
+    },
+    {
+      name: 'dependents',
+      label: translator.global.dependents,
+      icon: 'diagram-2',
+      placeholder: translator.global.dependents,
+      type: InputType.Number,
+      additionalClasses: 'mb-4',
+    },
+    {
+      name: 'addressLine1',
+      label: translator.global.address_line_1,
+      icon: 'house',
+      placeholder: translator.global.address_line_1,
+      type: InputType.Text,
+      additionalClasses: 'mb-4',
+    },
+    {
+      name: 'addressLine2',
+      label: translator.global.address_line_2,
+      icon: 'house',
+      placeholder: translator.global.address_line_2,
+      type: InputType.Text,
+      additionalClasses: 'mb-4',
+    },
+    {
+      name: 'city',
+      label: translator.global.city,
+      icon: 'buildings',
+      placeholder: translator.global.city,
+      type: InputType.Text,
+      additionalClasses: 'mb-4',
+    },
+    {
+      name: 'state',
+      label: translator.global.state_province,
+      icon: 'buildings',
+      placeholder: translator.global.state_province,
+      type: InputType.Text,
+      additionalClasses: 'mb-4',
+    },
+    {
+      name: 'postalCode',
+      label: translator.global.postal_code,
+      icon: 'envelope-open',
+      placeholder: translator.global.postal_code,
+      type: InputType.Text,
+      additionalClasses: 'mb-4',
+    },
+    {
+      name: 'country',
+      label: translator.global.country,
+      icon: 'globe-europe-africa',
+      placeholder: translator.global.country,
+      type: InputType.Text,
+      additionalClasses: 'mb-4',
+      isSelect: true,
+      options: getCountryOptions(),
+    },
+  ];
 
-const fieldConfigs: FormikFieldProps[] = [
-  {
-    name: 'dateOfBirth',
-    label: 'Date of Birth',
-    type: 'date',
-    placeholder: 'Enter your date of birth',
-  },
-  {
-    name: 'nationality',
-    label: 'Nationality',
-    type: 'text',
-    placeholder: 'Enter your nationality',
-  },
-
-  {
-    name: 'dependents',
-    label: 'Dependents',
-    type: 'number',
-    placeholder: 'Enter number of dependents',
-  },
-  {
-    name: 'addressLine1',
-    label: 'Address Line 1',
-    type: 'text',
-    placeholder: 'Enter your address line 1',
-  },
-  {
-    name: 'addressLine2',
-    label: 'Address Line 2',
-    type: 'text',
-    placeholder: 'Enter your address line 2',
-  },
-  {
-    name: 'city',
-    label: 'City',
-    type: 'text',
-    placeholder: 'Enter your city',
-  },
-  {
-    name: 'state',
-    label: 'State',
-    type: 'text',
-    placeholder: 'Enter your state',
-  },
-  {
-    name: 'postalCode',
-    label: 'Postal Code',
-    type: 'text',
-    placeholder: 'Enter your postal code',
-  },
-  {
-    name: 'country',
-    label: 'Country',
-    type: 'text',
-    placeholder: 'Enter your country',
-  },
-];
+  return fieldConfigs;
+};
 
 const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
   genders,
   user,
   maritalStatuses,
 }) => {
-  console.log({ maritalStatuses });
+  console.log({ user });
   const queryClient = useQueryClient();
 
   const initialValues: PutProfileRequest = {
     id: user.profileId || 0,
     userId: user.id || 0,
     genderId: genders.find((gender) => gender.genderName === user.gender)?.id,
-    dateOfBirth: user.dateOfBirth || '',
+    dateOfBirth: new Date(user.dateOfBirth!).toISOString().split('T')[0] || '',
     nationality: user.nationality || '',
     maritalStatusId:
       maritalStatuses.find(
@@ -139,7 +203,7 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
         (maritalStatus) => maritalStatus.statusName === 'Single'
       )?.id ||
       1,
-    dependents: user.dependents,
+    dependents: user.dependents || 0,
     emergencyContactId: undefined,
     departmentId: undefined,
     latestContractId: undefined,
@@ -152,12 +216,10 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
     addressType: '',
   };
 
-  const { getStyles } = useTheme();
   const showToast = useToast();
   const navigate = useNavigate();
   const translator = useTranslator();
   const profileApi = useProfilesApi();
-  const selectDropdown = getStyles('selectDropdown');
 
   const handleSubmit = async (
     values: PutProfileRequest,
@@ -182,50 +244,20 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
   };
 
   return (
-    <Card overrideClasses=" max-w-full w-full h-fit p-4 shadow-md rounded-lg h-fit p-4 shadow-md rounded-lg">
-      <h3 className="bg-transparent">Edit Profile</h3>
+    <Card overrideClasses="flex flex-col gap-4 justify-center items-center max-w-full w-full h-fit p-4 shadow-md rounded-lg h-fit p-4 shadow-md rounded-lg">
+      <h3 className="mt-4 text-3xl font-bold md:mb-12 md:text-5xl">
+        {`${translator.global.edit} ${translator.global.profile}`}
+      </h3>{' '}
       <FormWithValidation<PutProfileRequest>
         initialValues={initialValues}
         validationSchema={PutUserProfileSchema}
-        fieldConfigs={fieldConfigs}
+        fieldConfigs={getFieldConfigsForUserProfile(
+          genders,
+          maritalStatuses,
+          translator
+        )}
         onSubmit={handleSubmit}
-      >
-        {' '}
-        <div
-          className={`relative w-[225px] md:w-[40%] md:max-w-[40%] flex flex-col h-[62px]`}
-        >
-          <LabelComponent label={'Select Gender'} />
-          <Field
-            as="select"
-            name="genderId"
-            className={`${selectDropdown} min-w-[225px] md:w-full h-[38px] mt-2 mb-2`}
-          >
-            <option value="">Select Gender</option>{' '}
-            {genders.map((gender) => (
-              <option key={gender.id} value={gender.id}>
-                {gender.genderName}
-              </option>
-            ))}
-          </Field>
-        </div>
-        <div
-          className={`relative w-[225px] md:w-[40%] md:max-w-[40%] flex flex-col my-2 h-[62px]`}
-        >
-          <LabelComponent label={'Select Marital Status'} />
-          <Field
-            as="select"
-            name="maritalStatusId"
-            className={`${selectDropdown} min-w-[225px] md:w-full h-[38px] mt-2 mb-2`}
-          >
-            <option value="">Select Marital Status</option>{' '}
-            {maritalStatuses.map((maritalStatus) => (
-              <option key={maritalStatus.id} value={maritalStatus.id}>
-                {maritalStatus.statusName}
-              </option>
-            ))}
-          </Field>
-        </div>
-      </FormWithValidation>
+      ></FormWithValidation>
     </Card>
   );
 };
