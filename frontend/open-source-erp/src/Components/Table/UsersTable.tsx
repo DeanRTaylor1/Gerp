@@ -4,7 +4,7 @@ import TableBody from './TableBody';
 import TableContainer from './TableContainer';
 import TableHead from './TableHead';
 import TablePagination from './TablePagination';
-import TableRow from './TableRow';
+import TableRow from './TableRowCustom';
 import { useUserApi } from '../../hooks/useUserApi';
 import useFetch from '../../hooks/useFetch';
 import SearchInputField from '../Inputs/SearchInputField';
@@ -12,51 +12,28 @@ import { Icon } from '@iconify/react';
 import { useToast } from '../../hooks/useToast';
 import Loading from '../Loader/Loading';
 import { InputType } from '../Inputs/Input.enum';
-import { getHeadLabels } from '../../utils/table';
+import {
+  createUserRowData,
+  dateFields,
+  getHeadLabels,
+  imageFields,
+} from '../../utils/table';
 import { UserResponse } from '../../axios';
+import SlIcon from '@shoelace-style/shoelace/dist/react/icon/index.js';
+import { Link } from 'react-router-dom';
 
-// const headLabels = [
-//   {
-//     id: 'avatar',
-//     label: 'Avatar',
-//   },
-//   {
-//     id: 'id',
-//     label: 'Id',
-//   },
-//   {
-//     id: 'username',
-//     label: 'Username',
-//   },
-//   {
-//     id: 'firstName',
-//     label: 'FirstName',
-//   },
-//   {
-//     id: 'lastName',
-//     label: 'LastName',
-//   },
-//   {
-//     id: 'email',
-//     label: 'Email',
-//   },
-//   {
-//     id: 'role',
-//     label: 'Role',
-//   },
-//   {
-//     id: 'status',
-//     label: 'Status',
-//   },
-//   {
-//     id: 'createdAt',
-//     label: 'CreatedAt',
-//   },
-//   {
-//     id: 'updatedAt',
-//     label: 'UpdatedAt',
-//   },
-// ];
+const rowOrder = [
+  'avatar',
+  'id',
+  'username',
+  'firstName',
+  'lastName',
+  'email',
+  'role',
+  'status',
+  'createdAt',
+  'updatedAt',
+];
 
 const UsersTable: React.FC = () => {
   const [page, setPage] = useState(0);
@@ -81,6 +58,17 @@ const UsersTable: React.FC = () => {
     return null;
   }
 
+  const additionalRows = (userId: number) => [
+    <td className="p-3 align-right">
+      <Link
+        to={`/profile/edit/${userId}`}
+        className="w-full h-full justify-center items-center"
+      >
+        <SlIcon name="pencil-square" />
+      </Link>
+    </td>,
+  ];
+
   return (
     <TableContainer style={{ overflow: 'unset' }}>
       <SearchInputField
@@ -91,29 +79,31 @@ const UsersTable: React.FC = () => {
         additionalClasses="pl-8 w-60"
       />
       <Table>
-        <TableHead headLabel={getHeadLabels<UserResponse>(users[0])} />
+        <TableHead
+          headLabels={getHeadLabels<UserResponse>(users[0])}
+          rowOrder={rowOrder}
+          additionalColumns={additionalRows.length || 0}
+        />
         <TableBody>
           {users &&
             users.length > 0 &&
-            users.map((user) => (
-              <TableRow
-                key={user.id}
-                id={user.id!}
-                updatedAt={user.updatedAt!}
-                status={user.status!}
-                username={user.username!}
-                firstName={user.firstName!}
-                lastName={user.lastName!}
-                role={user.role!}
-                email={user.email!}
-                createdAt={user.createdAt!}
-                handleClick={() => console.log('clicked')}
-                selected={false}
-                avatar={user.avatar!}
-              >
-                {' '}
-              </TableRow>
-            ))}
+            users.map((user: UserResponse) => {
+              const rowData = createUserRowData<UserResponse>(
+                user,
+                dateFields,
+                imageFields
+              );
+              return (
+                <TableRow
+                  rowOrder={rowOrder}
+                  rowData={rowData}
+                  selected={false}
+                  handleClick={() => console.log('clicked')}
+                >
+                  {...additionalRows(user.id!)}
+                </TableRow>
+              );
+            })}
         </TableBody>
       </Table>
       <TablePagination

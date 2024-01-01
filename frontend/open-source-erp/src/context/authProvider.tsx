@@ -24,18 +24,20 @@ const useAuthProvider = (): AuthContextType => {
   const userApi = useUserApi();
   const showToast = useToast();
   const translator = useTranslator();
+  const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
 
   const getUser = useCallback(
     async (userId: number) => {
       try {
         const response = await userApi.usersUserIdGet(userId);
         if (response.data.data) {
-          console.log({ user: response.data.data });
           setUser(response.data.data);
         }
       } catch (error) {
         handleApiError(error, showToast, translator);
         logout();
+      } finally {
+        setIsInitialLoading(false);
       }
     },
     [userApi]
@@ -52,6 +54,7 @@ const useAuthProvider = (): AuthContextType => {
         getUser(decoded.user_id);
       } else {
         logout();
+        setIsInitialLoading(false);
       }
     }
     setLoading(false);
@@ -73,6 +76,35 @@ const useAuthProvider = (): AuthContextType => {
     setPayload({} as JwtPayload);
   };
 
+  const verifyRoleAndId = useCallback(
+    (
+      requiredRole: string,
+      userIdParam: number,
+      navigate: (pageCount: number) => void
+    ) => {
+      if (isInitialLoading) {
+        return;
+      }
+      setLoading(true);
+
+      if (
+        user.role === requiredRole ||
+        user.role === 'Administrator' ||
+        user.id === userIdParam
+      ) {
+        console.log('User is authenticated');
+        setLoading(false);
+        return true;
+      }
+      console.log('User is not authenticated');
+
+      navigate(-1);
+      setLoading(false);
+      return false;
+    },
+    [isInitialLoading, user.id, user.role]
+  );
+
   return {
     authToken,
     payload,
@@ -81,6 +113,7 @@ const useAuthProvider = (): AuthContextType => {
     authenticated,
     loading,
     user,
+    verifyRoleAndId,
   };
 };
 

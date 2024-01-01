@@ -10,6 +10,11 @@ export interface AuthContextType {
   loading: boolean;
   payload: JwtPayload;
   user: UserResponse;
+  verifyRoleAndId: (
+    requiredRole: string,
+    userIdParam: number,
+    navigate: (pageCount: number) => void
+  ) => boolean | undefined;
 }
 
 export const useAuth = (): AuthContextType => {

@@ -3,13 +3,11 @@ import { ReactNode } from 'react';
 import { useAuth } from '../context/useAuth';
 import { finalPagesList } from './pages';
 
-type Props = {
+type PrivateRouteProps = {
   children: ReactNode;
 };
 
-function Private(props: Props) {
-  const { children } = props;
-
+function Private({ children }: PrivateRouteProps) {
   const { authenticated, loading } = useAuth();
 
   if (loading) {
