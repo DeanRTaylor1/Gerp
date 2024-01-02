@@ -2,7 +2,6 @@ import Home from '../pages/Home';
 import SignInPage from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
 import UsersAdmin from '../pages/UsersAdmin';
-import AddDepartment from '../pages/departments/AddDepartment';
 import ManageDepartmentsPage from '../pages/departments/Departments';
 import PayScales from '../pages/payments/admin/PayScales';
 import EditUserProfile from '../pages/users/EditUserProfile';
