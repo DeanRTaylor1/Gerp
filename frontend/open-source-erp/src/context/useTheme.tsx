@@ -58,6 +58,8 @@ hover:bg-gray-200 dark:hover:bg-dark-primary-inverse-text
 focus:outline-none focus:ring focus:border-blue-300
 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer
 `,
+  overlay: `fixed inset-0 z-30 bg-black bg-opacity-50 w-full h-full flex items-center justify-center`,
+  modalContainer: `m-auto p-4 w-[80%] md:w-[50%] h-fit min-h-fit mt-20 rounded`,
 };
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {

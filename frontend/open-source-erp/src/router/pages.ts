@@ -89,14 +89,6 @@ export const pageTree: Array<IPageTreeItem> = [
         element: ManageDepartmentsPage,
         protected: true,
       },
-      {
-        name: 'Create Department',
-        path: '/admin/departments/create',
-        navbar: true,
-        icon: 'plus-circle',
-        element: AddDepartment,
-        protected: true,
-      },
     ],
   },
   {
