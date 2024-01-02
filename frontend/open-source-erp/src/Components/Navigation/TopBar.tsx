@@ -10,7 +10,7 @@ import SlSelect, {
 } from '@shoelace-style/shoelace/dist/react/select/index.js';
 import SlOption from '@shoelace-style/shoelace/dist/react/option/index.js';
 import type SlSelectElement from '@shoelace-style/shoelace/dist/components/select/select.js';
-
+import SlIcon from '@shoelace-style/shoelace/dist/react/icon/index.js';
 import SlButton from '@shoelace-style/shoelace/dist/react/button/index.js';
 import SlDropdown from '@shoelace-style/shoelace/dist/react/dropdown/index.js';
 import SlMenu, {
@@ -19,6 +19,7 @@ import SlMenu, {
 import SlMenuItem from '@shoelace-style/shoelace/dist/react/menu-item/index.js';
 import React from 'react';
 import { finalPagesList } from '../../router/pages';
+import { themes } from '../../context/themes';
 
 interface ProfileDropdownProps {
   children: React.ReactNode;
@@ -30,6 +31,8 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
   logout,
   navigate,
 }) => {
+  const { theme, toggleTheme } = useTheme();
+
   function handleSelect(event: SlSelectEvent) {
     const selectedItem = event.detail.item;
     switch (selectedItem.value) {
@@ -37,6 +40,13 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
         return logout();
       case 'profile':
         navigate(`${finalPagesList.Profile.path}`);
+        break;
+      case 'light':
+        toggleTheme();
+        break;
+      case 'dark':
+        toggleTheme();
+        break;
     }
   }
 
@@ -46,8 +56,27 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
         {children}
       </SlButton>
       <SlMenu onSlSelect={handleSelect}>
-        <SlMenuItem value="profile">Profile</SlMenuItem>
-        <SlMenuItem value="logout">Logout</SlMenuItem>
+        <SlMenuItem value="profile">
+          <SlIcon slot="prefix" name="person-circle" />
+          Profile
+        </SlMenuItem>
+        <SlMenuItem value="logout">
+          <SlIcon slot="prefix" name="box-arrow-right" />
+          Logout
+        </SlMenuItem>
+        {theme === themes.LIGHT ? (
+          <SlMenuItem value="dark">
+            {' '}
+            <SlIcon slot="prefix" name="moon" />
+            Dark Mode
+          </SlMenuItem>
+        ) : (
+          <SlMenuItem value="light">
+            {' '}
+            <SlIcon slot="prefix" name="sun" />
+            Light Mode
+          </SlMenuItem>
+        )}
       </SlMenu>
     </SlDropdown>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTheme } from '../hooks/useTheme';
 import Navigation from '../Components/Navigation/Navigation';
 import TopBar from '../Components/Navigation/TopBar';
@@ -9,14 +9,10 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const { theme, getColorClasses, toggleTheme } = useTheme();
+  const { theme, getColorClasses } = useTheme();
   const primary = getColorClasses('primary');
   const secondary = getColorClasses('secondary');
   const [showNav, setShowNav] = useState<boolean>(false);
-
-  useEffect(() => {
-    toggleTheme();
-  }, []);
 
   const closeNavIfOpen = () => {
     if (showNav) {
@@ -28,6 +24,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const navStatus = showNav;
 
     setShowNav(!navStatus);
+  };
+
+  const contentStyle = {
+    marginTop: '4rem',
+    minHeight: 'calc(100vh - 4rem)',
   };
 
   return (
@@ -43,9 +44,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <MobileNavigation showNav={showNav} closeNavIfOpen={closeNavIfOpen} />
       {/* Content Area */}
       <div
-        className={`content flex flex-wrap items-start justify-center md:justify-start p-6 mt-16 pt-2 gap-6 w-full ${secondary} ${
+        className={`content flex flex-wrap items-start justify-center md:justify-start p-6 mt-16 pt-2 gap-6  h-full w-full ${secondary} ${
           showNav ? 'md:ml-16' : 'md:ml-16'
         }`}
+        style={contentStyle}
       >
         {children}
       </div>
