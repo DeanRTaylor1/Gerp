@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Form, Formik, FormikValues } from 'formik';
+import { Form, Formik, FormikHelpers, FormikValues } from 'formik';
 import * as Yup from 'yup';
 import useTranslator from '../../hooks/useTranslator';
 import ShoeLaceCustomButton from '../buttons/ShoeLaceCustomButton';
@@ -13,7 +13,7 @@ interface FormWithValidationProps<T extends FormikValues> {
   initialValues: T;
   validationSchema: Yup.ObjectSchema<T>;
   fieldConfigs: FormikFieldProps[];
-  onSubmit: (...args: any[]) => void;
+  onSubmit: (values: T, formikHelpers: FormikHelpers<T>) => Promise<void>;
   stretchFields?: boolean;
 }
 

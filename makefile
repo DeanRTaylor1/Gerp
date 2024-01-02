@@ -64,4 +64,7 @@ run-dev:
 run-dev-build:
 	docker-compose up --build
 
-.PHONY: all frontend backend dev sqlc postgres createdb dropdb migrateup migrateup1 axios api-spec install-openapigen-npm rn-dev env oapi-codegen prepare gen-tools
+build-docker:
+	cd backend && docker build -t go-erp .
+
+.PHONY: all frontend backend dev sqlc postgres createdb dropdb migrateup migrateup1 axios api-spec install-openapigen-npm rn-dev env oapi-codegen prepare gen-tools run-dev-build build-docker

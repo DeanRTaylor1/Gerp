@@ -5,7 +5,6 @@ import {
   GenderResponse,
   MaritalStatusesResponse,
   PutProfileRequest,
-  UserRequest,
   UserResponse,
 } from '../../axios';
 
@@ -239,7 +238,7 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
 
   const handleSubmit = async (
     values: PutProfileRequest,
-    formikHelpers: FormikHelpers<UserRequest>
+    formikHelpers: FormikHelpers<PutProfileRequest>
   ) => {
     const finalData = {
       ...values,
