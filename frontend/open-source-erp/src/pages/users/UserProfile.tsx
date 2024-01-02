@@ -6,12 +6,14 @@ import { UserResponse } from '../../axios';
 import { useAuth } from '../../context/useAuth';
 import useFetch from '../../hooks/useFetch';
 import { useToast } from '../../hooks/useToast';
+import useTranslator from '../../hooks/useTranslator';
 import { useUserApi } from '../../hooks/useUserApi';
 
 const UserProfile = () => {
   const usersApi = useUserApi();
   const showToast = useToast();
   const { payload } = useAuth();
+  const translator = useTranslator();
 
   const {
     data: user,
@@ -35,8 +37,8 @@ const UserProfile = () => {
   return (
     <>
       <div className="flex flex-col gap-6 pt-4 px-2">
-        Profile
-        <div className="flex flex-col justify-center items-center lg:flex-row gap-8 min-h-full w-full">
+        {translator.global.profile}
+        <div className="flex flex-col justify-center items-start lg:flex-row gap-8 min-h-full w-full">
           <UserSummary user={user} />
           <UserProfileSummary user={user} />
         </div>

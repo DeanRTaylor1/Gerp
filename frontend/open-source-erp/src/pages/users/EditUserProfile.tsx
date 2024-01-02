@@ -17,6 +17,7 @@ import { useToast } from '../../hooks/useToast';
 import { useUserApi } from '../../hooks/useUserApi';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDepartmentsApi } from '../../hooks/useDepartmentsApi';
+import useTranslator from '../../hooks/useTranslator';
 
 const EditUserProfile = () => {
   const usersApi = useUserApi();
@@ -24,6 +25,8 @@ const EditUserProfile = () => {
   const { id } = useParams();
   const { verifyRoleAndId, user: loggedInUser } = useAuth();
   const navigate = useNavigate();
+  const translator = useTranslator();
+
   const {
     data: user,
     isLoading: userIsLoading,
@@ -133,8 +136,8 @@ const EditUserProfile = () => {
   return (
     <>
       <div className="flex flex-col gap-6 pt-4  w-full">
-        Profile
-        <div className="flex flex-col justify-center items-center lg:flex-row gap-8 w-full min-h-full">
+        {`${translator.global.edit} ${translator.global.profile}`}
+        <div className="flex flex-col justify-center items-start lg:flex-row gap-8 w-full min-h-full">
           <UserSummary user={user} />
           <EditUserProfileForm
             genders={genders!}
