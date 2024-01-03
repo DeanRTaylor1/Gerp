@@ -40,7 +40,7 @@ const useAuthProvider = (): AuthContextType => {
         setIsInitialLoading(false);
       }
     },
-    [userApi]
+    [userApi, authToken]
   );
 
   useEffect(() => {
@@ -65,8 +65,8 @@ const useAuthProvider = (): AuthContextType => {
     setAuthToken(token);
     setAuthenticated(true);
     const decoded: JwtPayload = jwtDecode<JwtPayload>(token);
-    console.log({ decoded });
     setPayload(decoded);
+    getUser(decoded.user_id);
   };
 
   const logout = (): void => {

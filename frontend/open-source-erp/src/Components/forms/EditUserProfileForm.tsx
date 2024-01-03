@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '../../hooks/useToast';
 import useTranslator from '../../hooks/useTranslator';
 import { useProfilesApi } from '../../hooks/useProfilesApi';
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { handleApiError } from '../../utils/error';
 import { InputType } from '../Inputs/Input.enum';
 import {
@@ -195,7 +195,6 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
   maritalStatuses,
   departments,
 }) => {
-  console.log({ user });
   const queryClient = useQueryClient();
 
   const initialValues: PutProfileRequest = {
@@ -236,6 +235,22 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
   const translator = useTranslator();
   const profileApi = useProfilesApi();
 
+  const updateProfile = async (finalData: PutProfileRequest) => {
+    return profileApi.profilesPut(finalData);
+  };
+
+  const profileMutation = useMutation({
+    mutationFn: updateProfile,
+    onSuccess: () => {
+      showToast(translator.global.success, 'success');
+      queryClient.invalidateQueries({ queryKey: ['user', user.id] });
+      navigate('/profile');
+    },
+    onError: (error) => {
+      handleApiError(error, showToast, translator);
+    },
+  });
+
   const handleSubmit = async (
     values: PutProfileRequest,
     formikHelpers: FormikHelpers<PutProfileRequest>
@@ -247,16 +262,11 @@ const EditUserProfileForm: React.FC<EditUserProfileFormProps> = ({
       departmentId: Number(values.departmentId),
       maritalStatusId: Number(values.maritalStatusId),
     };
-    try {
-      formikHelpers.setSubmitting(true);
-      await profileApi.profilesPut(finalData);
-      showToast(translator.global.success, 'success');
-      formikHelpers.setSubmitting(false);
-      queryClient.invalidateQueries({ queryKey: ['user'] });
-      navigate('/profile');
-    } catch (error) {
-      handleApiError(error, showToast, translator);
-    }
+    profileMutation.mutate(finalData, {
+      onSettled: () => {
+        formikHelpers.setSubmitting(false);
+      },
+    });
   };
 
   return (

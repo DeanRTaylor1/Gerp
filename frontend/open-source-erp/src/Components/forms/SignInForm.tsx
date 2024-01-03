@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Formik, Form, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
-import { LoginUserRequest } from '../../axios';
+import { LoginUserRequest, LoginUserResponse } from '../../axios';
 import FormikField from '../Inputs/FormikField';
 import SubmitButton from '../buttons/SubmitButton';
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +9,10 @@ import { useAuthApi } from '../../hooks/useAuthenticationApi';
 import { useAuth } from '../../context/useAuth';
 import { useToast } from '../../hooks/useToast';
 import { Icon } from '@iconify/react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { AxiosResponse } from 'axios';
+import { handleApiError } from '../../utils/error';
+import useTranslator from '../../hooks/useTranslator';
 
 const LoginRequestSchema = Yup.object().shape({
   email: Yup.string().required('Required'),
@@ -23,25 +28,36 @@ const SignInForm = () => {
   };
 
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const translator = useTranslator();
+
+  const loginUser = async (loginData: LoginUserRequest) => {
+    return authAPi.authPost(loginData);
+  };
+
+  const loginMutation = useMutation({
+    mutationFn: loginUser,
+    onSuccess: (data: AxiosResponse<LoginUserResponse, any>) => {
+      const access_token = data?.data?.data?.access_token;
+      login(access_token!);
+      queryClient.invalidateQueries({ queryKey: ['user'] });
+      navigate('/');
+    },
+    onError: (error) => {
+      handleApiError(error, showToast, translator);
+    },
+  });
 
   const handleSubmit = async (
     values: LoginUserRequest,
     formikHelpers: FormikHelpers<LoginUserRequest>
   ) => {
-    try {
-      formikHelpers.setSubmitting(true);
-      const response = await authAPi.authPost(values);
-      if (!response.data.data) {
-        throw new Error('Something went wrong');
-      }
-      const access_token = response.data.data.access_token;
-      login(access_token);
-      formikHelpers.setSubmitting(false);
-      navigate('/');
-    } catch (error) {
-      showToast('Error logging in please try again.');
-      console.error({ error });
-    }
+    formikHelpers.setSubmitting(true);
+    loginMutation.mutate(values, {
+      onSettled: () => {
+        formikHelpers.setSubmitting(false);
+      },
+    });
   };
 
   return (
